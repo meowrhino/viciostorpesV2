@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Book - ViciosTorpes</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/booking.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans+Extra+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Botón volver -->
+  <a href="index.html" class="back-btn" aria-label="Volver al inicio">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M19 12H5M12 19l-7-7 7-7"/>
+    </svg>
+    <span>Home</span>
+  </a>
+
+  <!-- Fondo fijo -->
+  <div class="booking-bg"></div>
+  
+  <!-- Formulario de contacto -->
+  <main class="booking-container">
+    <h1 class="booking-title">How to Book</h1>
+    
+    <form id="bookingForm" class="booking-form">
+      <!-- Nombre -->
+      <div class="form-group">
+        <label for="name" class="form-label">Nombre *</label>
+        <input 
+          type="text" 
+          id="name" 
+          name="name" 
+          class="form-input" 
+          required
+          placeholder="Tu nombre"
+        >
+      </div>
+      
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email" class="form-label">Email *</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          class="form-input" 
+          required
+          placeholder="tu@email.com"
+        >
+      </div>
+      
+      <!-- Teléfono -->
+      <div class="form-group">
+        <label for="phone" class="form-label">Teléfono</label>
+        <input 
+          type="tel" 
+          id="phone" 
+          name="phone" 
+          class="form-input" 
+          placeholder="+34 600 000 000"
+        >
+      </div>
+      
+      <!-- Localidad -->
+      <div class="form-group">
+        <label for="location" class="form-label">Localidad *</label>
+        <input 
+          type="text" 
+          id="location" 
+          name="location" 
+          class="form-input" 
+          required
+          placeholder="Barcelona, Madrid, etc."
+        >
+      </div>
+      
+      <!-- Descripción -->
+      <div class="form-group">
+        <label for="description" class="form-label">Descripción *</label>
+        <textarea 
+          id="description" 
+          name="description" 
+          class="form-textarea" 
+          rows="6" 
+          required
+          placeholder="Cuéntame qué tienes en mente..."
+        ></textarea>
+      </div>
+      
+      <!-- Botón enviar -->
+      <button type="submit" class="form-submit">
+        Enviar
+      </button>
+      
+      <!-- Mensaje de respuesta -->
+      <div id="formMessage" class="form-message hidden"></div>
+    </form>
+    
+    <!-- Firma -->
+    <footer class="booking-footer">
+      <p>meowrhino.studio</p>
+    </footer>
+  </main>
+
+  <script src="js/booking.js"></script>
+</body>
+</html>

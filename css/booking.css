@@ -1,0 +1,217 @@
+/* ===========================
+   booking.css — Formulario de contacto
+   =========================== */
+
+body {
+  margin: 0;
+  overflow-y: auto;
+  background: #0f0f12;
+}
+
+/* Fondo fijo */
+.booking-bg {
+  position: fixed;
+  inset: 0;
+  background-image: url('../data/images/backgrounds/DSC00210.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: brightness(0.4);
+  z-index: -1;
+}
+
+/* Botón volver */
+.back-btn {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.2rem;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  color: var(--text-color);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  transition: all var(--transition-speed) ease;
+  text-transform: uppercase;
+}
+
+.back-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+  color: var(--text-hover);
+  transform: translateX(-4px);
+}
+
+.back-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Contenedor principal */
+.booking-container {
+  position: relative;
+  min-height: 100vh;
+  padding: 6rem 2rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.booking-title {
+  text-align: center;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 3rem;
+  color: var(--text-color);
+}
+
+/* Formulario */
+.booking-form {
+  width: 100%;
+  max-width: 600px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  padding: 3rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+/* Grupos de formulario */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+/* Inputs y textarea */
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 1rem;
+  font-family: inherit;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: var(--text-color);
+  transition: all var(--transition-speed) ease;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: rgba(230, 230, 230, 0.5);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* Botón enviar */
+.form-submit {
+  width: 100%;
+  padding: 1.2rem;
+  font-family: inherit;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+  margin-top: 1rem;
+}
+
+.form-submit:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: var(--text-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.form-submit:active {
+  transform: translateY(0);
+}
+
+/* Mensaje de respuesta */
+.form-message {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.form-message.success {
+  background: rgba(76, 175, 80, 0.2);
+  border: 2px solid rgba(76, 175, 80, 0.5);
+  color: #4CAF50;
+}
+
+.form-message.error {
+  background: rgba(244, 67, 54, 0.2);
+  border: 2px solid rgba(244, 67, 54, 0.5);
+  color: #F44336;
+}
+
+/* Footer */
+.booking-footer {
+  margin-top: 3rem;
+  text-align: center;
+  color: rgba(230, 230, 230, 0.6);
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .booking-container {
+    padding: 5rem 1rem 3rem;
+  }
+  
+  .booking-title {
+    margin-bottom: 2rem;
+  }
+  
+  .booking-form {
+    padding: 2rem 1.5rem;
+  }
+  
+  .back-btn {
+    top: 1rem;
+    left: 1rem;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+  }
+  
+  .back-btn span {
+    display: none;
+  }
+}

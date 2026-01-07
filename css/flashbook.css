@@ -1,0 +1,120 @@
+/* ===========================
+   flashbook.css — Mosaico scrolleable
+   =========================== */
+
+body {
+  margin: 0;
+  overflow: auto;
+  background: #0f0f12;
+}
+
+/* Fondo fijo */
+.flashbook-bg {
+  position: fixed;
+  inset: 0;
+  background-image: url('../data/images/backgrounds/DSC00023.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: brightness(0.6);
+  z-index: -1;
+}
+
+/* Botón volver */
+.back-btn {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.2rem;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  color: var(--text-color);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  transition: all var(--transition-speed) ease;
+  text-transform: uppercase;
+}
+
+.back-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+  color: var(--text-hover);
+  transform: translateX(-4px);
+}
+
+.back-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Contenedor del mosaico */
+.mosaic-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  padding: 6rem 2rem 4rem;
+}
+
+/* Mosaico de imágenes */
+.mosaic {
+  position: relative;
+  width: 100%;
+  max-width: 2400px;
+  margin: 0 auto;
+  /* La altura se calculará dinámicamente en JS */
+}
+
+/* Cada imagen del mosaico */
+.mosaic-image {
+  position: absolute;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  object-fit: cover;
+}
+
+.mosaic-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+  z-index: 10;
+}
+
+/* Loading state */
+.mosaic-image.loading {
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mosaic-container {
+    padding: 5rem 1rem 3rem;
+  }
+  
+  .back-btn {
+    top: 1rem;
+    left: 1rem;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+  }
+  
+  .back-btn span {
+    display: none;
+  }
+  
+  .mosaic-image:hover {
+    transform: scale(1.02);
+  }
+}

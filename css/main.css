@@ -1,0 +1,59 @@
+/* ===========================
+   main.css — Estilos globales
+   =========================== */
+
+/* Reset básico */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: "Sofia Sans Extra Condensed", sans-serif;
+  background: #0f0f12;
+  color: #E6E6E6;
+  overflow-x: hidden;
+}
+
+/* Variables CSS globales */
+:root {
+  --text-color: #E6E6E6;
+  --text-hover: #FFFFFF;
+  --bg-dark: #0f0f12;
+  --overlay-dark: rgba(0, 0, 0, 0.4);
+  --transition-speed: 0.3s;
+}
+
+/* Text shadow para legibilidad */
+body, h1, h2, h3, a, button {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 1);
+}
+
+/* Links sin decoración por defecto */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Botones base */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* Utilidades */
+.hidden {
+  display: none !important;
+}
+
+.no-scroll {
+  overflow: hidden;
+}
