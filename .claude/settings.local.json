@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(git -C /Users/manu/Documents/GitHub/viciostorpesV2 log --oneline -10)",
+      "Bash(git -C /Users/manu/Documents/GitHub/viciostorpesV2 status --short)",
+      "Bash(git -C /Users/manu/Documents/GitHub/viciostorpesV2 show --stat 5f37b40)",
+      "Bash(git -C /Users/manu/Documents/GitHub/viciostorpesV2 diff --name-status HEAD~1 HEAD)"
+    ]
+  }
+}

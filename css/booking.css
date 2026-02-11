@@ -12,7 +12,7 @@ body {
 .booking-bg {
   position: fixed;
   inset: 0;
-  background-image: url('../data/images/backgrounds/DSC00210.webp');
+  background-image: url('../data/backgrounds/howToBook.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -20,7 +20,7 @@ body {
   z-index: -1;
 }
 
-/* Botón volver */
+/* Botón volver (rojo, consistente con el resto) */
 .back-btn {
   position: fixed;
   top: 2rem;
@@ -30,21 +30,22 @@ body {
   align-items: center;
   gap: 0.5rem;
   padding: 0.8rem 1.2rem;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(200, 30, 30, 0.8);
+  border: 2px solid rgba(255, 60, 60, 0.6);
   backdrop-filter: blur(10px);
   border-radius: 8px;
-  color: var(--text-color);
+  color: #fff;
   font-size: 1.1rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   transition: all var(--transition-speed) ease;
   text-transform: uppercase;
 }
 
 .back-btn:hover {
-  background: rgba(0, 0, 0, 0.8);
-  color: var(--text-hover);
+  background: rgba(220, 40, 40, 0.95);
   transform: translateX(-4px);
+  box-shadow: 0 4px 16px rgba(200, 30, 30, 0.5);
 }
 
 .back-btn svg {
@@ -138,21 +139,20 @@ body {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  background: rgba(255, 255, 255, 0.15);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(200, 30, 30, 0.7);
+  border: 2px solid rgba(255, 60, 60, 0.5);
   border-radius: 8px;
-  color: var(--text-color);
+  color: #fff;
   cursor: pointer;
   transition: all var(--transition-speed) ease;
   margin-top: 1rem;
 }
 
 .form-submit:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.5);
-  color: var(--text-hover);
+  background: rgba(220, 40, 40, 0.9);
+  border-color: rgba(255, 60, 60, 0.8);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 16px rgba(200, 30, 30, 0.4);
 }
 
 .form-submit:active {
@@ -195,22 +195,22 @@ body {
   .booking-container {
     padding: 5rem 1rem 3rem;
   }
-  
+
   .booking-title {
     margin-bottom: 2rem;
   }
-  
+
   .booking-form {
     padding: 2rem 1.5rem;
   }
-  
+
   .back-btn {
     top: 1rem;
     left: 1rem;
     padding: 0.6rem 1rem;
     font-size: 1rem;
   }
-  
+
   .back-btn span {
     display: none;
   }

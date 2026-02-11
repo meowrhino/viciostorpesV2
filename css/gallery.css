@@ -1,0 +1,128 @@
+/* ===========================
+   gallery.css — Shared mosaic styles (flashbook & tattoo)
+   =========================== */
+
+body {
+  margin: 0;
+  overflow: auto;
+  background: #0f0f12;
+}
+
+/* Fixed background */
+.gallery-bg {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: brightness(0.5);
+  z-index: -1;
+}
+
+/* Back button */
+.back-btn {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+  background: none;
+  border: none;
+  color: #c81e1e;
+  font-family: "Sofia Sans Extra Condensed", sans-serif;
+  font-size: clamp(0.9rem, 1.5dvw, 1.4rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  text-decoration: none;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.back-btn:hover {
+  color: #ff3c3c;
+  transform: translateX(-4px);
+}
+
+.back-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+}
+
+/* Page title */
+.gallery-title {
+  position: fixed;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 90;
+  font-family: "Sofia Sans Extra Condensed", sans-serif;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  color: var(--text-color);
+  pointer-events: none;
+}
+
+/* Mosaic container */
+.mosaic-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  padding: 6rem 2rem 4rem;
+}
+
+.mosaic {
+  position: relative;
+  width: 100%;
+  max-width: 2400px;
+  margin: 0 auto;
+}
+
+/* Mosaic images */
+.mosaic-image {
+  position: absolute;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  object-fit: cover;
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.mosaic-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+  z-index: 10;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mosaic-container {
+    padding: 5rem 1rem 3rem;
+  }
+
+  .back-btn {
+    top: 1rem;
+    left: 1rem;
+    font-size: clamp(0.7rem, 3dvw, 1rem);
+  }
+
+  .gallery-title {
+    top: 1.2rem;
+    font-size: clamp(1.2rem, 6vw, 2rem);
+  }
+
+  .mosaic-image:hover {
+    transform: scale(1.02);
+  }
+}

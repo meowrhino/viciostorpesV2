@@ -1,0 +1,24 @@
+{
+  "welcome": {
+    "title": "ViciosTorpes",
+    "background": "data/backgrounds/welcome.png"
+  },
+  "sections": {
+    "flashbook": {
+      "title": "Flashbook",
+      "imageCount": 129,
+      "imagePath": "data/images/flashbook/",
+      "background": "data/backgrounds/flashbook.webp"
+    },
+    "tattoo": {
+      "title": "Tattoo",
+      "imageCount": 72,
+      "imagePath": "data/images/tattoo/",
+      "background": "data/backgrounds/tattoo.webp"
+    }
+  },
+  "booking": {
+    "title": "How to Book",
+    "background": "data/backgrounds/howToBook.webp"
+  }
+}
