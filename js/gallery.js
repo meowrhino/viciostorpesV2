@@ -62,8 +62,8 @@
     cellH,
     mosaicWidth,
     mosaicHeight,
-    minSize: 200,
-    maxSize: 400,
+    minSize: 250,
+    maxSize: 450,
     padding: 6,
     batchSize: 8,
   };
