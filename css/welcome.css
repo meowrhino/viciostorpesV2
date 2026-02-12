@@ -1,5 +1,5 @@
 /* ===========================
-   welcome.css — Responsive landing page
+   welcome.css — Landing page with positioned images
    =========================== */
 
 body {
@@ -13,41 +13,31 @@ body {
   height: 100dvh;
   position: relative;
   overflow: hidden;
+}
+
+/* ===========================
+   Cell (full screen container)
+   =========================== */
+
+.cell {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* ===========================
-   Welcome Container
-   =========================== */
-
-.welcome-container {
-  position: relative;
-  
-  /* Dynamic scaling with margins for navigation buttons */
-  /* Uses min() to ensure it never exceeds viewport bounds */
-  width: min(85dvw, 90dvh * 1.77);  /* Leaves ~7.5dvw on each side minimum */
-  aspect-ratio: 16 / 9;
-  
-  /* Center the container */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ===========================
-   Background
-   =========================== */
-
-.welcome-bg {
+/* Cell background — full screen, no overlay */
+.cell-bg {
   position: absolute;
   inset: 0;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   z-index: 0;
-  opacity: 0.3;  /* Subtle background */
 }
 
 /* ===========================
@@ -59,24 +49,28 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 50%;  /* Takes ~50% of container width */
+  width: 40dvw;  /* Responsive width */
+  max-width: 600px;
+  height: auto;
   z-index: 10;
+  opacity: 0;
+  animation: fadeIn 1s ease 0.5s forwards;
 }
 
-.welcome-text img {
-  width: 100%;
-  height: auto;
-  display: block;
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
 }
 
 /* ===========================
-   Positioned Images
-   Based on REFERENCE.webp layout
+   Positioned Decorative Images
+   Using dvw/dvh for responsive positioning
    =========================== */
 
 .welcome-image {
   position: absolute;
-  width: 15%;  /* Relative to container */
+  width: 12dvw;  /* Responsive size */
   height: auto;
   object-fit: contain;
   z-index: 5;
@@ -110,121 +104,113 @@ body {
 .welcome-image:nth-child(8) { animation-delay: 0.7s; }
 
 /* ===========================
-   Image Positions
-   Matching REFERENCE.webp layout
+   Image Positions (based on REFERENCE.webp)
+   Using dvw/dvh for responsive positioning
    =========================== */
 
 /* Top row */
 .pos-top-left {
-  top: 5%;
-  left: 5%;
-  width: 18%;
+  top: 5dvh;
+  left: 5dvw;
+  width: 15dvw;
 }
 
 .pos-top-center {
-  top: 8%;
-  left: 50%;
+  top: 8dvh;
+  left: 50dvw;
   transform: translateX(-50%);
-  width: 12%;
+  width: 10dvw;
 }
 
 .pos-top-right-1 {
-  top: 5%;
-  right: 5%;
-  width: 16%;
+  top: 5dvh;
+  right: 5dvw;
+  width: 13dvw;
 }
 
 .pos-top-right-2 {
-  top: 25%;
-  right: 6%;
-  width: 14%;
+  top: 25dvh;
+  right: 6dvw;
+  width: 12dvw;
 }
 
 /* Bottom row */
 .pos-bottom-left {
-  bottom: 8%;
-  left: 6%;
-  width: 16%;
+  bottom: 8dvh;
+  left: 6dvw;
+  width: 13dvw;
 }
 
 .pos-bottom-center {
-  bottom: 10%;
-  left: 50%;
+  bottom: 10dvh;
+  left: 50dvw;
   transform: translateX(-50%);
-  width: 14%;
+  width: 12dvw;
 }
 
 .pos-bottom-right {
-  bottom: 8%;
-  right: 8%;
-  width: 20%;
-}
-
-/* ===========================
-   Navigation Buttons
-   Positioned outside the container
-   =========================== */
-
-.welcome-container .nav-btn {
-  position: fixed;  /* Fixed to viewport, not container */
-  z-index: 100;
+  bottom: 8dvh;
+  right: 8dvw;
+  width: 16dvw;
 }
 
 /* ===========================
    Responsive Adjustments
    =========================== */
 
-/* Tablet and smaller */
+/* Tablet */
 @media (max-width: 1024px) {
-  .welcome-container {
-    width: min(90dvw, 95dvh * 1.77);  /* Slightly wider */
+  .welcome-text {
+    width: 50dvw;
   }
   
   .welcome-image {
-    width: 18%;  /* Slightly larger images */
+    width: 15dvw;
   }
   
-  .welcome-text {
-    width: 55%;
-  }
+  .pos-top-left { width: 18dvw; }
+  .pos-top-center { width: 13dvw; }
+  .pos-top-right-1 { width: 16dvw; }
+  .pos-top-right-2 { width: 15dvw; }
+  .pos-bottom-left { width: 16dvw; }
+  .pos-bottom-center { width: 15dvw; }
+  .pos-bottom-right { width: 19dvw; }
 }
 
 /* Mobile */
 @media (max-width: 768px) {
-  .welcome-container {
-    width: 95dvw;  /* Use most of the width */
-    aspect-ratio: 3 / 4;  /* Taller aspect ratio for mobile */
-  }
-  
   .welcome-text {
-    width: 65%;
+    width: 60dvw;
   }
   
   .welcome-image {
-    width: 22%;  /* Larger images on mobile */
+    width: 18dvw;
   }
   
-  /* Adjust positions for vertical layout */
-  .pos-top-center {
-    top: 5%;
-  }
-  
-  .pos-bottom-center {
-    bottom: 5%;
-  }
+  .pos-top-left { width: 22dvw; }
+  .pos-top-center { width: 16dvw; }
+  .pos-top-right-1 { width: 20dvw; }
+  .pos-top-right-2 { width: 18dvw; }
+  .pos-bottom-left { width: 20dvw; }
+  .pos-bottom-center { width: 18dvw; }
+  .pos-bottom-right { width: 24dvw; }
 }
 
 /* Very small screens */
 @media (max-width: 480px) {
-  .welcome-container {
-    width: 98dvw;
-  }
-  
   .welcome-text {
-    width: 70%;
+    width: 70dvw;
   }
   
   .welcome-image {
-    width: 25%;
+    width: 20dvw;
   }
+  
+  .pos-top-left { width: 25dvw; }
+  .pos-top-center { width: 18dvw; }
+  .pos-top-right-1 { width: 23dvw; }
+  .pos-top-right-2 { width: 20dvw; }
+  .pos-bottom-left { width: 23dvw; }
+  .pos-bottom-center { width: 20dvw; }
+  .pos-bottom-right { width: 27dvw; }
 }

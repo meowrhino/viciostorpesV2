@@ -1,20 +1,19 @@
-// welcome.js — Responsive landing page with positioned images
+// welcome.js — Landing page with positioned decorative images
 
 (async function () {
   const data = await fetch('data.json').then(r => r.json());
   const container = document.getElementById('grid-container');
 
-  // Create welcome container with aspect ratio
-  const welcomeContainer = document.createElement('div');
-  welcomeContainer.classList.add('welcome-container');
+  // Build the single welcome cell with background (full screen)
+  const cell = document.createElement('div');
+  cell.classList.add('cell', 'cell-welcome', 'active');
 
-  // Background image (welcome.webp as main bg)
   const bg = document.createElement('div');
-  bg.classList.add('welcome-bg');
+  bg.classList.add('cell-bg');
   bg.style.backgroundImage = `url('${data.welcome.background}')`;
-  welcomeContainer.appendChild(bg);
+  cell.appendChild(bg);
 
-  // Positioned images based on REFERENCE.webp layout
+  // Positioned decorative images (based on REFERENCE.webp layout)
   const images = [
     { src: 'data/welcome/0.webp', position: 'top-left' },
     { src: 'data/welcome/1.webp', position: 'top-center' },
@@ -29,20 +28,16 @@
     const img = document.createElement('img');
     img.classList.add('welcome-image', `pos-${item.position}`);
     img.src = item.src;
-    img.alt = 'Welcome decoration';
-    welcomeContainer.appendChild(img);
+    img.alt = 'Decoration';
+    cell.appendChild(img);
   });
 
   // Central "Welcome" text/image
-  const welcomeText = document.createElement('div');
+  const welcomeText = document.createElement('img');
   welcomeText.classList.add('welcome-text');
-  // You can use an image or text here
-  // For now, using the welcome.webp as text
-  const textImg = document.createElement('img');
-  textImg.src = 'data/welcome/welcome.webp';
-  textImg.alt = 'Welcome';
-  welcomeText.appendChild(textImg);
-  welcomeContainer.appendChild(welcomeText);
+  welcomeText.src = 'data/welcome/welcome.webp';
+  welcomeText.alt = 'Welcome';
+  cell.appendChild(welcomeText);
 
   // Navigation buttons using unified system
   const navItems = [
@@ -56,8 +51,8 @@
     btn.classList.add('nav-btn', item.position);
     btn.href = item.href;
     btn.textContent = item.name;
-    welcomeContainer.appendChild(btn);
+    cell.appendChild(btn);
   }
 
-  container.appendChild(welcomeContainer);
+  container.appendChild(cell);
 })();
