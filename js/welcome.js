@@ -3,6 +3,13 @@
 (async function () {
   const data = await fetch('data.json').then(r => r.json());
   const container = document.getElementById('grid-container');
+  const welcomeBackground = data.welcome.background;
+
+  // Mirror welcome background at body level to avoid dark flash on load
+  document.body.style.backgroundImage = `url('${welcomeBackground}')`;
+  document.body.style.backgroundSize = 'cover';
+  document.body.style.backgroundPosition = 'center';
+  document.body.style.backgroundRepeat = 'no-repeat';
 
   // Build the single welcome cell with background (full screen)
   const cell = document.createElement('div');
@@ -10,7 +17,7 @@
 
   const bg = document.createElement('div');
   bg.classList.add('cell-bg');
-  bg.style.backgroundImage = `url('${data.welcome.background}')`;
+  bg.style.backgroundImage = `url('${welcomeBackground}')`;
   cell.appendChild(bg);
 
   // Positioned decorative images (based on REFERENCE.webp layout)
