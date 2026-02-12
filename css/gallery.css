@@ -91,19 +91,26 @@ body {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
   object-fit: cover;
+  
+  /* Initial state: hidden and scaled down */
   opacity: 0;
-  animation: fadeIn 0.5s ease forwards;
+  transform: scale(0.8) translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.mosaic-image:hover {
-  transform: scale(1.05);
+/* Emerged state: visible and full size */
+.mosaic-image.emerged {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.mosaic-image.emerged:hover {
+  transform: scale(1.05) translateY(0);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
   z-index: 10;
 }
 
-@keyframes fadeIn {
-  to { opacity: 1; }
-}
+
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -122,7 +129,7 @@ body {
     font-size: clamp(1.2rem, 6vw, 2rem);
   }
 
-  .mosaic-image:hover {
-    transform: scale(1.02);
+  .mosaic-image.emerged:hover {
+    transform: scale(1.02) translateY(0);
   }
 }

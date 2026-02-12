@@ -1,5 +1,6 @@
 // gallery.js — Shared mosaic gallery for flashbook & tattoo
 // Reads section config from data.json, uses numbered images (0.webp, 1.webp, ...)
+// Progressive loading with emergence animation
 
 (async function () {
   // Determine which section we're on from the data-section attribute on <body>
@@ -36,6 +37,7 @@
     maxSize: 400,
     padding: 20,
     maxAttempts: 100,
+    batchSize: 8, // Load images in batches for progressive loading
   };
 
   // Build image list from numbered files
@@ -78,12 +80,8 @@
     };
   }
 
-  // Create mosaic
-  const mosaic = document.getElementById('mosaic');
-  const placed = [];
-  let maxHeight = 0;
-
-  for (const src of shuffled) {
+  // Load and place a single image with emergence animation
+  async function loadImage(src, placed, mosaic) {
     const size = Math.random() * (MOSAIC.maxSize - MOSAIC.minSize) + MOSAIC.minSize;
 
     const img = document.createElement('img');
@@ -91,7 +89,7 @@
     img.src = src;
     img.alt = `${config.title} image`;
 
-    await new Promise((resolve) => {
+    return new Promise((resolve) => {
       img.onload = () => {
         const ratio = img.naturalWidth / img.naturalHeight;
         const w = size;
@@ -105,18 +103,49 @@
         img.style.height = h + 'px';
 
         placed.push({ x: pos.x, y: pos.y, w, h });
-        maxHeight = Math.max(maxHeight, pos.y + h);
-
+        
         mosaic.appendChild(img);
-        resolve();
+        
+        // Trigger emergence animation after a small delay
+        requestAnimationFrame(() => {
+          img.classList.add('emerged');
+        });
+
+        resolve({ maxHeight: pos.y + h });
       };
 
       img.onerror = () => {
         console.warn('Failed to load:', src);
-        resolve();
+        resolve({ maxHeight: 0 });
       };
     });
   }
 
+  // Progressive batch loading
+  async function loadBatch(batch, placed, mosaic) {
+    const promises = batch.map(src => loadImage(src, placed, mosaic));
+    const results = await Promise.all(promises);
+    return Math.max(...results.map(r => r.maxHeight));
+  }
+
+  // Create mosaic with progressive loading
+  const mosaic = document.getElementById('mosaic');
+  const placed = [];
+  let maxHeight = 0;
+
+  // Split images into batches
+  for (let i = 0; i < shuffled.length; i += MOSAIC.batchSize) {
+    const batch = shuffled.slice(i, i + MOSAIC.batchSize);
+    const batchMaxHeight = await loadBatch(batch, placed, mosaic);
+    maxHeight = Math.max(maxHeight, batchMaxHeight);
+    
+    // Update mosaic height after each batch
+    mosaic.style.height = (maxHeight + MOSAIC.padding * 2) + 'px';
+    
+    // Small delay between batches for smoother emergence effect
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+
+  // Final height adjustment
   mosaic.style.height = (maxHeight + MOSAIC.padding * 2) + 'px';
 })();

@@ -6,16 +6,18 @@
   <title>Flashbook - ViciosTorpes</title>
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/gallery.css">
+  <link rel="stylesheet" href="css/navigation.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans+Extra+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body data-section="flashbook">
-  <a href="index.html" class="back-btn" aria-label="Volver al inicio">
+  <!-- Botón home -->
+  <a href="index.html" class="nav-btn-home" aria-label="Volver al inicio">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M19 12H5M12 19l-7-7 7-7"/>
     </svg>
-    <span>Home</span>
+    <span>home</span>
   </a>
 
   <h1 class="gallery-title"></h1>
@@ -24,6 +26,14 @@
 
   <div class="mosaic-container">
     <div id="mosaic" class="mosaic"></div>
+  </div>
+
+  <!-- Contenedor de navegación posicional -->
+  <div class="nav-container">
+    <!-- Flashbook está a la izquierda, entonces home está a la derecha -->
+    <a href="index.html" class="nav-btn-pos pos-right">home</a>
+    <!-- Booking está abajo desde cualquier lugar -->
+    <a href="booking.html" class="nav-btn-pos pos-bottom">how to book</a>
   </div>
 
   <script src="js/gallery.js"></script>

@@ -6,17 +6,18 @@
   <title>How to Book - ViciosTorpes</title>
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/booking.css">
+  <link rel="stylesheet" href="css/navigation.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans+Extra+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- Botón volver -->
-  <a href="index.html" class="back-btn" aria-label="Volver al inicio">
+  <!-- Botón home -->
+  <a href="index.html" class="nav-btn-home" aria-label="Volver al inicio">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M19 12H5M12 19l-7-7 7-7"/>
     </svg>
-    <span>Home</span>
+    <span>home</span>
   </a>
 
   <!-- Fondo fijo -->
@@ -105,6 +106,12 @@
       <p>meowrhino.studio</p>
     </footer>
   </main>
+
+  <!-- Contenedor de navegación posicional -->
+  <div class="nav-container">
+    <!-- Booking está abajo, entonces home está arriba -->
+    <a href="index.html" class="nav-btn-pos pos-top">home</a>
+  </div>
 
   <script src="js/booking.js"></script>
 </body>

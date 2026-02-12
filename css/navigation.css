@@ -1,0 +1,142 @@
+/* ===========================
+   navigation.css — Sistema de navegación posicional
+   =========================== */
+
+/* Contenedor de navegación */
+.nav-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Botones de navegación base */
+.nav-btn-pos {
+  position: absolute;
+  pointer-events: auto;
+  background: none;
+  border: none;
+  color: #c81e1e;
+  font-family: "Sofia Sans Extra Condensed", sans-serif;
+  font-size: clamp(0.9rem, 1.5dvw, 1.4rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  text-decoration: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.25s ease, transform 0.25s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-btn-pos:hover {
+  color: #ff3c3c;
+}
+
+/* Posición: Arriba (centro superior) */
+.nav-btn-pos.pos-top {
+  top: 3dvh;
+  left: 50%;
+  transform: translateX(-50%) rotate(0deg);
+  transform-origin: center center;
+}
+
+.nav-btn-pos.pos-top:hover {
+  transform: translateX(-50%) scale(1.05);
+}
+
+/* Posición: Abajo (centro inferior) */
+.nav-btn-pos.pos-bottom {
+  bottom: 3dvh;
+  left: 50%;
+  transform: translateX(-50%) rotate(180deg);
+  transform-origin: center center;
+}
+
+.nav-btn-pos.pos-bottom:hover {
+  transform: translateX(-50%) rotate(180deg) scale(1.05);
+}
+
+/* Posición: Izquierda (centro izquierdo, rotado 90° antihorario) */
+.nav-btn-pos.pos-left {
+  left: 1.5dvw;
+  top: 50%;
+  transform: translateY(-50%) rotate(-90deg);
+  transform-origin: center center;
+}
+
+.nav-btn-pos.pos-left:hover {
+  transform: translateY(-50%) rotate(-90deg) scale(1.05);
+}
+
+/* Posición: Derecha (centro derecho, rotado 90° horario) */
+.nav-btn-pos.pos-right {
+  right: 1.5dvw;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+  transform-origin: center center;
+}
+
+.nav-btn-pos.pos-right:hover {
+  transform: translateY(-50%) rotate(90deg) scale(1.05);
+}
+
+/* Botón de home (siempre arriba a la izquierda) */
+.nav-btn-home {
+  position: fixed;
+  top: 2dvh;
+  left: 2dvw;
+  z-index: 101;
+  background: none;
+  border: none;
+  color: #c81e1e;
+  font-family: "Sofia Sans Extra Condensed", sans-serif;
+  font-size: clamp(0.8rem, 1.2dvw, 1.2rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  text-decoration: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.25s ease, transform 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.nav-btn-home:hover {
+  color: #ff3c3c;
+  transform: scale(1.05);
+}
+
+.nav-btn-home svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .nav-btn-pos {
+    font-size: clamp(0.7rem, 3dvw, 1rem);
+  }
+
+  .nav-btn-pos.pos-left {
+    left: 1dvw;
+  }
+
+  .nav-btn-pos.pos-right {
+    right: 1dvw;
+  }
+  
+  .nav-btn-home {
+    font-size: clamp(0.7rem, 2.5dvw, 1rem);
+  }
+  
+  .nav-btn-home svg {
+    width: 16px;
+    height: 16px;
+  }
+}
