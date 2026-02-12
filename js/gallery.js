@@ -1,13 +1,13 @@
 // gallery.js — Dual-mode gallery (mosaic + scroll) for flashbook & tattoo
 // Reads section config from data.json, uses numbered images (0.webp, 1.webp, ...)
-// Progressive loading with emergence animation in mosaic mode
+// Grid-based mosaic with jitter + center-to-position animation
 // Horizontal scroll mode inspired by profilePics
 
 (async function () {
   // ===========================
   // Configuration & Setup
   // ===========================
-  
+
   const section = document.body.dataset.section;
   if (!section) {
     console.error('gallery.js: No data-section attribute on <body>');
@@ -33,91 +33,92 @@
     bgEl.style.backgroundImage = `url('${config.background}')`;
   }
 
-  // Mosaic config
-  // Calculate container dimensions to produce a ~square mosaic based on image count
-  const avgSize = 300; // (minSize + maxSize) / 2
-  const spacingFactor = 4; // account for collision spread
-  const totalArea = config.imageCount * avgSize * avgSize * spacingFactor;
-  const squareSide = Math.ceil(Math.sqrt(totalArea));
-  // Ensure minimum width so it still overflows the viewport for scroll
-  const computedWidth = Math.max(squareSide, window.innerWidth * 1.5);
-  // Target height ≈ width for a square-ish mosaic
-  const targetHeight = computedWidth;
+  // ===========================
+  // Grid-based mosaic config
+  // ===========================
+
+  // Cell size in viewport units — each cell is 50dvw × 50dvh
+  const CELL_DVW = 50;
+  const CELL_DVH = 50;
+
+  // Convert to pixels for positioning
+  const vw = window.innerWidth / 100;
+  const vh = window.innerHeight / 100;
+  const cellW = CELL_DVW * vw;
+  const cellH = CELL_DVH * vh;
+
+  // Grid dimensions from image count
+  const cols = Math.ceil(Math.sqrt(config.imageCount));
+  const rows = Math.ceil(config.imageCount / cols);
+
+  // Total mosaic dimensions in px
+  const mosaicWidth = cols * cellW;
+  const mosaicHeight = rows * cellH;
 
   const MOSAIC = {
-    containerWidth: computedWidth,
-    targetHeight: targetHeight,
+    cols,
+    rows,
+    cellW,
+    cellH,
+    mosaicWidth,
+    mosaicHeight,
     minSize: 200,
     maxSize: 400,
     padding: 6,
-    maxAttempts: 200,
     batchSize: 8,
   };
 
-  // Build image list
+  // ===========================
+  // Pre-compute grid positions
+  // ===========================
+
+  // How many images are in the last row
+  const lastRowCount = config.imageCount % cols || cols;
+  const lastRowIndex = rows - 1;
+
+  function getGridCell(index) {
+    const row = Math.floor(index / cols);
+    const col = index % cols;
+
+    // Center incomplete last row
+    let offsetX = 0;
+    if (row === lastRowIndex && lastRowCount < cols) {
+      offsetX = ((cols - lastRowCount) * cellW) / 2;
+    }
+
+    return {
+      x: col * cellW + offsetX,
+      y: row * cellH,
+    };
+  }
+
+  // Build image list & shuffle
   const images = [];
   for (let i = 0; i < config.imageCount; i++) {
     images.push({ index: i, src: `${config.imagePath}${i}.webp` });
   }
-
-  // Shuffle for mosaic mode
   const shuffled = [...images].sort(() => Math.random() - 0.5);
 
   const mosaic = document.getElementById('mosaic');
   const mosaicContainer = document.querySelector('.mosaic-container');
 
-  // Apply computed width to mosaic element
-  mosaic.style.width = MOSAIC.containerWidth + 'px';
-  
+  // Set mosaic dimensions upfront
+  mosaic.style.width = mosaicWidth + 'px';
+  mosaic.style.height = mosaicHeight + 'px';
+  const mosaicModeHeight = mosaicHeight + 'px';
+
   // State
-  let currentMode = 'mosaic'; // 'mosaic' or 'scroll'
-  let imageElements = []; // Store references to all image elements
+  let currentMode = 'mosaic';
+  let imageElements = [];
   let currentScrollIndex = 0;
-  let mosaicModeHeight = '';
 
   // ===========================
   // Mosaic Mode Functions
   // ===========================
 
-  function collides(r1, r2, pad) {
-    return !(
-      r1.x + r1.w + pad < r2.x ||
-      r1.x > r2.x + r2.w + pad ||
-      r1.y + r1.h + pad < r2.y ||
-      r1.y > r2.y + r2.h + pad
-    );
-  }
-
-  function findPosition(w, h, placed, containerW, pad, currentMaxY) {
-    // Constrain search height to target for a square-ish mosaic
-    // Allow slight overflow (1.2×) but don't let it grow unboundedly
-    const searchHeight = Math.min(
-      Math.max(3000, currentMaxY + 500),
-      MOSAIC.targetHeight * 1.2
-    );
-
-    for (let i = 0; i < MOSAIC.maxAttempts; i++) {
-      const x = Math.random() * (containerW - w - pad * 2) + pad;
-      const y = Math.random() * searchHeight + pad;
-      const rect = { x, y, w, h };
-
-      let ok = true;
-      for (const p of placed) {
-        if (collides(rect, p, pad)) { ok = false; break; }
-      }
-      if (ok) return { x, y };
-    }
-
-    // Fallback: place below everything (may exceed target, but rare)
-    const maxY = placed.reduce((m, r) => Math.max(m, r.y + r.h), 0);
-    return {
-      x: Math.random() * (containerW - w - pad * 2) + pad,
-      y: maxY + pad * 2,
-    };
-  }
-
-  async function loadImage(item, placed, currentMaxY) {
-    const size = Math.random() * (MOSAIC.maxSize - MOSAIC.minSize) + MOSAIC.minSize;
+  async function loadImage(item, gridIndex) {
+    // Random size within range
+    let size = Math.random() * (MOSAIC.maxSize - MOSAIC.minSize) + MOSAIC.minSize;
 
     const img = document.createElement('img');
     img.className = 'mosaic-image';
@@ -131,25 +132,47 @@
         const w = size;
         const h = size / ratio;
 
-        const pos = findPosition(w, h, placed, MOSAIC.containerWidth, MOSAIC.padding, currentMaxY);
+        // Grid cell position
+        const cell = getGridCell(gridIndex);
 
-        img.style.left = pos.x + 'px';
-        img.style.top = pos.y + 'px';
+        // Center in cell + heavy jitter (can overflow into neighboring cells)
+        const centerX = cell.x + (cellW - w) / 2;
+        const centerY = cell.y + (cellH - h) / 2;
+        const jitterX = (Math.random() - 0.5) * cellW * 0.8;
+        const jitterY = (Math.random() - 0.5) * cellH * 0.8;
+
+        // Clamp so images don't go outside the mosaic bounds
+        const finalX = Math.max(0, Math.min(centerX + jitterX, mosaicWidth - w));
+        const finalY = Math.max(0, Math.min(centerY + jitterY, mosaicHeight - h));
+
+        // Set final position immediately
+        img.style.left = finalX + 'px';
+        img.style.top = finalY + 'px';
         img.style.width = w + 'px';
         img.style.height = h + 'px';
 
-        // Store original mosaic position
-        img.dataset.mosaicX = pos.x;
-        img.dataset.mosaicY = pos.y;
+        // Store mosaic position data
+        img.dataset.mosaicX = finalX;
+        img.dataset.mosaicY = finalY;
         img.dataset.mosaicW = w;
         img.dataset.mosaicH = h;
 
-        placed.push({ x: pos.x, y: pos.y, w, h });
-        
+        // Calculate translate offset: from viewport center to final position
+        const containerRect = mosaicContainer.getBoundingClientRect();
+        const vpCenterX = mosaicContainer.scrollLeft + containerRect.width / 2;
+        const vpCenterY = mosaicContainer.scrollTop + containerRect.height / 2;
+        const translateX = vpCenterX - finalX - w / 2;
+        const translateY = vpCenterY - finalY - h / 2;
+
+        // Initial state: at viewport center, small & transparent
+        img.style.transition = 'none';
+        img.style.transform = `translate(${translateX}px, ${translateY}px) scale(0.5)`;
+        img.style.opacity = '0';
+
         mosaic.appendChild(img);
         imageElements.push(img);
-        
-        // Click handler: enter scroll mode from mosaic, or center clicked image in scroll mode
+
+        // Click handler
         img.addEventListener('click', () => {
           const clickedIndex = parseInt(img.dataset.index);
           if (currentMode === 'mosaic') {
@@ -158,62 +181,60 @@
             scrollToImage(clickedIndex);
           }
         });
-        
+
+        // Animate: appear at center then fly to grid position
         requestAnimationFrame(() => {
-          img.classList.add('emerged');
+          img.style.opacity = '0.8';
+          requestAnimationFrame(() => {
+            img.style.transition = '';
+            img.style.transform = 'scale(1) translate(0, 0)';
+            img.style.opacity = '1';
+            img.classList.add('emerged');
+          });
         });
 
-        resolve({ maxHeight: pos.y + h });
+        resolve();
       };
 
       img.onerror = () => {
         console.warn('Failed to load:', item.src);
-        resolve({ maxHeight: 0 });
+        resolve();
       };
     });
   }
 
-  async function loadBatch(batch, placed, currentMaxY) {
-    const promises = batch.map(item => loadImage(item, placed, currentMaxY));
-    const results = await Promise.all(promises);
-    return Math.max(...results.map(r => r.maxHeight));
+  async function loadBatch(batch, startIndex) {
+    const promises = batch.map((item, i) => {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          loadImage(item, startIndex + i).then(resolve);
+        }, i * 40);
+      });
+    });
+    await Promise.all(promises);
   }
 
-  // Flashbook starts at top-right: pin scroll to the right edge during load
+  // Flashbook starts at top-right, tattoo at top-left
   const startRight = section === 'flashbook';
-  function pinRight() {
+  function pinStart() {
     if (startRight) {
       mosaicContainer.scrollTo({ left: mosaicContainer.scrollWidth, top: 0, behavior: 'instant' });
+    } else {
+      mosaicContainer.scrollTo({ left: 0, top: 0, behavior: 'instant' });
     }
   }
 
   async function buildMosaicMode() {
-    const placed = [];
-    let maxHeight = 0;
-
-    pinRight();
+    pinStart();
 
     for (let i = 0; i < shuffled.length; i += MOSAIC.batchSize) {
       const batch = shuffled.slice(i, i + MOSAIC.batchSize);
-      const batchMaxHeight = await loadBatch(batch, placed, maxHeight);
-      maxHeight = Math.max(maxHeight, batchMaxHeight);
-
-      mosaicModeHeight = (maxHeight + MOSAIC.padding * 2) + 'px';
-      if (currentMode === 'mosaic') {
-        mosaic.style.height = mosaicModeHeight;
-      }
-
-      pinRight();
-
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await loadBatch(batch, i);
+      pinStart();
+      await new Promise(resolve => setTimeout(resolve, 80));
     }
 
-    mosaicModeHeight = (maxHeight + MOSAIC.padding * 2) + 'px';
-    if (currentMode === 'mosaic') {
-      mosaic.style.height = mosaicModeHeight;
-    }
-
-    pinRight();
+    pinStart();
   }
 
   // ===========================
@@ -222,61 +243,59 @@
 
   function switchToScrollMode(targetIndex) {
     if (currentMode === 'scroll') return;
-    
+
     currentMode = 'scroll';
     currentScrollIndex = targetIndex;
-    
+
     // Update URL hash
     window.location.hash = `scroll-${targetIndex}`;
-    
+
     // Update body data attribute for CSS counter
     document.body.setAttribute('data-current-index', targetIndex);
-    
+
     // Sort images by index for scroll mode (always ascending)
     // Scroll direction is handled by CSS: RTL for flashbook, LTR for tattoo
     imageElements.sort((a, b) => {
       return parseInt(a.dataset.index) - parseInt(b.dataset.index);
     });
-    
+
     // Add scroll mode classes
     document.body.classList.add('scroll-mode');
     mosaicContainer.classList.add('scroll-mode');
     mosaic.classList.add('scroll-mode');
     mosaic.style.height = '100%';
-    
+
     // Reorder DOM elements
     imageElements.forEach(img => {
       mosaic.appendChild(img);
     });
-    
+
     // Enable scroll listener
     mosaicContainer.addEventListener('scroll', updateCurrentImageIndicator);
-    
+
     // Wait for transition to complete, then scroll to target
     setTimeout(() => {
       scrollToImage(targetIndex);
-    }, 600); // Match CSS transition duration
+    }, 600);
   }
 
   function switchToMosaicMode() {
     if (currentMode === 'mosaic') return;
-    
+
     currentMode = 'mosaic';
-    
+
     // Update URL hash
     window.location.hash = '';
-    
+
     // Remove body data attribute
     document.body.removeAttribute('data-current-index');
-    
+
     // Remove scroll mode classes
     document.body.classList.remove('scroll-mode');
     mosaicContainer.classList.remove('scroll-mode');
     mosaic.classList.remove('scroll-mode');
-    if (mosaicModeHeight) {
-      mosaic.style.height = mosaicModeHeight;
-    }
-    
+    mosaic.style.height = mosaicModeHeight;
+
     // Disable scroll listener
     mosaicContainer.removeEventListener('scroll', updateCurrentImageIndicator);
 
@@ -302,7 +321,6 @@
     const containerRect = mosaicContainer.getBoundingClientRect();
     const imgRect = targetImg.getBoundingClientRect();
 
-    // Calculate desired scroll position to center the image in the container
     const desiredTop = imgRect.top - containerRect.top + mosaicContainer.scrollTop - (containerRect.height - imgRect.height) / 2;
     const desiredLeft = imgRect.left - containerRect.left + mosaicContainer.scrollLeft - (containerRect.width - imgRect.width) / 2;
 
@@ -318,31 +336,29 @@
 
   function updateCurrentImageIndicator() {
     if (currentMode !== 'scroll') return;
-    
+
     const containerRect = mosaicContainer.getBoundingClientRect();
     const centerX = containerRect.left + containerRect.width / 2;
-    
+
     let closestImg = null;
     let minDiff = Infinity;
-    
+
     imageElements.forEach(img => {
       const rect = img.getBoundingClientRect();
       const imgCenter = rect.left + rect.width / 2;
       const diff = Math.abs(imgCenter - centerX);
-      
+
       if (diff < minDiff) {
         minDiff = diff;
         closestImg = img;
       }
     });
-    
+
     if (closestImg) {
       const index = parseInt(closestImg.dataset.index);
       if (index !== currentScrollIndex) {
         currentScrollIndex = index;
-        // Update hash without triggering hashchange event
         history.replaceState(null, null, `#scroll-${index}`);
-        // Update body data attribute for CSS counter
         document.body.setAttribute('data-current-index', index);
       }
     }
@@ -354,7 +370,7 @@
 
   function handleHashChange() {
     const hash = window.location.hash;
-    
+
     if (hash.startsWith('#scroll-')) {
       const index = parseInt(hash.replace('#scroll-', ''));
       if (!isNaN(index) && currentMode === 'mosaic') {
@@ -382,10 +398,10 @@
 
   // Handle initial hash
   handleHashChange();
-  
+
   // Listen for hash changes
   window.addEventListener('hashchange', handleHashChange);
-  
+
   // Update indicator on scroll in scroll mode
   if (currentMode === 'scroll') {
     mosaicContainer.addEventListener('scroll', updateCurrentImageIndicator);
