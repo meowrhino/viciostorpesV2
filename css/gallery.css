@@ -19,55 +19,6 @@ body {
   z-index: -1;
 }
 
-/* Back button */
-.back-btn {
-  position: fixed;
-  top: 2rem;
-  left: 2rem;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0;
-  background: none;
-  border: none;
-  color: #c81e1e;
-  font-family: "Sofia Sans Extra Condensed", sans-serif;
-  font-size: clamp(0.9rem, 1.5dvw, 1.4rem);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: lowercase;
-  text-decoration: none;
-  transition: color 0.25s ease, transform 0.25s ease;
-}
-
-.back-btn:hover {
-  color: #ff3c3c;
-  transform: translateX(-4px);
-}
-
-.back-btn svg {
-  width: 18px;
-  height: 18px;
-  stroke: currentColor;
-}
-
-/* Page title */
-.gallery-title {
-  position: fixed;
-  top: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 90;
-  font-family: "Sofia Sans Extra Condensed", sans-serif;
-  font-size: clamp(1.5rem, 4vw, 3rem);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: lowercase;
-  color: var(--text-color);
-  pointer-events: none;
-}
-
 /* Mosaic container */
 .mosaic-container {
   position: relative;
@@ -116,17 +67,6 @@ body {
 @media (max-width: 768px) {
   .mosaic-container {
     padding: 5rem 1rem 3rem;
-  }
-
-  .back-btn {
-    top: 1rem;
-    left: 1rem;
-    font-size: clamp(0.7rem, 3dvw, 1rem);
-  }
-
-  .gallery-title {
-    top: 1.2rem;
-    font-size: clamp(1.2rem, 6vw, 2rem);
   }
 
   .mosaic-image.emerged:hover {

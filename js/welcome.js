@@ -1,4 +1,4 @@
-// welcome.js — Landing page with direct navigation buttons
+// welcome.js — Landing page with unified navigation system
 
 (async function () {
   const data = await fetch('data.json').then(r => r.json());
@@ -14,16 +14,16 @@
   bg.style.backgroundImage = `url('${data.welcome.background}')`;
   cell.appendChild(bg);
 
-  // Navigation buttons that go directly to pages
+  // Navigation buttons using unified system (same classes as other pages)
   const navItems = [
-    { name: 'flashbook', href: 'flashbook.html', cls: 'nav-btn-left' },
-    { name: 'tattoo', href: 'tattoo.html', cls: 'nav-btn-right' },
-    { name: 'how to book', href: 'booking.html', cls: 'nav-btn-down' },
+    { name: 'flashbook', href: 'flashbook.html', position: 'pos-left' },
+    { name: 'tattoo', href: 'tattoo.html', position: 'pos-right' },
+    { name: 'how to book', href: 'booking.html', position: 'pos-bottom' },
   ];
 
   for (const item of navItems) {
     const btn = document.createElement('a');
-    btn.classList.add('nav-btn', item.cls);
+    btn.classList.add('nav-btn', item.position);
     btn.href = item.href;
     btn.textContent = item.name;
     cell.appendChild(btn);

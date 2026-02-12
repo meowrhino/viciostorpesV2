@@ -1,8 +1,8 @@
 /* ===========================
-   navigation.css — Sistema de navegación posicional
+   navigation.css — Sistema de navegación posicional unificado
    =========================== */
 
-/* Contenedor de navegación */
+/* Contenedor de navegación (para páginas con HTML estático) */
 .nav-container {
   position: fixed;
   inset: 0;
@@ -11,7 +11,7 @@
 }
 
 /* Botones de navegación base */
-.nav-btn-pos {
+.nav-btn {
   position: absolute;
   pointer-events: auto;
   background: none;
@@ -32,69 +32,69 @@
   gap: 0.5rem;
 }
 
-.nav-btn-pos:hover {
+.nav-btn:hover {
   color: #ff3c3c;
 }
 
 /* Posición: Arriba (centro superior) */
-.nav-btn-pos.pos-top {
+.nav-btn.pos-top {
   top: 3dvh;
   left: 50%;
   transform: translateX(-50%) rotate(0deg);
   transform-origin: center center;
 }
 
-.nav-btn-pos.pos-top:hover {
+.nav-btn.pos-top:hover {
   transform: translateX(-50%) scale(1.05);
 }
 
-/* Posición: Abajo (centro inferior) */
-.nav-btn-pos.pos-bottom {
+/* Posición: Abajo (centro inferior, rotado 180°) */
+.nav-btn.pos-bottom {
   bottom: 3dvh;
   left: 50%;
   transform: translateX(-50%) rotate(180deg);
   transform-origin: center center;
 }
 
-.nav-btn-pos.pos-bottom:hover {
+.nav-btn.pos-bottom:hover {
   transform: translateX(-50%) rotate(180deg) scale(1.05);
 }
 
 /* Posición: Izquierda (centro izquierdo, rotado 90° antihorario) */
-.nav-btn-pos.pos-left {
+.nav-btn.pos-left {
   left: 1.5dvw;
   top: 50%;
   transform: translateY(-50%) rotate(-90deg);
   transform-origin: center center;
 }
 
-.nav-btn-pos.pos-left:hover {
+.nav-btn.pos-left:hover {
   transform: translateY(-50%) rotate(-90deg) scale(1.05);
 }
 
 /* Posición: Derecha (centro derecho, rotado 90° horario) */
-.nav-btn-pos.pos-right {
+.nav-btn.pos-right {
   right: 1.5dvw;
   top: 50%;
   transform: translateY(-50%) rotate(90deg);
   transform-origin: center center;
 }
 
-.nav-btn-pos.pos-right:hover {
+.nav-btn.pos-right:hover {
   transform: translateY(-50%) rotate(90deg) scale(1.05);
 }
 
 /* --- Responsive --- */
 @media (max-width: 768px) {
-  .nav-btn-pos {
+  .nav-btn {
     font-size: clamp(0.7rem, 3dvw, 1rem);
   }
 
-  .nav-btn-pos.pos-left {
+  .nav-btn.pos-left {
     left: 1dvw;
   }
 
-  .nav-btn-pos.pos-right {
+  .nav-btn.pos-right {
     right: 1dvw;
   }
 }

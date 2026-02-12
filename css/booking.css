@@ -20,39 +20,6 @@ body {
   z-index: -1;
 }
 
-/* Botón volver (rojo, consistente con el resto) */
-.back-btn {
-  position: fixed;
-  top: 2rem;
-  left: 2rem;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.8rem 1.2rem;
-  background: rgba(200, 30, 30, 0.8);
-  border: 2px solid rgba(255, 60, 60, 0.6);
-  backdrop-filter: blur(10px);
-  border-radius: 8px;
-  color: #fff;
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  transition: all var(--transition-speed) ease;
-  text-transform: uppercase;
-}
-
-.back-btn:hover {
-  background: rgba(220, 40, 40, 0.95);
-  transform: translateX(-4px);
-  box-shadow: 0 4px 16px rgba(200, 30, 30, 0.5);
-}
-
-.back-btn svg {
-  width: 20px;
-  height: 20px;
-}
-
 /* Contenedor principal */
 .booking-container {
   position: relative;
@@ -202,16 +169,5 @@ body {
 
   .booking-form {
     padding: 2rem 1.5rem;
-  }
-
-  .back-btn {
-    top: 1rem;
-    left: 1rem;
-    padding: 0.6rem 1rem;
-    font-size: 1rem;
-  }
-
-  .back-btn span {
-    display: none;
   }
 }
