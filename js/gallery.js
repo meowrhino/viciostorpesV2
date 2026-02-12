@@ -68,10 +68,13 @@
     );
   }
 
-  function findPosition(w, h, placed, containerW, pad) {
+  function findPosition(w, h, placed, containerW, pad, currentMaxY) {
+    // Dynamic search height: grows with the mosaic
+    const searchHeight = Math.max(3000, currentMaxY + 1000);
+    
     for (let i = 0; i < MOSAIC.maxAttempts; i++) {
       const x = Math.random() * (containerW - w - pad * 2) + pad;
-      const y = Math.random() * 3000 + pad;
+      const y = Math.random() * searchHeight + pad;
       const rect = { x, y, w, h };
 
       let ok = true;
@@ -81,6 +84,7 @@
       if (ok) return { x, y };
     }
 
+    // Fallback: place below everything
     const maxY = placed.reduce((m, r) => Math.max(m, r.y + r.h), 0);
     return {
       x: Math.random() * (containerW - w - pad * 2) + pad,
@@ -88,7 +92,7 @@
     };
   }
 
-  async function loadImage(item, placed) {
+  async function loadImage(item, placed, currentMaxY) {
     const size = Math.random() * (MOSAIC.maxSize - MOSAIC.minSize) + MOSAIC.minSize;
 
     const img = document.createElement('img');
@@ -103,7 +107,7 @@
         const w = size;
         const h = size / ratio;
 
-        const pos = findPosition(w, h, placed, MOSAIC.containerWidth, MOSAIC.padding);
+        const pos = findPosition(w, h, placed, MOSAIC.containerWidth, MOSAIC.padding, currentMaxY);
 
         img.style.left = pos.x + 'px';
         img.style.top = pos.y + 'px';
@@ -145,8 +149,8 @@
     });
   }
 
-  async function loadBatch(batch, placed) {
-    const promises = batch.map(item => loadImage(item, placed));
+  async function loadBatch(batch, placed, currentMaxY) {
+    const promises = batch.map(item => loadImage(item, placed, currentMaxY));
     const results = await Promise.all(promises);
     return Math.max(...results.map(r => r.maxHeight));
   }
@@ -157,7 +161,7 @@
 
     for (let i = 0; i < shuffled.length; i += MOSAIC.batchSize) {
       const batch = shuffled.slice(i, i + MOSAIC.batchSize);
-      const batchMaxHeight = await loadBatch(batch, placed);
+      const batchMaxHeight = await loadBatch(batch, placed, maxHeight);
       maxHeight = Math.max(maxHeight, batchMaxHeight);
       
       mosaicModeHeight = (maxHeight + MOSAIC.padding * 2) + 'px';
