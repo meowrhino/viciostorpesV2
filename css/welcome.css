@@ -46,11 +46,10 @@ body {
 
 .welcome-text {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 47dvh;
+  left: 50dvw;
   transform: translate(-50%, -50%);
-  width: 40dvw;  /* Responsive width */
-  max-width: 600px;
+  width: 48dvw;
   height: auto;
   z-index: 10;
   opacity: 0;
@@ -66,20 +65,15 @@ body {
 /* ===========================
    Positioned Decorative Images
    Using dvw/dvh for responsive positioning
+   Based on REFERENCE.webp layout
    =========================== */
 
 .welcome-image {
   position: absolute;
-  width: 12dvw;  /* Responsive size */
   height: auto;
   object-fit: contain;
   z-index: 5;
   opacity: 0;
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-/* Fade in animation */
-.welcome-image {
   animation: fadeInImage 0.8s ease forwards;
 }
 
@@ -104,54 +98,56 @@ body {
 .welcome-image:nth-child(8) { animation-delay: 0.7s; }
 
 /* ===========================
-   Image Positions (based on REFERENCE.webp)
-   Using dvw/dvh for responsive positioning
+   Image Positions (precise mapping from REFERENCE.webp)
    =========================== */
 
-/* Top row */
+/* Top left - humanoid figure */
 .pos-top-left {
-  top: 5dvh;
-  left: 5dvw;
-  width: 15dvw;
+  top: 3dvh;
+  left: 3dvw;
+  width: 14dvw;
 }
 
+/* Top center-left - decorative with ornaments */
 .pos-top-center {
-  top: 8dvh;
-  left: 50dvw;
-  transform: translateX(-50%);
-  width: 10dvw;
+  top: 9dvh;
+  left: 38dvw;
+  width: 9dvw;
 }
 
+/* Top right 1 - upper rectangular image */
 .pos-top-right-1 {
-  top: 5dvh;
-  right: 5dvw;
+  top: 3dvh;
+  right: 3dvw;
   width: 13dvw;
 }
 
+/* Top right 2 - lower rectangular image (stacked) */
 .pos-top-right-2 {
-  top: 25dvh;
-  right: 6dvw;
-  width: 12dvw;
-}
-
-/* Bottom row */
-.pos-bottom-left {
-  bottom: 8dvh;
-  left: 6dvw;
+  top: 18dvh;
+  right: 3dvw;
   width: 13dvw;
 }
 
-.pos-bottom-center {
-  bottom: 10dvh;
-  left: 50dvw;
-  transform: translateX(-50%);
-  width: 12dvw;
+/* Bottom left - dragon/serpent */
+.pos-bottom-left {
+  bottom: 18dvh;
+  left: 4dvw;
+  width: 13dvw;
 }
 
+/* Bottom center-left - animal (llama/camel) */
+.pos-bottom-center {
+  bottom: 16dvh;
+  left: 27dvw;
+  width: 11dvw;
+}
+
+/* Bottom right - horse/unicorn */
 .pos-bottom-right {
-  bottom: 8dvh;
-  right: 8dvw;
-  width: 16dvw;
+  bottom: 20dvh;
+  right: 18dvw;
+  width: 19dvw;
 }
 
 /* ===========================
@@ -161,56 +157,80 @@ body {
 /* Tablet */
 @media (max-width: 1024px) {
   .welcome-text {
-    width: 50dvw;
+    width: 55dvw;
   }
   
-  .welcome-image {
-    width: 15dvw;
-  }
-  
-  .pos-top-left { width: 18dvw; }
-  .pos-top-center { width: 13dvw; }
+  .pos-top-left { width: 17dvw; }
+  .pos-top-center { width: 11dvw; }
   .pos-top-right-1 { width: 16dvw; }
-  .pos-top-right-2 { width: 15dvw; }
+  .pos-top-right-2 { width: 16dvw; }
   .pos-bottom-left { width: 16dvw; }
-  .pos-bottom-center { width: 15dvw; }
-  .pos-bottom-right { width: 19dvw; }
+  .pos-bottom-center { width: 14dvw; }
+  .pos-bottom-right { width: 22dvw; }
 }
 
 /* Mobile */
 @media (max-width: 768px) {
   .welcome-text {
-    width: 60dvw;
+    width: 65dvw;
+    top: 50dvh;
   }
   
-  .welcome-image {
+  /* Adjust positions for mobile */
+  .pos-top-left {
+    top: 5dvh;
+    left: 2dvw;
+    width: 20dvw;
+  }
+  
+  .pos-top-center {
+    top: 12dvh;
+    left: 35dvw;
+    width: 13dvw;
+  }
+  
+  .pos-top-right-1 {
+    top: 5dvh;
+    right: 2dvw;
     width: 18dvw;
   }
   
-  .pos-top-left { width: 22dvw; }
-  .pos-top-center { width: 16dvw; }
-  .pos-top-right-1 { width: 20dvw; }
-  .pos-top-right-2 { width: 18dvw; }
-  .pos-bottom-left { width: 20dvw; }
-  .pos-bottom-center { width: 18dvw; }
-  .pos-bottom-right { width: 24dvw; }
+  .pos-top-right-2 {
+    top: 22dvh;
+    right: 2dvw;
+    width: 18dvw;
+  }
+  
+  .pos-bottom-left {
+    bottom: 15dvh;
+    left: 2dvw;
+    width: 18dvw;
+  }
+  
+  .pos-bottom-center {
+    bottom: 13dvh;
+    left: 25dvw;
+    width: 15dvw;
+  }
+  
+  .pos-bottom-right {
+    bottom: 18dvh;
+    right: 15dvw;
+    width: 24dvw;
+  }
 }
 
 /* Very small screens */
 @media (max-width: 480px) {
   .welcome-text {
-    width: 70dvw;
+    width: 75dvw;
   }
   
-  .welcome-image {
-    width: 20dvw;
-  }
-  
-  .pos-top-left { width: 25dvw; }
-  .pos-top-center { width: 18dvw; }
-  .pos-top-right-1 { width: 23dvw; }
-  .pos-top-right-2 { width: 20dvw; }
-  .pos-bottom-left { width: 23dvw; }
-  .pos-bottom-center { width: 20dvw; }
-  .pos-bottom-right { width: 27dvw; }
+  .pos-top-left { width: 24dvw; }
+  .pos-top-center { width: 16dvw; }
+  .pos-top-right-1 { width: 22dvw; }
+  .pos-top-right-2 { width: 22dvw; }
+  .pos-bottom-left { width: 22dvw; }
+  .pos-bottom-center { width: 18dvw; }
+  .pos-bottom-right { width: 28dvw; }
 }

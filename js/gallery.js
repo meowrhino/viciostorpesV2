@@ -195,8 +195,16 @@
     document.body.setAttribute('data-current-index', targetIndex);
     
     // Sort images by index for scroll mode
+    // Tattoo section: reverse order (start from right)
+    // Flashbook section: normal order (start from left)
     imageElements.sort((a, b) => {
-      return parseInt(a.dataset.index) - parseInt(b.dataset.index);
+      const indexA = parseInt(a.dataset.index);
+      const indexB = parseInt(b.dataset.index);
+      if (section === 'tattoo') {
+        return indexB - indexA;  // Reverse order
+      } else {
+        return indexA - indexB;  // Normal order
+      }
     });
     
     // Add scroll mode classes
