@@ -160,6 +160,15 @@ body[data-section="tattoo"].scroll-mode::before {
   transform-origin: center center;
 }
 
+/* Flashbook scrolls left (RTL), tattoo scrolls right (LTR) */
+body[data-section="flashbook"] .mosaic-container.scroll-mode {
+  direction: rtl;
+}
+
+body[data-section="flashbook"] .mosaic.scroll-mode {
+  direction: ltr; /* Reset for children so images render normally */
+}
+
 /* ===========================
    Responsive
    =========================== */

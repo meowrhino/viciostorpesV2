@@ -22,13 +22,13 @@
 
   // Positioned decorative images (based on REFERENCE.webp layout)
   const images = [
-    { src: 'data/welcome/0.webp', position: 'top-left' },
-    { src: 'data/welcome/1.webp', position: 'top-center' },
-    { src: 'data/welcome/2.webp', position: 'top-right-1' },
-    { src: 'data/welcome/3.webp', position: 'top-right-2' },
-    { src: 'data/welcome/4.webp', position: 'bottom-left' },
-    { src: 'data/welcome/5.webp', position: 'bottom-center' },
-    { src: 'data/welcome/6.webp', position: 'bottom-right' },
+    { src: 'data/welcome/0.webp', position: 'hang-left' },       // Creature, top-left hanging
+    { src: 'data/welcome/1.webp', position: 'birds-overlay' },   // Birds/butterflies over welcome
+    { src: 'data/welcome/2.webp', position: 'hang-center' },     // Floral ornament, top-center hanging
+    { src: 'data/welcome/3.webp', position: 'floor-left' },      // Geometric horse + plant, bottom-left
+    { src: 'data/welcome/4.webp', position: 'hang-right' },      // Two stacked paintings, top-right
+    { src: 'data/welcome/5.webp', position: 'hang-left-center' },// Carousel horses, between 0 and 2
+    { src: 'data/welcome/6.webp', position: 'floor-right' },     // Galloping horse, bottom-right
   ];
 
   images.forEach(item => {

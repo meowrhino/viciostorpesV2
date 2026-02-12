@@ -194,17 +194,10 @@
     // Update body data attribute for CSS counter
     document.body.setAttribute('data-current-index', targetIndex);
     
-    // Sort images by index for scroll mode
-    // Flashbook section: reverse order (scroll feels leftward)
-    // Tattoo section: normal order (default rightward)
+    // Sort images by index for scroll mode (always ascending)
+    // Scroll direction is handled by CSS: RTL for flashbook, LTR for tattoo
     imageElements.sort((a, b) => {
-      const indexA = parseInt(a.dataset.index);
-      const indexB = parseInt(b.dataset.index);
-      if (section === 'flashbook') {
-        return indexB - indexA;  // Reverse order
-      } else {
-        return indexA - indexB;  // Normal order
-      }
+      return parseInt(a.dataset.index) - parseInt(b.dataset.index);
     });
     
     // Add scroll mode classes
@@ -259,9 +252,9 @@
   function scrollToImage(index) {
     const targetImg = imageElements.find(img => parseInt(img.dataset.index) === index);
     if (!targetImg) return;
-    
-    const scrollLeft = targetImg.offsetLeft - (mosaicContainer.clientWidth - targetImg.clientWidth) / 2;
-    mosaicContainer.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+
+    // scrollIntoView works correctly regardless of LTR/RTL direction
+    targetImg.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
   }
 
   function centerMosaicOnImage(index) {

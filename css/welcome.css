@@ -49,7 +49,7 @@ body {
   top: 47dvh;
   left: 50dvw;
   transform: translate(-50%, -50%);
-  width: 48dvw;
+  width: 80dvw;
   height: auto;
   z-index: 10;
   opacity: 0;
@@ -99,55 +99,62 @@ body {
 
 /* ===========================
    Image Positions (precise mapping from REFERENCE.webp)
+   7 images + welcome text centered
    =========================== */
 
-/* Top left - humanoid figure */
-.pos-top-left {
-  top: 3dvh;
-  left: 3dvw;
-  width: 14dvw;
+/* 0 — Creature/demon, bottom-left next to horse (3), to its right */
+.pos-hang-left {
+  bottom: 2dvh;
+  left: 20dvw;
+  width: 16dvw;
 }
 
-/* Top center-left - decorative with ornaments */
-.pos-top-center {
-  top: 9dvh;
-  left: 38dvw;
-  width: 9dvw;
+/* 1 — Birds & butterflies, far bottom-right, almost off screen */
+.pos-birds-overlay {
+  bottom: -8dvh;
+  right: -20dvw;
+  left: auto;
+  top: auto;
+  width: 42dvw;
+  z-index: 11;
+  opacity: 0;
+  animation: fadeInImage 1.2s ease 0.8s forwards;
+  pointer-events: none;
 }
 
-/* Top right 1 - upper rectangular image */
-.pos-top-right-1 {
-  top: 3dvh;
-  right: 3dvw;
-  width: 13dvw;
+/* 2 — Floral ornament, hanging from top-center */
+.pos-hang-center {
+  top: -6dvh;
+  left: 34dvw;
+  width: 40dvw;
 }
 
-/* Top right 2 - lower rectangular image (stacked) */
-.pos-top-right-2 {
-  top: 18dvh;
-  right: 3dvw;
-  width: 13dvw;
+/* 3 — Geometric horse + plant, bottom-left corner */
+.pos-floor-left {
+  bottom: -4dvh;
+  left: 2dvw;
+  width: 22dvw;
 }
 
-/* Bottom left - dragon/serpent */
-.pos-bottom-left {
-  bottom: 18dvh;
-  left: 4dvw;
-  width: 13dvw;
+/* 4 — Two stacked paintings, top-right */
+.pos-hang-right {
+  top: -4dvh;
+  right: 0dvw;
+  width: 18dvw;
 }
 
-/* Bottom center-left - animal (llama/camel) */
-.pos-bottom-center {
-  bottom: 16dvh;
-  left: 27dvw;
-  width: 11dvw;
+/* 5 — Carousel horses, top-left area */
+.pos-hang-left-center {
+  top: -5dvh;
+  left: 12dvw;
+  width: 24dvw;
 }
 
-/* Bottom right - horse/unicorn */
-.pos-bottom-right {
-  bottom: 20dvh;
-  right: 18dvw;
-  width: 19dvw;
+/* 6 — Galloping horse, bottom-right */
+.pos-floor-right {
+  bottom: -6dvh;
+  right: 0dvw;
+  width: 32dvw;
 }
 
 /* ===========================
@@ -159,78 +166,79 @@ body {
   .welcome-text {
     width: 55dvw;
   }
-  
-  .pos-top-left { width: 17dvw; }
-  .pos-top-center { width: 11dvw; }
-  .pos-top-right-1 { width: 16dvw; }
-  .pos-top-right-2 { width: 16dvw; }
-  .pos-bottom-left { width: 16dvw; }
-  .pos-bottom-center { width: 14dvw; }
-  .pos-bottom-right { width: 22dvw; }
+
+  .pos-hang-left { width: 19dvw; }
+  .pos-hang-center { width: 36dvw; }
+  .pos-hang-left-center { width: 28dvw; }
+  .pos-hang-right { width: 22dvw; }
+  .pos-floor-left { width: 26dvw; }
+  .pos-floor-right { width: 36dvw; }
+  .pos-birds-overlay { width: 46dvw; }
 }
 
-/* Mobile */
+/* Mobile — portrait, much taller than wide */
 @media (max-width: 768px) {
   .welcome-text {
-    width: 65dvw;
-    top: 50dvh;
+    width: 75dvw;
+    top: 45dvh;
   }
-  
-  /* Adjust positions for mobile */
-  .pos-top-left {
-    top: 5dvh;
+
+  .pos-hang-left {
+    bottom: 5dvh;
+    left: 24dvw;
+    width: 22dvw;
+  }
+
+  .pos-hang-center {
+    top: -4dvh;
+    left: 24dvw;
+    width: 50dvw;
+  }
+
+  .pos-hang-left-center {
+    top: -3dvh;
     left: 2dvw;
-    width: 20dvw;
+    width: 35dvw;
   }
-  
-  .pos-top-center {
-    top: 12dvh;
-    left: 35dvw;
-    width: 13dvw;
+
+  .pos-hang-right {
+    top: -2dvh;
+    right: 0dvw;
+    width: 28dvw;
   }
-  
-  .pos-top-right-1 {
-    top: 5dvh;
-    right: 2dvw;
-    width: 18dvw;
+
+  .pos-birds-overlay {
+    bottom: -10dvh;
+    right: -6dvw;
+    left: auto;
+    top: auto;
+    width: 55dvw;
   }
-  
-  .pos-top-right-2 {
-    top: 22dvh;
-    right: 2dvw;
-    width: 18dvw;
+
+  .pos-floor-left {
+    bottom: -2dvh;
+    left: 0dvw;
+    width: 32dvw;
   }
-  
-  .pos-bottom-left {
-    bottom: 15dvh;
-    left: 2dvw;
-    width: 18dvw;
-  }
-  
-  .pos-bottom-center {
-    bottom: 13dvh;
-    left: 25dvw;
-    width: 15dvw;
-  }
-  
-  .pos-bottom-right {
-    bottom: 18dvh;
-    right: 15dvw;
-    width: 24dvw;
+
+  .pos-floor-right {
+    bottom: -4dvh;
+    right: 0dvw;
+    width: 40dvw;
   }
 }
 
 /* Very small screens */
 @media (max-width: 480px) {
   .welcome-text {
-    width: 75dvw;
+    width: 85dvw;
   }
-  
-  .pos-top-left { width: 24dvw; }
-  .pos-top-center { width: 16dvw; }
-  .pos-top-right-1 { width: 22dvw; }
-  .pos-top-right-2 { width: 22dvw; }
-  .pos-bottom-left { width: 22dvw; }
-  .pos-bottom-center { width: 18dvw; }
-  .pos-bottom-right { width: 28dvw; }
+
+  .pos-hang-left { width: 26dvw; }
+  .pos-hang-center { width: 55dvw; }
+  .pos-hang-left-center { width: 40dvw; }
+  .pos-hang-right { width: 32dvw; }
+  .pos-floor-left { width: 36dvw; }
+  .pos-floor-right { width: 45dvw; }
+  .pos-birds-overlay { width: 60dvw; }
 }
