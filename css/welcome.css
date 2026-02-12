@@ -1,5 +1,5 @@
 /* ===========================
-   welcome.css — Landing page
+   welcome.css — Responsive landing page
    =========================== */
 
 body {
@@ -13,26 +13,218 @@ body {
   height: 100dvh;
   position: relative;
   overflow: hidden;
-}
-
-/* --- Cell --- */
-.cell {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Cell background — no overlay, no darkening */
-.cell-bg {
+/* ===========================
+   Welcome Container
+   =========================== */
+
+.welcome-container {
+  position: relative;
+  
+  /* Dynamic scaling with margins for navigation buttons */
+  /* Uses min() to ensure it never exceeds viewport bounds */
+  width: min(85dvw, 90dvh * 1.77);  /* Leaves ~7.5dvw on each side minimum */
+  aspect-ratio: 16 / 9;
+  
+  /* Center the container */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===========================
+   Background
+   =========================== */
+
+.welcome-bg {
   position: absolute;
   inset: 0;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   z-index: 0;
+  opacity: 0.3;  /* Subtle background */
+}
+
+/* ===========================
+   Central Welcome Text
+   =========================== */
+
+.welcome-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;  /* Takes ~50% of container width */
+  z-index: 10;
+}
+
+.welcome-text img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ===========================
+   Positioned Images
+   Based on REFERENCE.webp layout
+   =========================== */
+
+.welcome-image {
+  position: absolute;
+  width: 15%;  /* Relative to container */
+  height: auto;
+  object-fit: contain;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* Fade in animation */
+.welcome-image {
+  animation: fadeInImage 0.8s ease forwards;
+}
+
+@keyframes fadeInImage {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Stagger animation delays */
+.welcome-image:nth-child(2) { animation-delay: 0.1s; }
+.welcome-image:nth-child(3) { animation-delay: 0.2s; }
+.welcome-image:nth-child(4) { animation-delay: 0.3s; }
+.welcome-image:nth-child(5) { animation-delay: 0.4s; }
+.welcome-image:nth-child(6) { animation-delay: 0.5s; }
+.welcome-image:nth-child(7) { animation-delay: 0.6s; }
+.welcome-image:nth-child(8) { animation-delay: 0.7s; }
+
+/* ===========================
+   Image Positions
+   Matching REFERENCE.webp layout
+   =========================== */
+
+/* Top row */
+.pos-top-left {
+  top: 5%;
+  left: 5%;
+  width: 18%;
+}
+
+.pos-top-center {
+  top: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12%;
+}
+
+.pos-top-right-1 {
+  top: 5%;
+  right: 5%;
+  width: 16%;
+}
+
+.pos-top-right-2 {
+  top: 25%;
+  right: 6%;
+  width: 14%;
+}
+
+/* Bottom row */
+.pos-bottom-left {
+  bottom: 8%;
+  left: 6%;
+  width: 16%;
+}
+
+.pos-bottom-center {
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14%;
+}
+
+.pos-bottom-right {
+  bottom: 8%;
+  right: 8%;
+  width: 20%;
+}
+
+/* ===========================
+   Navigation Buttons
+   Positioned outside the container
+   =========================== */
+
+.welcome-container .nav-btn {
+  position: fixed;  /* Fixed to viewport, not container */
+  z-index: 100;
+}
+
+/* ===========================
+   Responsive Adjustments
+   =========================== */
+
+/* Tablet and smaller */
+@media (max-width: 1024px) {
+  .welcome-container {
+    width: min(90dvw, 95dvh * 1.77);  /* Slightly wider */
+  }
+  
+  .welcome-image {
+    width: 18%;  /* Slightly larger images */
+  }
+  
+  .welcome-text {
+    width: 55%;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .welcome-container {
+    width: 95dvw;  /* Use most of the width */
+    aspect-ratio: 3 / 4;  /* Taller aspect ratio for mobile */
+  }
+  
+  .welcome-text {
+    width: 65%;
+  }
+  
+  .welcome-image {
+    width: 22%;  /* Larger images on mobile */
+  }
+  
+  /* Adjust positions for vertical layout */
+  .pos-top-center {
+    top: 5%;
+  }
+  
+  .pos-bottom-center {
+    bottom: 5%;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  .welcome-container {
+    width: 98dvw;
+  }
+  
+  .welcome-text {
+    width: 70%;
+  }
+  
+  .welcome-image {
+    width: 25%;
+  }
 }
