@@ -1,7 +1,7 @@
 {
   "welcome": {
     "title": "ViciosTorpes",
-    "background": "data/backgrounds/welcome.png"
+    "background": "data/backgrounds/welcome.webp"
   },
   "sections": {
     "flashbook": {

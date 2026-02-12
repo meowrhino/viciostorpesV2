@@ -53,6 +53,7 @@
   let currentMode = 'mosaic'; // 'mosaic' or 'scroll'
   let imageElements = []; // Store references to all image elements
   let currentScrollIndex = 0;
+  let mosaicModeHeight = '';
 
   // ===========================
   // Mosaic Mode Functions
@@ -120,9 +121,14 @@
         mosaic.appendChild(img);
         imageElements.push(img);
         
-        // Click handler to switch to scroll mode
+        // Click handler: enter scroll mode from mosaic, or center clicked image in scroll mode
         img.addEventListener('click', () => {
-          switchToScrollMode(parseInt(img.dataset.index));
+          const clickedIndex = parseInt(img.dataset.index);
+          if (currentMode === 'mosaic') {
+            switchToScrollMode(clickedIndex);
+          } else {
+            scrollToImage(clickedIndex);
+          }
         });
         
         requestAnimationFrame(() => {
@@ -154,12 +160,18 @@
       const batchMaxHeight = await loadBatch(batch, placed);
       maxHeight = Math.max(maxHeight, batchMaxHeight);
       
-      mosaic.style.height = (maxHeight + MOSAIC.padding * 2) + 'px';
+      mosaicModeHeight = (maxHeight + MOSAIC.padding * 2) + 'px';
+      if (currentMode === 'mosaic') {
+        mosaic.style.height = mosaicModeHeight;
+      }
       
       await new Promise(resolve => setTimeout(resolve, 100));
     }
 
-    mosaic.style.height = (maxHeight + MOSAIC.padding * 2) + 'px';
+    mosaicModeHeight = (maxHeight + MOSAIC.padding * 2) + 'px';
+    if (currentMode === 'mosaic') {
+      mosaic.style.height = mosaicModeHeight;
+    }
   }
 
   // ===========================
@@ -187,6 +199,7 @@
     document.body.classList.add('scroll-mode');
     mosaicContainer.classList.add('scroll-mode');
     mosaic.classList.add('scroll-mode');
+    mosaic.style.height = '100%';
     
     // Reorder DOM elements
     imageElements.forEach(img => {
@@ -217,9 +230,18 @@
     document.body.classList.remove('scroll-mode');
     mosaicContainer.classList.remove('scroll-mode');
     mosaic.classList.remove('scroll-mode');
+    if (mosaicModeHeight) {
+      mosaic.style.height = mosaicModeHeight;
+    }
     
     // Disable scroll listener
     mosaicContainer.removeEventListener('scroll', updateCurrentImageIndicator);
+
+    // Wait for mosaic transition, then center the current image in viewport
+    setTimeout(() => {
+      if (currentMode !== 'mosaic') return;
+      centerMosaicOnImage(currentScrollIndex);
+    }, 620);
   }
 
   function scrollToImage(index) {
@@ -228,6 +250,18 @@
     
     const scrollLeft = targetImg.offsetLeft - (mosaicContainer.clientWidth - targetImg.clientWidth) / 2;
     mosaicContainer.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+  }
+
+  function centerMosaicOnImage(index) {
+    const targetImg = imageElements.find(img => parseInt(img.dataset.index) === index);
+    if (!targetImg) return;
+
+    const rect = targetImg.getBoundingClientRect();
+    const desiredTop = rect.top + window.scrollY - (window.innerHeight - rect.height) / 2;
+    const maxTop = document.documentElement.scrollHeight - window.innerHeight;
+    const clampedTop = Math.max(0, Math.min(desiredTop, maxTop));
+
+    window.scrollTo({ top: clampedTop, behavior: 'smooth' });
   }
 
   function updateCurrentImageIndicator() {
@@ -281,20 +315,11 @@
     }
   }
 
-  // ===========================
-  // Keyboard Navigation
-  // ===========================
-
-  document.addEventListener('keydown', (e) => {
-    if (currentMode === 'scroll') {
-      if (e.key === 'ArrowLeft' && currentScrollIndex > 0) {
-        scrollToImage(currentScrollIndex - 1);
-      } else if (e.key === 'ArrowRight' && currentScrollIndex < images.length - 1) {
-        scrollToImage(currentScrollIndex + 1);
-      } else if (e.key === 'Escape') {
-        switchToMosaicMode();
-      }
-    }
+  // Exit scroll mode when clicking anywhere outside an image
+  document.addEventListener('click', (e) => {
+    if (currentMode !== 'scroll') return;
+    if (e.target.closest('.mosaic-image')) return;
+    switchToMosaicMode();
   });
 
   // ===========================

@@ -17,10 +17,10 @@
   background: none;
   border: none;
   color: #c81e1e;
-  font-family: "Sofia Sans Extra Condensed", sans-serif;
+  font-family: "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(0.9rem, 1.5dvw, 1.4rem);
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: lowercase;
   text-decoration: none;
   padding: 0;

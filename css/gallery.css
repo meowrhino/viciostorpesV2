@@ -52,7 +52,7 @@ body.scroll-mode .gallery-bg {
 /* Mosaic images */
 .mosaic-image {
   position: absolute;
-  border-radius: 4px;
+  border-radius: 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
@@ -102,8 +102,9 @@ body.scroll-mode .gallery-bg {
 .mosaic.scroll-mode {
   position: relative;
   display: flex;
+  align-items: center;
   gap: 10vw;
-  height: 100%;
+  height: 100% !important;
   max-width: none;
   margin: 0;
   padding: 0 calc(50vw - 30vh); /* Center first and last images */
@@ -117,7 +118,7 @@ body.scroll-mode .gallery-bg {
   height: 60vh !important;
   left: auto !important;
   top: auto !important;
-  border-radius: 8px;
+  border-radius: 0;
   opacity: 1;
   transform: scale(1) translateY(0);
   transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
@@ -132,33 +133,31 @@ body.scroll-mode .gallery-bg {
 body.scroll-mode::before {
   content: attr(data-current-index);
   position: fixed;
-  bottom: 10vh;
+  bottom: 3dvh;
   left: 50%;
   transform: translateX(-50%);
-  font-family: "Sofia Sans Extra Condensed", sans-serif;
-  font-size: clamp(3rem, 8vw, 6rem);
-  font-weight: 700;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(1rem, 2.2vw, 1.8rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
   color: #c81e1e;
   pointer-events: none;
   z-index: 200;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
-/* ESC hint */
-body.scroll-mode::after {
-  content: "ESC para volver";
-  position: fixed;
-  top: 5vh;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: "Sofia Sans Extra Condensed", sans-serif;
-  font-size: clamp(0.9rem, 2vw, 1.4rem);
-  font-weight: 700;
-  color: #c81e1e;
-  text-transform: lowercase;
-  pointer-events: none;
-  z-index: 200;
-  opacity: 0.6;
+body[data-section="flashbook"].scroll-mode::before {
+  left: auto;
+  right: 2.5dvw;
+  transform: rotate(135deg);
+  transform-origin: center center;
+}
+
+body[data-section="tattoo"].scroll-mode::before {
+  left: 2.5dvw;
+  right: auto;
+  transform: rotate(-135deg);
+  transform-origin: center center;
 }
 
 /* ===========================
