@@ -89,13 +89,27 @@ body {
 }
 
 /* Stagger animation delays */
-.welcome-image:nth-child(2) { animation-delay: 0.1s; }
-.welcome-image:nth-child(3) { animation-delay: 0.2s; }
-.welcome-image:nth-child(4) { animation-delay: 0.3s; }
-.welcome-image:nth-child(5) { animation-delay: 0.4s; }
-.welcome-image:nth-child(6) { animation-delay: 0.5s; }
-.welcome-image:nth-child(7) { animation-delay: 0.6s; }
-.welcome-image:nth-child(8) { animation-delay: 0.7s; }
+.welcome-image:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.welcome-image:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.welcome-image:nth-child(4) {
+  animation-delay: 0.3s;
+}
+.welcome-image:nth-child(5) {
+  animation-delay: 0.4s;
+}
+.welcome-image:nth-child(6) {
+  animation-delay: 0.5s;
+}
+.welcome-image:nth-child(7) {
+  animation-delay: 0.6s;
+}
+.welcome-image:nth-child(8) {
+  animation-delay: 0.7s;
+}
 
 /* ===========================
    Image Positions (precise mapping from REFERENCE.webp)
@@ -164,65 +178,79 @@ body {
 /* Tablet */
 @media (max-width: 1024px) {
   .welcome-text {
-    width: 55dvw;
+    width: 70dvw;
   }
 
-  .pos-hang-left { width: 19dvw; }
-  .pos-hang-center { width: 36dvw; }
-  .pos-hang-left-center { width: 28dvw; }
-  .pos-hang-right { width: 22dvw; }
-  .pos-floor-left { width: 26dvw; }
-  .pos-floor-right { width: 36dvw; }
-  .pos-birds-overlay { width: 46dvw; }
+  .pos-hang-left {
+    width: 19dvw;
+  }
+  .pos-hang-center {
+    width: 36dvw;
+  }
+  .pos-hang-left-center {
+    width: 28dvw;
+  }
+  .pos-hang-right {
+    width: 22dvw;
+  }
+  .pos-floor-left {
+    width: 26dvw;
+  }
+  .pos-floor-right {
+    width: 36dvw;
+  }
+  .pos-birds-overlay {
+    width: 46dvw;
+  }
 }
 
 /* Mobile — portrait, much taller than wide */
 @media (max-width: 768px) {
   .welcome-text {
-    width: 75dvw;
-    top: 45dvh;
+    width: 80dvw;
+    top: 50dvh;
   }
 
   .pos-hang-left {
-    bottom: 5dvh;
-    left: 24dvw;
-    width: 22dvw;
+    bottom: 8dvh;
+    left: 20dvw;
+    width: 40dvw;
   }
 
   .pos-hang-center {
-    top: -4dvh;
-    left: 24dvw;
-    width: 50dvw;
+    top: 4dvh;
+    left: 30dvw;
+    width: 40dvw;
   }
 
   .pos-hang-left-center {
-    top: -3dvh;
-    left: 2dvw;
-    width: 35dvw;
+    top: 0dvh;
+    left: -10dvw;
+    width: 55dvw;
   }
 
   .pos-hang-right {
-    top: -2dvh;
-    right: 0dvw;
-    width: 28dvw;
+    top: -10dvh;
+    right: -10dvw;
+    width: 40dvw;
   }
 
   .pos-birds-overlay {
     bottom: -10dvh;
-    right: -6dvw;
+    right: -4dvw;
     left: auto;
     top: auto;
     width: 55dvw;
   }
 
   .pos-floor-left {
-    bottom: -2dvh;
-    left: 0dvw;
-    width: 32dvw;
+    bottom: -10dvh;
+    left: -10dvw;
+    width: 50dvw;
   }
 
   .pos-floor-right {
-    bottom: -4dvh;
+    bottom: 0dvh;
     right: 0dvw;
     width: 40dvw;
   }
@@ -234,11 +262,25 @@ body {
     width: 85dvw;
   }
 
-  .pos-hang-left { width: 26dvw; }
-  .pos-hang-center { width: 55dvw; }
-  .pos-hang-left-center { width: 40dvw; }
-  .pos-hang-right { width: 32dvw; }
-  .pos-floor-left { width: 36dvw; }
-  .pos-floor-right { width: 45dvw; }
-  .pos-birds-overlay { width: 60dvw; }
+  .pos-hang-left {
+    width: 26dvw;
+  }
+  .pos-hang-center {
+    width: 55dvw;
+  }
+  .pos-hang-left-center {
+    width: 40dvw;
+  }
+  .pos-hang-right {
+    width: 32dvw;
+  }
+  .pos-floor-left {
+    width: 36dvw;
+  }
+  .pos-floor-right {
+    width: 45dvw;
+  }
+  .pos-birds-overlay {
+    width: 60dvw;
+  }
 }
