@@ -7,13 +7,14 @@
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 100;
+  z-index: 1200;
 }
 
 /* Botones de navegación base */
 .nav-btn {
   position: absolute;
   pointer-events: auto;
+  z-index: 1201;
   background: none;
   border: none;
   color: #c81e1e;
@@ -38,7 +39,7 @@
 
 /* Posición: Arriba (centro superior) */
 .nav-btn.pos-top {
-  top: 3dvh;
+  top: max(0.3rem, env(safe-area-inset-top));
   left: 50%;
   transform: translateX(-50%) rotate(0deg);
   transform-origin: center center;

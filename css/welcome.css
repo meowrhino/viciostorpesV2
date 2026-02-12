@@ -125,11 +125,11 @@ body {
 
 /* 1 — Birds & butterflies, far bottom-right, almost off screen */
 .pos-birds-overlay {
-  bottom: -8dvh;
-  right: -20dvw;
+  bottom: -60dvh;
+  right: -10dvw;
   left: auto;
   top: auto;
-  width: 42dvw;
+  width: 62dvw;
   z-index: 11;
   opacity: 0;
   animation: fadeInImage 1.2s ease 0.8s forwards;
@@ -138,9 +138,9 @@ body {
 
 /* 2 — Floral ornament, hanging from top-center */
 .pos-hang-center {
-  top: -6dvh;
-  left: 34dvw;
-  width: 40dvw;
+  top: -10dvh;
+  left: 30dvw;
+  width: 50dvw;
 }
 
 /* 3 — Geometric horse + plant, bottom-left corner */
@@ -154,21 +154,21 @@ body {
 .pos-hang-right {
   top: -4dvh;
   right: 0dvw;
-  width: 18dvw;
+  width: 28dvw;
 }
 
 /* 5 — Carousel horses, top-left area */
 .pos-hang-left-center {
-  top: -5dvh;
-  left: 12dvw;
-  width: 24dvw;
+  top: -10dvh;
+  left: -12dvw;
+  width: 44dvw;
 }
 
 /* 6 — Galloping horse, bottom-right */
 .pos-floor-right {
-  bottom: -6dvh;
-  right: 0dvw;
-  width: 32dvw;
+  bottom: -20dvh;
+  right: -10dvw;
+  width: 50dvw;
 }
 
 /* ===========================
@@ -178,28 +178,53 @@ body {
 /* Tablet */
 @media (max-width: 1024px) {
   .welcome-text {
-    width: 70dvw;
+    top: 50dvh;
+    left: 50dvw;
+    transform: translate(-50%, -50%);
+    width: 75dvw;
   }
 
   .pos-hang-left {
-    width: 19dvw;
+    bottom: 2dvh;
+    left: 15dvw;
+    width: 30dvw;
   }
+
   .pos-hang-center {
-    width: 36dvw;
+    top: 0dvh;
+    left: 30dvw;
+    width: 46dvw;
   }
+
   .pos-hang-left-center {
-    width: 28dvw;
+    top: -5dvh;
+    left: -10dvw;
+    width: 48dvw;
   }
+
   .pos-hang-right {
-    width: 22dvw;
+    top: -4dvh;
+    right: -2dvw;
+    width: 30dvw;
   }
+
   .pos-floor-left {
-    width: 26dvw;
+    bottom: -20dvh;
+    left: -5dvw;
+    width: 46dvw;
   }
+
   .pos-floor-right {
+    bottom: -6dvh;
+    right: 0dvw;
     width: 36dvw;
   }
+
   .pos-birds-overlay {
+    bottom: -8dvh;
+    right: -20dvw;
+    left: auto;
+    top: auto;
     width: 46dvw;
   }
 }
@@ -207,8 +232,10 @@ body {
 /* Mobile — portrait, much taller than wide */
 @media (max-width: 768px) {
   .welcome-text {
-    width: 80dvw;
     top: 50dvh;
+    left: 50dvw;
+    transform: translate(-50%, -50%);
+    width: 80dvw;
   }
 
   .pos-hang-left {
@@ -259,28 +286,53 @@ body {
 /* Very small screens */
 @media (max-width: 480px) {
   .welcome-text {
+    top: 50dvh;
+    left: 50dvw;
+    transform: translate(-50%, -50%);
     width: 85dvw;
   }
 
   .pos-hang-left {
+    bottom: 8dvh;
+    left: 20dvw;
     width: 26dvw;
   }
+
   .pos-hang-center {
+    top: 4dvh;
+    left: 30dvw;
     width: 55dvw;
   }
+
   .pos-hang-left-center {
+    top: 0dvh;
+    left: -10dvw;
     width: 40dvw;
   }
+
   .pos-hang-right {
+    top: -10dvh;
+    right: -10dvw;
     width: 32dvw;
   }
+
   .pos-floor-left {
+    bottom: -10dvh;
+    left: -10dvw;
     width: 36dvw;
   }
+
   .pos-floor-right {
+    bottom: 0dvh;
+    right: 0dvw;
     width: 45dvw;
   }
+
   .pos-birds-overlay {
+    bottom: -10dvh;
+    right: -4dvw;
+    left: auto;
+    top: auto;
     width: 60dvw;
   }
 }
