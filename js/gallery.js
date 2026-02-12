@@ -14,7 +14,13 @@
     return;
   }
 
-  const data = await fetch('data.json').then(r => r.json());
+  let data;
+  try {
+    data = await fetch('data.json').then(r => r.json());
+  } catch (err) {
+    console.error('gallery.js: Failed to load data.json', err);
+    return;
+  }
   const config = data.sections[section];
   if (!config) {
     console.error(`gallery.js: Section "${section}" not found in data.json`);

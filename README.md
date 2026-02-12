@@ -20,7 +20,9 @@ viciostorpesV2/
 ├── js/
 │   ├── welcome.js      # Generación dinámica de la página de inicio
 │   ├── gallery.js      # Motor de galería dual (compartido flashbook/tattoo)
-│   └── booking.js      # Validación y envío del formulario
+│   └── booking.js      # Validación y envío del formulario (EmailJS)
+├── docs/
+│   └── EMAILJS_SETUP.md # Guía para configurar el envío de emails
 └── data/
     ├── backgrounds/    # Fondos de sección (.webp)
     ├── images/
@@ -53,11 +55,11 @@ Ambas páginas comparten el mismo `gallery.js` y se diferencian mediante el atri
 - Soporte de historial del navegador (atrás/adelante)
 - Click fuera de imagen → vuelve al mosaico
 
-Flashbook muestra las imágenes en orden inverso en scroll; tattoo en orden normal.
+Flashbook scrollea hacia la izquierda (CSS `direction: rtl`); tattoo scrollea hacia la derecha.
 
 ### Booking (`booking.html`)
 
-Formulario de contacto con campos: nombre, email, teléfono, localidad y descripción. Validación client-side con regex para email y comprobación de campos requeridos. Actualmente simula el envío (pendiente de integración con backend).
+Formulario de contacto con campos: nombre, email, teléfono, localidad y descripción. Validación client-side con regex para email y comprobación de campos requeridos. Envío via [EmailJS](https://www.emailjs.com) (200 emails/mes gratis). Ver [`docs/EMAILJS_SETUP.md`](docs/EMAILJS_SETUP.md) para configurar.
 
 ## Navegación
 
@@ -95,6 +97,7 @@ Para añadir imágenes: subirlas numeradas a la carpeta correspondiente y actual
 - **JavaScript ES6+** — vanilla, async/await, Fetch API
 - **Tipografía**: Sofia Sans Extra Condensed (Google Fonts)
 - **Imágenes**: formato WebP
+- **EmailJS** — envío de formulario sin backend
 - **Zero build** — sin npm, sin bundler, sin transpilación
 
 ## Paleta

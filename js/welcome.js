@@ -1,7 +1,13 @@
 // welcome.js — Landing page with positioned decorative images
 
 (async function () {
-  const data = await fetch('data.json').then(r => r.json());
+  let data;
+  try {
+    data = await fetch('data.json').then(r => r.json());
+  } catch (err) {
+    console.error('welcome.js: Failed to load data.json', err);
+    return;
+  }
   const container = document.getElementById('grid-container');
   const welcomeBackground = data.welcome.background;
 

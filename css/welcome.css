@@ -166,9 +166,9 @@ body {
 
 /* 6 — Galloping horse, bottom-right */
 .pos-floor-right {
-  bottom: -20dvh;
-  right: -10dvw;
-  width: 50dvw;
+  bottom: -10dvh;
+  right: -4dvw;
+  width: 35dvw;
 }
 
 /* ===========================
@@ -295,44 +295,44 @@ body {
   .pos-hang-left {
     bottom: 8dvh;
     left: 20dvw;
-    width: 26dvw;
+    width: 36dvw;
   }
 
   .pos-hang-center {
-    top: 4dvh;
-    left: 30dvw;
-    width: 55dvw;
+    top: 25dvh;
+    left: 8dvw;
+    width: 65dvw;
   }
 
   .pos-hang-left-center {
-    top: 0dvh;
-    left: -10dvw;
-    width: 40dvw;
+    top: -5dvh;
+    left: -14dvw;
+    width: 80dvw;
   }
 
   .pos-hang-right {
-    top: -10dvh;
+    top: -5dvh;
     right: -10dvw;
-    width: 32dvw;
+    width: 52dvw;
   }
 
   .pos-floor-left {
     bottom: -10dvh;
     left: -10dvw;
-    width: 36dvw;
+    width: 66dvw;
   }
 
   .pos-floor-right {
-    bottom: 0dvh;
-    right: 0dvw;
-    width: 45dvw;
+    bottom: -12dvh;
+    right: -12dvw;
+    width: 85dvw;
   }
 
   .pos-birds-overlay {
-    bottom: -10dvh;
-    right: -4dvw;
+    bottom: -15dvh;
+    right: -10dvw;
     left: auto;
     top: auto;
-    width: 60dvw;
+    width: 100dvw;
   }
 }
