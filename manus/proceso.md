@@ -176,3 +176,134 @@ Si el usuario desea una experiencia aún más fluida, se podría implementar en 
 4. O bien, refactorización completa a SPA como se propuso inicialmente
 
 ---
+
+---
+
+## 12 de febrero de 2026 - 05:35 GMT+1
+
+### Sistema de Carga Progresiva con Animación de Emergencia
+
+**Sinopsis:** Implementación de un sistema de carga progresiva de imágenes en las galerías (flashbook y tattoo) donde las imágenes van emergiendo conforme se cargan, mejorando la experiencia de usuario y evitando tiempos de espera largos.
+
+**Proceso Realizado:**
+
+El usuario solicitó que las imágenes de las galerías fueran "emergiendo" conforme se cargan, en lugar de esperar a que todas estén listas. Esto es especialmente importante dado el gran volumen de imágenes (129 en flashbook, 72 en tattoo), y confirma que la decisión de mantener la arquitectura MPA es correcta para este proyecto.
+
+#### Análisis del Sistema Anterior
+
+El código original en `gallery.js` cargaba las imágenes de forma secuencial con `await` en cada iteración, lo que significaba que cada imagen debía cargarse completamente antes de pasar a la siguiente. Aunque había una animación `fadeIn`, esta se aplicaba individualmente a cada imagen después de cargarla, creando un efecto de aparición lenta y secuencial.
+
+#### Implementación del Sistema de Carga Progresiva
+
+**1. Carga por Lotes (Batch Loading)**
+
+Se refactorizó el sistema para cargar imágenes en lotes paralelos:
+
+- **Tamaño de lote**: 8 imágenes por lote (configurable en `MOSAIC.batchSize`)
+- **Carga paralela**: Dentro de cada lote, las imágenes se cargan simultáneamente usando `Promise.all()`
+- **Procesamiento secuencial de lotes**: Los lotes se procesan uno tras otro para evitar saturar la red y el navegador
+
+**Código clave:**
+
+```javascript
+// Split images into batches
+for (let i = 0; i < shuffled.length; i += MOSAIC.batchSize) {
+  const batch = shuffled.slice(i, i + MOSAIC.batchSize);
+  const batchMaxHeight = await loadBatch(batch, placed, mosaic);
+  maxHeight = Math.max(maxHeight, batchMaxHeight);
+  
+  // Update mosaic height after each batch
+  mosaic.style.height = (maxHeight + MOSAIC.padding * 2) + 'px';
+  
+  // Small delay between batches for smoother emergence effect
+  await new Promise(resolve => setTimeout(resolve, 100));
+}
+```
+
+**2. Animación de Emergencia Mejorada**
+
+Se reemplazó la simple animación `fadeIn` por una animación más dinámica y orgánica:
+
+**Estado inicial** (`.mosaic-image`):
+- `opacity: 0` → Invisible
+- `transform: scale(0.8) translateY(20px)` → Ligeramente reducida y desplazada hacia abajo
+
+**Estado emergido** (`.mosaic-image.emerged`):
+- `opacity: 1` → Completamente visible
+- `transform: scale(1) translateY(0)` → Tamaño completo y posición final
+
+**Transición**:
+- `transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)`
+- La función de easing `cubic-bezier(0.34, 1.56, 0.64, 1)` crea un efecto de "rebote" suave que hace que las imágenes "emerjan" con un movimiento elástico y natural
+
+**3. Trigger de la Animación**
+
+La clase `.emerged` se añade a cada imagen después de que se inserta en el DOM, usando `requestAnimationFrame` para asegurar que el navegador ha procesado el estado inicial antes de aplicar la transición:
+
+```javascript
+mosaic.appendChild(img);
+
+// Trigger emergence animation after a small delay
+requestAnimationFrame(() => {
+  img.classList.add('emerged');
+});
+```
+
+**4. Actualización Dinámica de la Altura del Contenedor**
+
+El contenedor del mosaic (`#mosaic`) se actualiza en altura después de cada lote, permitiendo que el scroll funcione correctamente incluso mientras las imágenes siguen cargando:
+
+```javascript
+mosaic.style.height = (maxHeight + MOSAIC.padding * 2) + 'px';
+```
+
+#### Ventajas del Sistema Implementado
+
+**Rendimiento mejorado:**
+- Las imágenes se cargan en paralelo dentro de cada lote, reduciendo el tiempo total de carga
+- El usuario puede empezar a ver contenido inmediatamente sin esperar a que todo esté listo
+- La carga por lotes evita saturar la conexión de red
+
+**Experiencia de usuario superior:**
+- Efecto visual atractivo y orgánico de "emergencia" de las imágenes
+- Sensación de dinamismo y fluidez
+- Feedback visual constante de que el contenido se está cargando
+
+**Mantenibilidad:**
+- Código modular con funciones separadas (`loadImage`, `loadBatch`)
+- Configuración centralizada en el objeto `MOSAIC`
+- Fácil ajustar el tamaño de lote o los parámetros de animación
+
+#### Archivos Modificados
+
+- **`js/gallery.js`**: Refactorización completa con sistema de carga por lotes
+- **`css/gallery.css`**: Nueva animación de emergencia con transform y cubic-bezier
+
+#### Detalles Técnicos
+
+**Función cubic-bezier explicada:**
+- `cubic-bezier(0.34, 1.56, 0.64, 1)` crea una curva de animación con "overshoot"
+- El valor `1.56` en el segundo parámetro hace que la animación sobrepase ligeramente su valor final antes de volver
+- Esto crea el efecto de "rebote" elástico que hace que las imágenes parezcan "emerger" con energía
+
+**Delay entre lotes:**
+- `await new Promise(resolve => setTimeout(resolve, 100))` añade 100ms entre lotes
+- Este pequeño delay hace que la emergencia sea más perceptible y agradable visualmente
+- Sin este delay, todos los lotes se cargarían tan rápido que el efecto se perdería
+
+#### Commit Realizado
+
+```
+commit 4835189
+Implementar navegación posicional y carga progresiva de imágenes con animación de emergencia
+
+- Añadido sistema de navegación posicional (navigation.css)
+- Implementada carga por lotes en gallery.js
+- Nueva animación de emergencia con cubic-bezier
+- Actualización dinámica de altura del contenedor
+- Documentación en manus/proceso.md
+```
+
+Push exitoso a `origin/main` en GitHub.
+
+---
