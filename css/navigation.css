@@ -39,7 +39,7 @@
 
 /* Posición: Arriba (centro superior) */
 .nav-btn.pos-top {
-  top: max(0.3rem, env(safe-area-inset-top));
+  top: 3dvh;
   left: 50%;
   transform: translateX(-50%) rotate(0deg);
   transform-origin: center center;
@@ -63,7 +63,7 @@
 
 /* Posición: Izquierda (centro izquierdo, rotado 90° antihorario) */
 .nav-btn.pos-left {
-  left: 1.5dvw;
+  left: 3dvw;
   top: 50%;
   transform: translateY(-50%) rotate(-90deg);
   transform-origin: center center;
@@ -75,7 +75,7 @@
 
 /* Posición: Derecha (centro derecho, rotado 90° horario) */
 .nav-btn.pos-right {
-  right: 1.5dvw;
+  right: 3dvw;
   top: 50%;
   transform: translateY(-50%) rotate(90deg);
   transform-origin: center center;
@@ -92,10 +92,10 @@
   }
 
   .nav-btn.pos-left {
-    left: 1dvw;
+    left: 2dvw;
   }
 
   .nav-btn.pos-right {
-    right: 1dvw;
+    right: 2dvw;
   }
 }

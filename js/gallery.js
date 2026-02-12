@@ -34,12 +34,23 @@
   }
 
   // Mosaic config
+  // Calculate container dimensions to produce a ~square mosaic based on image count
+  const avgSize = 300; // (minSize + maxSize) / 2
+  const spacingFactor = 4; // account for collision spread
+  const totalArea = config.imageCount * avgSize * avgSize * spacingFactor;
+  const squareSide = Math.ceil(Math.sqrt(totalArea));
+  // Ensure minimum width so it still overflows the viewport for scroll
+  const computedWidth = Math.max(squareSide, window.innerWidth * 1.5);
+  // Target height ≈ width for a square-ish mosaic
+  const targetHeight = computedWidth;
+
   const MOSAIC = {
-    containerWidth: 2400,
+    containerWidth: computedWidth,
+    targetHeight: targetHeight,
     minSize: 200,
     maxSize: 400,
-    padding: 20,
-    maxAttempts: 100,
+    padding: 6,
+    maxAttempts: 200,
     batchSize: 8,
   };
 
@@ -54,6 +65,9 @@
 
   const mosaic = document.getElementById('mosaic');
   const mosaicContainer = document.querySelector('.mosaic-container');
+
+  // Apply computed width to mosaic element
+  mosaic.style.width = MOSAIC.containerWidth + 'px';
   
   // State
   let currentMode = 'mosaic'; // 'mosaic' or 'scroll'
@@ -75,9 +89,13 @@
   }
 
   function findPosition(w, h, placed, containerW, pad, currentMaxY) {
-    // Dynamic search height: grows with the mosaic
-    const searchHeight = Math.max(3000, currentMaxY + 1000);
-    
+    // Constrain search height to target for a square-ish mosaic
+    // Allow slight overflow (1.2×) but don't let it grow unboundedly
+    const searchHeight = Math.min(
+      Math.max(3000, currentMaxY + 500),
+      MOSAIC.targetHeight * 1.2
+    );
+
     for (let i = 0; i < MOSAIC.maxAttempts; i++) {
       const x = Math.random() * (containerW - w - pad * 2) + pad;
       const y = Math.random() * searchHeight + pad;
@@ -90,7 +108,7 @@
       if (ok) return { x, y };
     }
 
-    // Fallback: place below everything
+    // Fallback: place below everything (may exceed target, but rare)
     const maxY = placed.reduce((m, r) => Math.max(m, r.y + r.h), 0);
     return {
       x: Math.random() * (containerW - w - pad * 2) + pad,
@@ -161,20 +179,32 @@
     return Math.max(...results.map(r => r.maxHeight));
   }
 
+  // Flashbook starts at top-right: pin scroll to the right edge during load
+  const startRight = section === 'flashbook';
+  function pinRight() {
+    if (startRight) {
+      mosaicContainer.scrollTo({ left: mosaicContainer.scrollWidth, top: 0, behavior: 'instant' });
+    }
+  }
+
   async function buildMosaicMode() {
     const placed = [];
     let maxHeight = 0;
+
+    pinRight();
 
     for (let i = 0; i < shuffled.length; i += MOSAIC.batchSize) {
       const batch = shuffled.slice(i, i + MOSAIC.batchSize);
       const batchMaxHeight = await loadBatch(batch, placed, maxHeight);
       maxHeight = Math.max(maxHeight, batchMaxHeight);
-      
+
       mosaicModeHeight = (maxHeight + MOSAIC.padding * 2) + 'px';
       if (currentMode === 'mosaic') {
         mosaic.style.height = mosaicModeHeight;
       }
-      
+
+      pinRight();
+
       await new Promise(resolve => setTimeout(resolve, 100));
     }
 
@@ -182,6 +212,8 @@
     if (currentMode === 'mosaic') {
       mosaic.style.height = mosaicModeHeight;
     }
+
+    pinRight();
   }
 
   // ===========================
@@ -267,12 +299,21 @@
     const targetImg = imageElements.find(img => parseInt(img.dataset.index) === index);
     if (!targetImg) return;
 
-    const rect = targetImg.getBoundingClientRect();
-    const desiredTop = rect.top + window.scrollY - (window.innerHeight - rect.height) / 2;
-    const maxTop = document.documentElement.scrollHeight - window.innerHeight;
-    const clampedTop = Math.max(0, Math.min(desiredTop, maxTop));
+    const containerRect = mosaicContainer.getBoundingClientRect();
+    const imgRect = targetImg.getBoundingClientRect();
 
-    window.scrollTo({ top: clampedTop, behavior: 'smooth' });
+    // Calculate desired scroll position to center the image in the container
+    const desiredTop = imgRect.top - containerRect.top + mosaicContainer.scrollTop - (containerRect.height - imgRect.height) / 2;
+    const desiredLeft = imgRect.left - containerRect.left + mosaicContainer.scrollLeft - (containerRect.width - imgRect.width) / 2;
+
+    const maxTop = mosaicContainer.scrollHeight - containerRect.height;
+    const maxLeft = mosaicContainer.scrollWidth - containerRect.width;
+
+    mosaicContainer.scrollTo({
+      top: Math.max(0, Math.min(desiredTop, maxTop)),
+      left: Math.max(0, Math.min(desiredLeft, maxLeft)),
+      behavior: 'smooth',
+    });
   }
 
   function updateCurrentImageIndicator() {
@@ -338,7 +379,7 @@
   // ===========================
 
   await buildMosaicMode();
-  
+
   // Handle initial hash
   handleHashChange();
   
