@@ -1,16 +1,19 @@
-// gallery.js — Shared mosaic gallery for flashbook & tattoo
+// gallery.js — Dual-mode gallery (mosaic + scroll) for flashbook & tattoo
 // Reads section config from data.json, uses numbered images (0.webp, 1.webp, ...)
-// Progressive loading with emergence animation
+// Progressive loading with emergence animation in mosaic mode
+// Horizontal scroll mode inspired by profilePics
 
 (async function () {
-  // Determine which section we're on from the data-section attribute on <body>
+  // ===========================
+  // Configuration & Setup
+  // ===========================
+  
   const section = document.body.dataset.section;
   if (!section) {
     console.error('gallery.js: No data-section attribute on <body>');
     return;
   }
 
-  // Load config
   const data = await fetch('data.json').then(r => r.json());
   const config = data.sections[section];
   if (!config) {
@@ -24,12 +27,6 @@
     bgEl.style.backgroundImage = `url('${config.background}')`;
   }
 
-  // Set title
-  const titleEl = document.querySelector('.gallery-title');
-  if (titleEl) {
-    titleEl.textContent = config.title;
-  }
-
   // Mosaic config
   const MOSAIC = {
     containerWidth: 2400,
@@ -37,19 +34,30 @@
     maxSize: 400,
     padding: 20,
     maxAttempts: 100,
-    batchSize: 8, // Load images in batches for progressive loading
+    batchSize: 8,
   };
 
-  // Build image list from numbered files
+  // Build image list
   const images = [];
   for (let i = 0; i < config.imageCount; i++) {
-    images.push(`${config.imagePath}${i}.webp`);
+    images.push({ index: i, src: `${config.imagePath}${i}.webp` });
   }
 
-  // Shuffle
-  const shuffled = images.sort(() => Math.random() - 0.5);
+  // Shuffle for mosaic mode
+  const shuffled = [...images].sort(() => Math.random() - 0.5);
 
-  // Collision detection
+  const mosaic = document.getElementById('mosaic');
+  const mosaicContainer = document.querySelector('.mosaic-container');
+  
+  // State
+  let currentMode = 'mosaic'; // 'mosaic' or 'scroll'
+  let imageElements = []; // Store references to all image elements
+  let currentScrollIndex = 0;
+
+  // ===========================
+  // Mosaic Mode Functions
+  // ===========================
+
   function collides(r1, r2, pad) {
     return !(
       r1.x + r1.w + pad < r2.x ||
@@ -72,7 +80,6 @@
       if (ok) return { x, y };
     }
 
-    // Fallback: place below everything
     const maxY = placed.reduce((m, r) => Math.max(m, r.y + r.h), 0);
     return {
       x: Math.random() * (containerW - w - pad * 2) + pad,
@@ -80,14 +87,14 @@
     };
   }
 
-  // Load and place a single image with emergence animation
-  async function loadImage(src, placed, mosaic) {
+  async function loadImage(item, placed) {
     const size = Math.random() * (MOSAIC.maxSize - MOSAIC.minSize) + MOSAIC.minSize;
 
     const img = document.createElement('img');
     img.className = 'mosaic-image';
-    img.src = src;
+    img.src = item.src;
     img.alt = `${config.title} image`;
+    img.dataset.index = item.index;
 
     return new Promise((resolve) => {
       img.onload = () => {
@@ -102,11 +109,22 @@
         img.style.width = w + 'px';
         img.style.height = h + 'px';
 
+        // Store original mosaic position
+        img.dataset.mosaicX = pos.x;
+        img.dataset.mosaicY = pos.y;
+        img.dataset.mosaicW = w;
+        img.dataset.mosaicH = h;
+
         placed.push({ x: pos.x, y: pos.y, w, h });
         
         mosaic.appendChild(img);
+        imageElements.push(img);
         
-        // Trigger emergence animation after a small delay
+        // Click handler to switch to scroll mode
+        img.addEventListener('click', () => {
+          switchToScrollMode(parseInt(img.dataset.index));
+        });
+        
         requestAnimationFrame(() => {
           img.classList.add('emerged');
         });
@@ -115,37 +133,184 @@
       };
 
       img.onerror = () => {
-        console.warn('Failed to load:', src);
+        console.warn('Failed to load:', item.src);
         resolve({ maxHeight: 0 });
       };
     });
   }
 
-  // Progressive batch loading
-  async function loadBatch(batch, placed, mosaic) {
-    const promises = batch.map(src => loadImage(src, placed, mosaic));
+  async function loadBatch(batch, placed) {
+    const promises = batch.map(item => loadImage(item, placed));
     const results = await Promise.all(promises);
     return Math.max(...results.map(r => r.maxHeight));
   }
 
-  // Create mosaic with progressive loading
-  const mosaic = document.getElementById('mosaic');
-  const placed = [];
-  let maxHeight = 0;
+  async function buildMosaicMode() {
+    const placed = [];
+    let maxHeight = 0;
 
-  // Split images into batches
-  for (let i = 0; i < shuffled.length; i += MOSAIC.batchSize) {
-    const batch = shuffled.slice(i, i + MOSAIC.batchSize);
-    const batchMaxHeight = await loadBatch(batch, placed, mosaic);
-    maxHeight = Math.max(maxHeight, batchMaxHeight);
-    
-    // Update mosaic height after each batch
+    for (let i = 0; i < shuffled.length; i += MOSAIC.batchSize) {
+      const batch = shuffled.slice(i, i + MOSAIC.batchSize);
+      const batchMaxHeight = await loadBatch(batch, placed);
+      maxHeight = Math.max(maxHeight, batchMaxHeight);
+      
+      mosaic.style.height = (maxHeight + MOSAIC.padding * 2) + 'px';
+      
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
     mosaic.style.height = (maxHeight + MOSAIC.padding * 2) + 'px';
-    
-    // Small delay between batches for smoother emergence effect
-    await new Promise(resolve => setTimeout(resolve, 100));
   }
 
-  // Final height adjustment
-  mosaic.style.height = (maxHeight + MOSAIC.padding * 2) + 'px';
+  // ===========================
+  // Scroll Mode Functions
+  // ===========================
+
+  function switchToScrollMode(targetIndex) {
+    if (currentMode === 'scroll') return;
+    
+    currentMode = 'scroll';
+    currentScrollIndex = targetIndex;
+    
+    // Update URL hash
+    window.location.hash = `scroll-${targetIndex}`;
+    
+    // Update body data attribute for CSS counter
+    document.body.setAttribute('data-current-index', targetIndex);
+    
+    // Sort images by index for scroll mode
+    imageElements.sort((a, b) => {
+      return parseInt(a.dataset.index) - parseInt(b.dataset.index);
+    });
+    
+    // Add scroll mode classes
+    document.body.classList.add('scroll-mode');
+    mosaicContainer.classList.add('scroll-mode');
+    mosaic.classList.add('scroll-mode');
+    
+    // Reorder DOM elements
+    imageElements.forEach(img => {
+      mosaic.appendChild(img);
+    });
+    
+    // Enable scroll listener
+    mosaicContainer.addEventListener('scroll', updateCurrentImageIndicator);
+    
+    // Wait for transition to complete, then scroll to target
+    setTimeout(() => {
+      scrollToImage(targetIndex);
+    }, 600); // Match CSS transition duration
+  }
+
+  function switchToMosaicMode() {
+    if (currentMode === 'mosaic') return;
+    
+    currentMode = 'mosaic';
+    
+    // Update URL hash
+    window.location.hash = '';
+    
+    // Remove body data attribute
+    document.body.removeAttribute('data-current-index');
+    
+    // Remove scroll mode classes
+    document.body.classList.remove('scroll-mode');
+    mosaicContainer.classList.remove('scroll-mode');
+    mosaic.classList.remove('scroll-mode');
+    
+    // Disable scroll listener
+    mosaicContainer.removeEventListener('scroll', updateCurrentImageIndicator);
+  }
+
+  function scrollToImage(index) {
+    const targetImg = imageElements.find(img => parseInt(img.dataset.index) === index);
+    if (!targetImg) return;
+    
+    const scrollLeft = targetImg.offsetLeft - (mosaicContainer.clientWidth - targetImg.clientWidth) / 2;
+    mosaicContainer.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+  }
+
+  function updateCurrentImageIndicator() {
+    if (currentMode !== 'scroll') return;
+    
+    const containerRect = mosaicContainer.getBoundingClientRect();
+    const centerX = containerRect.left + containerRect.width / 2;
+    
+    let closestImg = null;
+    let minDiff = Infinity;
+    
+    imageElements.forEach(img => {
+      const rect = img.getBoundingClientRect();
+      const imgCenter = rect.left + rect.width / 2;
+      const diff = Math.abs(imgCenter - centerX);
+      
+      if (diff < minDiff) {
+        minDiff = diff;
+        closestImg = img;
+      }
+    });
+    
+    if (closestImg) {
+      const index = parseInt(closestImg.dataset.index);
+      if (index !== currentScrollIndex) {
+        currentScrollIndex = index;
+        // Update hash without triggering hashchange event
+        history.replaceState(null, null, `#scroll-${index}`);
+        // Update body data attribute for CSS counter
+        document.body.setAttribute('data-current-index', index);
+      }
+    }
+  }
+
+  // ===========================
+  // URL Hash Management
+  // ===========================
+
+  function handleHashChange() {
+    const hash = window.location.hash;
+    
+    if (hash.startsWith('#scroll-')) {
+      const index = parseInt(hash.replace('#scroll-', ''));
+      if (!isNaN(index) && currentMode === 'mosaic') {
+        switchToScrollMode(index);
+      } else if (!isNaN(index) && currentMode === 'scroll') {
+        scrollToImage(index);
+      }
+    } else if (hash === '' && currentMode === 'scroll') {
+      switchToMosaicMode();
+    }
+  }
+
+  // ===========================
+  // Keyboard Navigation
+  // ===========================
+
+  document.addEventListener('keydown', (e) => {
+    if (currentMode === 'scroll') {
+      if (e.key === 'ArrowLeft' && currentScrollIndex > 0) {
+        scrollToImage(currentScrollIndex - 1);
+      } else if (e.key === 'ArrowRight' && currentScrollIndex < images.length - 1) {
+        scrollToImage(currentScrollIndex + 1);
+      } else if (e.key === 'Escape') {
+        switchToMosaicMode();
+      }
+    }
+  });
+
+  // ===========================
+  // Initialize
+  // ===========================
+
+  await buildMosaicMode();
+  
+  // Handle initial hash
+  handleHashChange();
+  
+  // Listen for hash changes
+  window.addEventListener('hashchange', handleHashChange);
+  
+  // Update indicator on scroll in scroll mode
+  if (currentMode === 'scroll') {
+    mosaicContainer.addEventListener('scroll', updateCurrentImageIndicator);
+  }
 })();

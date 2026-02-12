@@ -1,11 +1,16 @@
 /* ===========================
-   gallery.css — Shared mosaic styles (flashbook & tattoo)
+   gallery.css — Dual-mode gallery (mosaic + scroll)
    =========================== */
 
 body {
   margin: 0;
   overflow: auto;
   background: #0f0f12;
+  transition: overflow 0.6s ease;
+}
+
+body.scroll-mode {
+  overflow: hidden;
 }
 
 /* Fixed background */
@@ -17,14 +22,23 @@ body {
   background-repeat: no-repeat;
   filter: brightness(0.5);
   z-index: -1;
+  transition: filter 0.6s ease;
 }
 
-/* Mosaic container */
+body.scroll-mode .gallery-bg {
+  filter: brightness(0.3);
+}
+
+/* ===========================
+   Mosaic Mode (default)
+   =========================== */
+
 .mosaic-container {
   position: relative;
   width: 100%;
   min-height: 100vh;
   padding: 6rem 2rem 4rem;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .mosaic {
@@ -32,6 +46,7 @@ body {
   width: 100%;
   max-width: 2400px;
   margin: 0 auto;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Mosaic images */
@@ -39,14 +54,13 @@ body {
   position: absolute;
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   object-fit: cover;
   
   /* Initial state: hidden and scaled down */
   opacity: 0;
   transform: scale(0.8) translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* Emerged state: visible and full size */
@@ -61,9 +75,96 @@ body {
   z-index: 10;
 }
 
+/* ===========================
+   Scroll Mode
+   =========================== */
 
+.mosaic-container.scroll-mode {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 100vw;
+  height: 60vh;
+  padding: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  align-items: center;
+}
 
-/* Responsive */
+.mosaic-container.scroll-mode::-webkit-scrollbar {
+  display: none;
+}
+
+.mosaic.scroll-mode {
+  position: relative;
+  display: flex;
+  gap: 10vw;
+  height: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 calc(50vw - 30vh); /* Center first and last images */
+}
+
+/* Scroll mode images */
+.scroll-mode .mosaic-image {
+  position: relative !important;
+  flex: 0 0 auto;
+  width: 60vh !important;
+  height: 60vh !important;
+  left: auto !important;
+  top: auto !important;
+  border-radius: 8px;
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+}
+
+.scroll-mode .mosaic-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8);
+}
+
+/* Image counter indicator */
+body.scroll-mode::before {
+  content: attr(data-current-index);
+  position: fixed;
+  bottom: 10vh;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Sofia Sans Extra Condensed", sans-serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 700;
+  color: #c81e1e;
+  pointer-events: none;
+  z-index: 200;
+  opacity: 0.8;
+}
+
+/* ESC hint */
+body.scroll-mode::after {
+  content: "ESC para volver";
+  position: fixed;
+  top: 5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Sofia Sans Extra Condensed", sans-serif;
+  font-size: clamp(0.9rem, 2vw, 1.4rem);
+  font-weight: 700;
+  color: #c81e1e;
+  text-transform: lowercase;
+  pointer-events: none;
+  z-index: 200;
+  opacity: 0.6;
+}
+
+/* ===========================
+   Responsive
+   =========================== */
+
 @media (max-width: 768px) {
   .mosaic-container {
     padding: 5rem 1rem 3rem;
@@ -71,5 +172,18 @@ body {
 
   .mosaic-image.emerged:hover {
     transform: scale(1.02) translateY(0);
+  }
+  
+  .mosaic-container.scroll-mode {
+    height: 50vh;
+  }
+  
+  .scroll-mode .mosaic-image {
+    width: 50vh !important;
+    height: 50vh !important;
+  }
+  
+  .mosaic.scroll-mode {
+    padding: 0 calc(50vw - 25vh);
   }
 }
