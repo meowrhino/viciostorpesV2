@@ -44,6 +44,7 @@
   // Convert to pixels for positioning
   const vw = window.innerWidth / 100;
   const vh = window.innerHeight / 100;
+  const vmin = Math.min(vw, vh);
   const cellW = CELL_DVW * vw;
   const cellH = CELL_DVH * vh;
 
@@ -62,8 +63,8 @@
     cellH,
     mosaicWidth,
     mosaicHeight,
-    minSize: 250,
-    maxSize: 450,
+    minSize: 30 * vmin,
+    maxSize: 45 * vmin,
     padding: 6,
     batchSize: 8,
   };
