@@ -63,10 +63,8 @@ body.scroll-mode .gallery-bg {
   transform: scale(1) translate(0, 0);
 }
 
-.mosaic-image.emerged:hover {
+.mosaic-image.emerged.viewport-hover {
   transform: scale(1.05) translate(0, 0);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
-  z-index: 10;
 }
 
 /* ===========================
@@ -114,9 +112,9 @@ body.scroll-mode .gallery-bg {
   transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
 }
 
-.scroll-mode .mosaic-image:hover {
+.scroll-mode .mosaic-image:hover,
+.scroll-mode .mosaic-image.centered {
   transform: scale(1.02);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8);
 }
 
 /* Image counter indicator */
@@ -166,10 +164,6 @@ body[data-section="flashbook"] .mosaic.scroll-mode {
 @media (max-width: 768px) {
   .mosaic-container {
     padding: 4rem 1rem 3rem;
-  }
-
-  .mosaic-image.emerged:hover {
-    transform: scale(1.02) translateY(0);
   }
 
   .mosaic-container.scroll-mode {

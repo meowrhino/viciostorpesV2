@@ -63,8 +63,8 @@
     cellH,
     mosaicWidth,
     mosaicHeight,
-    minSize: 30 * vmin,
-    maxSize: 45 * vmin,
+    minSize: 40 * vmin,
+    maxSize: 50 * vmin,
     padding: 6,
     batchSize: 8,
   };
@@ -112,6 +112,13 @@
   let currentMode = 'mosaic';
   let imageElements = [];
   let currentScrollIndex = 0;
+  let topZ = 1;
+  let mouseActive = false;
+  let mouseX = 0;
+  let mouseY = 0;
+  let mouseTimeout = null;
+  let currentViewportHover = null;
+  let hoverCooldown = false;
 
   // ===========================
   // Mosaic Mode Functions
@@ -183,6 +190,7 @@
           }
         });
 
+
         // Animate: appear at center then fly to grid position
         requestAnimationFrame(() => {
           img.style.opacity = '0.8';
@@ -231,11 +239,8 @@
     for (let i = 0; i < shuffled.length; i += MOSAIC.batchSize) {
       const batch = shuffled.slice(i, i + MOSAIC.batchSize);
       await loadBatch(batch, i);
-      pinStart();
       await new Promise(resolve => setTimeout(resolve, 80));
     }
-
-    pinStart();
   }
 
   // ===========================
@@ -260,7 +265,10 @@
       return parseInt(a.dataset.index) - parseInt(b.dataset.index);
     });
 
-    // Add scroll mode classes
+    // Add scroll mode classes — but disable transitions first so we can position instantly
+    mosaicContainer.style.transition = 'none';
+    mosaic.style.transition = 'none';
+
     document.body.classList.add('scroll-mode');
     mosaicContainer.classList.add('scroll-mode');
     mosaic.classList.add('scroll-mode');
@@ -271,13 +279,23 @@
       mosaic.appendChild(img);
     });
 
+    // Position scroll instantly on the target image before anything is visible
+    const targetImg = imageElements.find(img => parseInt(img.dataset.index) === targetIndex);
+    if (targetImg) {
+      // Force layout so scroll-mode dimensions are computed
+      mosaicContainer.offsetHeight;
+      targetImg.scrollIntoView({ behavior: 'instant', inline: 'center', block: 'nearest' });
+      targetImg.classList.add('centered');
+    }
+
+    // Now re-enable transitions and fade in from opacity
+    requestAnimationFrame(() => {
+      mosaicContainer.style.transition = '';
+      mosaic.style.transition = '';
+    });
+
     // Enable scroll listener
     mosaicContainer.addEventListener('scroll', updateCurrentImageIndicator);
-
-    // Wait for transition to complete, then scroll to target
-    setTimeout(() => {
-      scrollToImage(targetIndex);
-    }, 600);
   }
 
   function switchToMosaicMode() {
@@ -291,20 +309,28 @@
     // Remove body data attribute
     document.body.removeAttribute('data-current-index');
 
-    // Remove scroll mode classes
+    // Disable scroll listener & clean up centered class
+    mosaicContainer.removeEventListener('scroll', updateCurrentImageIndicator);
+    imageElements.forEach(img => img.classList.remove('centered'));
+
+    // Remove scroll mode classes — but disable transitions to position instantly first
+    mosaicContainer.style.transition = 'none';
+    mosaic.style.transition = 'none';
+
     document.body.classList.remove('scroll-mode');
     mosaicContainer.classList.remove('scroll-mode');
     mosaic.classList.remove('scroll-mode');
     mosaic.style.height = mosaicModeHeight;
 
-    // Disable scroll listener
-    mosaicContainer.removeEventListener('scroll', updateCurrentImageIndicator);
+    // Center on the image we were viewing, instantly
+    mosaicContainer.offsetHeight;
+    centerMosaicOnImage(currentScrollIndex, true);
 
-    // Wait for mosaic transition, then center the current image in viewport
-    setTimeout(() => {
-      if (currentMode !== 'mosaic') return;
-      centerMosaicOnImage(currentScrollIndex);
-    }, 620);
+    // Re-enable transitions
+    requestAnimationFrame(() => {
+      mosaicContainer.style.transition = '';
+      mosaic.style.transition = '';
+    });
   }
 
   function scrollToImage(index) {
@@ -315,7 +341,7 @@
     targetImg.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
   }
 
-  function centerMosaicOnImage(index) {
+  function centerMosaicOnImage(index, instant) {
     const targetImg = imageElements.find(img => parseInt(img.dataset.index) === index);
     if (!targetImg) return;
 
@@ -331,7 +357,7 @@
     mosaicContainer.scrollTo({
       top: Math.max(0, Math.min(desiredTop, maxTop)),
       left: Math.max(0, Math.min(desiredLeft, maxLeft)),
-      behavior: 'smooth',
+      behavior: instant ? 'instant' : 'smooth',
     });
   }
 
@@ -358,7 +384,12 @@
     if (closestImg) {
       const index = parseInt(closestImg.dataset.index);
       if (index !== currentScrollIndex) {
+        // Remove centered class from previous
+        const prev = imageElements.find(img => parseInt(img.dataset.index) === currentScrollIndex);
+        if (prev) prev.classList.remove('centered');
+
         currentScrollIndex = index;
+        closestImg.classList.add('centered');
         history.replaceState(null, null, `#scroll-${index}`);
         document.body.setAttribute('data-current-index', index);
       }
@@ -389,6 +420,73 @@
     if (currentMode !== 'scroll') return;
     if (e.target.closest('.mosaic-image')) return;
     switchToMosaicMode();
+  });
+
+  // ===========================
+  // Viewport hover system (mosaic mode)
+  // Center of viewport acts as virtual cursor; real mouse takes priority
+  // ===========================
+
+  function getHoverPoint() {
+    if (mouseActive) return { x: mouseX, y: mouseY };
+    return { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+  }
+
+  function findBottomImageAt(px, py) {
+    // Find all images under the point, return the one with lowest z-index (buried one)
+    let best = null;
+    let bestZ = Infinity;
+    for (const img of imageElements) {
+      const rect = img.getBoundingClientRect();
+      if (px >= rect.left && px <= rect.right && py >= rect.top && py <= rect.bottom) {
+        const z = parseInt(img.style.zIndex) || 0;
+        if (z < bestZ) {
+          bestZ = z;
+          best = img;
+        }
+      }
+    }
+    return best;
+  }
+
+  function updateViewportHover() {
+    if (currentMode !== 'mosaic') return;
+    const { x, y } = getHoverPoint();
+    const hit = findBottomImageAt(x, y);
+
+    if (hit !== currentViewportHover && !hoverCooldown) {
+      if (currentViewportHover) currentViewportHover.classList.remove('viewport-hover');
+      if (hit) {
+        hit.classList.add('viewport-hover');
+        hit.style.zIndex = ++topZ;
+        hoverCooldown = true;
+        setTimeout(() => { hoverCooldown = false; }, 300);
+      }
+      currentViewportHover = hit;
+    }
+  }
+
+  // Track real mouse — active while moving, falls back to viewport center when idle
+  mosaicContainer.addEventListener('mouseleave', () => {
+    mouseActive = false;
+    clearTimeout(mouseTimeout);
+    updateViewportHover();
+  });
+  mosaicContainer.addEventListener('mousemove', (e) => {
+    mouseActive = true;
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    clearTimeout(mouseTimeout);
+    mouseTimeout = setTimeout(() => {
+      mouseActive = false;
+      updateViewportHover();
+    }, 200);
+    updateViewportHover();
+  });
+
+  // Update on scroll (viewport center changes)
+  mosaicContainer.addEventListener('scroll', () => {
+    if (currentMode === 'mosaic') updateViewportHover();
   });
 
   // ===========================
