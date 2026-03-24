@@ -19,6 +19,12 @@ body {
   background: #0f0f12;
   color: #E6E6E6;
   overflow-x: hidden;
+  animation: page-fade-in 0.5s ease-out;
+}
+
+@keyframes page-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* Variables CSS globales */
