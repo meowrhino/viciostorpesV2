@@ -1,0 +1,58 @@
+COMO CAMBIAR EL EMAIL DEL FORMULARIO DE CONTACTO
+==================================================
+
+El formulario de booking.html usa Formsubmit.co para enviar emails.
+No requiere backend ni cuenta — solo cambiar el email en el HTML.
+
+
+PASO 1: Cambiar el email destino
+---------------------------------
+Abrir booking.html y buscar esta linea (esta cerca del principio del <form>):
+
+    <form class="booking-form" action="https://formsubmit.co/manuellatourf@gmail.com" ...
+
+Cambiar "manuellatourf@gmail.com" por el email del cliente. Por ejemplo:
+
+    <form class="booking-form" action="https://formsubmit.co/cliente@gmail.com" ...
+
+
+PASO 2: Activar el nuevo email
+-------------------------------
+La PRIMERA vez que alguien envia el formulario con el nuevo email,
+Formsubmit enviara un email de activacion al email del cliente.
+
+El cliente debe:
+1. Abrir su bandeja de entrada
+2. Buscar el email de Formsubmit
+3. Hacer clic en "Activate Form"
+
+Solo hay que hacerlo UNA vez. Despues de eso, todos los envios
+llegan directamente sin confirmacion.
+
+
+PASO 3 (opcional): Usar email hasheado para evitar spam
+--------------------------------------------------------
+Formsubmit permite usar una version hasheada del email para que
+los bots no lo scrapen del codigo fuente.
+
+1. Ir a https://formsubmit.co/ y poner el email del cliente
+2. Formsubmit te dara un hash (algo como "a1b2c3d4e5f6...")
+3. Reemplazar el email por el hash en booking.html:
+
+    action="https://formsubmit.co/a1b2c3d4e5f6..."
+
+
+NOTAS
+------
+- El plan gratis de Formsubmit es ilimitado (sin limite de envios)
+- Soporta adjuntos de imagen (ya configurado en el formulario)
+- El email que llega tiene formato basico de Formsubmit (no personalizable en gratis)
+- Si el cliente quiere desactivar el captcha, ya esta desactivado (_captcha=false)
+- El honeypot anti-spam ya esta configurado (_honey field oculto)
+
+
+ARCHIVOS RELACIONADOS
+----------------------
+booking.html  — El formulario HTML (aqui se cambia el email)
+js/booking.js — Logica de envio AJAX + mensaje de confirmacion
+css/booking.css — Estilos del formulario
