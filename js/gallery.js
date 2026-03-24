@@ -505,4 +505,92 @@
   if (currentMode === 'scroll') {
     mosaicContainer.addEventListener('scroll', updateCurrentImageIndicator);
   }
+
+  // ===========================
+  // Zoom system (mosaic mode only)
+  // Ctrl+scroll on desktop, pinch on mobile
+  // Resizes mosaic + repositions all images so scrollable area matches
+  // ===========================
+
+  let zoomLevel = 1;
+  const ZOOM_MIN = 0.3;
+  const ZOOM_MAX = 2;
+  const ZOOM_STEP = 0.1;
+
+  function applyZoom(newZoom, originX, originY) {
+    const oldZoom = zoomLevel;
+    zoomLevel = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, newZoom));
+    if (zoomLevel === oldZoom) return;
+
+    // Resize mosaic container to match zoom
+    mosaic.style.width = (mosaicWidth * zoomLevel) + 'px';
+    mosaic.style.height = (mosaicHeight * zoomLevel) + 'px';
+
+    // Reposition and resize all images
+    for (const img of imageElements) {
+      const ox = parseFloat(img.dataset.mosaicX);
+      const oy = parseFloat(img.dataset.mosaicY);
+      const ow = parseFloat(img.dataset.mosaicW);
+      const oh = parseFloat(img.dataset.mosaicH);
+
+      img.style.left = (ox * zoomLevel) + 'px';
+      img.style.top = (oy * zoomLevel) + 'px';
+      img.style.width = (ow * zoomLevel) + 'px';
+      img.style.height = (oh * zoomLevel) + 'px';
+    }
+
+    // Adjust scroll to keep the zoom centered on the pointer
+    const ratio = zoomLevel / oldZoom;
+    const scrollLeft = (mosaicContainer.scrollLeft + originX) * ratio - originX;
+    const scrollTop = (mosaicContainer.scrollTop + originY) * ratio - originY;
+    mosaicContainer.scrollTo({ left: scrollLeft, top: scrollTop, behavior: 'instant' });
+  }
+
+  // Ctrl + scroll wheel
+  mosaicContainer.addEventListener('wheel', (e) => {
+    if (currentMode !== 'mosaic') return;
+    if (!e.ctrlKey && !e.metaKey) return;
+    e.preventDefault();
+
+    const rect = mosaicContainer.getBoundingClientRect();
+    const originX = e.clientX - rect.left;
+    const originY = e.clientY - rect.top;
+    const delta = e.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP;
+    applyZoom(zoomLevel + delta, originX, originY);
+  }, { passive: false });
+
+  // Pinch to zoom (touch)
+  let lastPinchDist = 0;
+  let pinching = false;
+
+  mosaicContainer.addEventListener('touchstart', (e) => {
+    if (currentMode !== 'mosaic') return;
+    if (e.touches.length === 2) {
+      pinching = true;
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      lastPinchDist = Math.hypot(dx, dy);
+    }
+  });
+
+  mosaicContainer.addEventListener('touchmove', (e) => {
+    if (!pinching || e.touches.length !== 2) return;
+    e.preventDefault();
+
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    const dist = Math.hypot(dx, dy);
+
+    const rect = mosaicContainer.getBoundingClientRect();
+    const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+    const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
+
+    const scale = dist / lastPinchDist;
+    applyZoom(zoomLevel * scale, midX, midY);
+    lastPinchDist = dist;
+  }, { passive: false });
+
+  mosaicContainer.addEventListener('touchend', () => {
+    pinching = false;
+  });
 })();

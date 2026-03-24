@@ -15,13 +15,7 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  filter: brightness(0.5);
   z-index: -1;
-  transition: filter 0.6s ease;
-}
-
-body.scroll-mode .gallery-bg {
-  filter: brightness(0.3);
 }
 
 /* ===========================
@@ -34,7 +28,6 @@ body.scroll-mode .gallery-bg {
   overflow: auto;
   padding: 6rem 2rem 4rem;
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  -webkit-overflow-scrolling: touch;
 }
 
 .mosaic {
