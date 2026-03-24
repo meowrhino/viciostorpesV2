@@ -98,7 +98,12 @@
   for (let i = 0; i < config.imageCount; i++) {
     images.push({ index: i, src: `${config.imagePath}${i}.webp` });
   }
-  const shuffled = [...images].sort(() => Math.random() - 0.5);
+  // Fisher-Yates shuffle
+  const shuffled = [...images];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
 
   const mosaic = document.getElementById('mosaic');
   const mosaicContainer = document.querySelector('.mosaic-container');
@@ -303,8 +308,8 @@
 
     currentMode = 'mosaic';
 
-    // Update URL hash
-    window.location.hash = '';
+    // Clean URL hash
+    history.replaceState(null, null, window.location.pathname);
 
     // Remove body data attribute
     document.body.removeAttribute('data-current-index');
@@ -501,10 +506,7 @@
   // Listen for hash changes
   window.addEventListener('hashchange', handleHashChange);
 
-  // Update indicator on scroll in scroll mode
-  if (currentMode === 'scroll') {
-    mosaicContainer.addEventListener('scroll', updateCurrentImageIndicator);
-  }
+  // (scroll listener for updateCurrentImageIndicator is added inside switchToScrollMode)
 
   // ===========================
   // Zoom system (mosaic mode only)

@@ -26,7 +26,8 @@ body {
   --text-color: #E6E6E6;
   --text-hover: #FFFFFF;
   --bg-dark: #0f0f12;
-  --overlay-dark: rgba(0, 0, 0, 0.4);
+  --accent: #c81e1e;
+  --accent-hover: #ff3c3c;
   --transition-speed: 0.3s;
 }
 
@@ -49,11 +50,3 @@ button {
   background: none;
 }
 
-/* Utilidades */
-.hidden {
-  display: none !important;
-}
-
-.no-scroll {
-  overflow: hidden;
-}

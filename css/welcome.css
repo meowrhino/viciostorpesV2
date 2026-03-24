@@ -2,11 +2,7 @@
    welcome.css — Landing page with positioned images
    =========================== */
 
-body {
-  margin: 0;
-  overflow: hidden;
-  background: #0f0f12;
-}
+body { overflow: hidden; }
 
 #grid-container {
   width: 100dvw;

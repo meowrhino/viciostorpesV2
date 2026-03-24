@@ -2,12 +2,7 @@
    booking.css — Formulario minimal
    =========================== */
 
-body {
-  margin: 0;
-  overflow-y: auto;
-  background: #0f0f12;
-  font-family: "Helvetica Neue", Arial, sans-serif;
-}
+body { font-family: "Helvetica Neue", Arial, sans-serif; }
 
 /* Fondo fijo */
 .booking-bg {
@@ -76,7 +71,7 @@ body {
 .form-input:focus,
 .form-textarea:focus {
   outline: none;
-  border-bottom-color: #c81e1e;
+  border-bottom-color: var(--accent);
 }
 
 .form-input::placeholder,
@@ -101,7 +96,7 @@ body {
 .form-file::file-selector-button {
   background: rgba(200, 30, 30, 0.15);
   border: 1px solid rgba(200, 30, 30, 0.4);
-  color: #c81e1e;
+  color: var(--accent);
   padding: 0.35rem 0.8rem;
   font-family: inherit;
   font-size: 0.8rem;
@@ -130,13 +125,13 @@ body {
   background: none;
   border: none;
   border-radius: 0;
-  color: #c81e1e;
+  color: var(--accent);
   cursor: pointer;
   transition: color 0.25s ease, transform 0.25s ease, opacity 0.25s ease;
 }
 
 .form-submit:hover {
-  color: #ff3c3c;
+  color: var(--accent-hover);
   transform: scale(1.04);
 }
 
@@ -156,7 +151,7 @@ body {
 .form-confirmation p {
   font-size: clamp(1.2rem, 2.5vw, 1.8rem);
   font-weight: 600;
-  color: #c81e1e;
+  color: var(--accent);
   margin-bottom: 0.5rem;
   text-transform: lowercase;
   letter-spacing: 0.04em;
