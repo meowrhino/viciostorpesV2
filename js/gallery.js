@@ -327,6 +327,18 @@
     mosaic.classList.remove('scroll-mode');
     mosaic.style.height = mosaicModeHeight;
 
+    // Reset zoom to 1x
+    if (zoomLevel !== 1) {
+      zoomLevel = 1;
+      mosaic.style.width = mosaicWidth + 'px';
+      for (const img of imageElements) {
+        img.style.left = img.dataset.mosaicX + 'px';
+        img.style.top = img.dataset.mosaicY + 'px';
+        img.style.width = img.dataset.mosaicW + 'px';
+        img.style.height = img.dataset.mosaicH + 'px';
+      }
+    }
+
     // Center on the image we were viewing, instantly
     mosaicContainer.offsetHeight;
     centerMosaicOnImage(currentScrollIndex, true);
