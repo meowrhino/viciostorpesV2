@@ -26,7 +26,7 @@
   bg.style.backgroundImage = `url('${welcomeBackground}')`;
   cell.appendChild(bg);
 
-  // Positioned decorative images (based on REFERENCE.webp layout)
+  // Positioned decorative images
   const images = [
     { src: 'data/welcome/0.webp', position: 'hang-left' },       // Creature, top-left hanging
     { src: 'data/welcome/1.webp', position: 'birds-overlay' },   // Birds/butterflies over welcome

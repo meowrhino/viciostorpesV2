@@ -1,7 +1,28 @@
 // booking.js — AJAX submit + confirmation message for Formsubmit.co
+// Reads customizable texts (subject, confirmation, error) from data.json
 
-const form = document.querySelector('.booking-form');
-if (form) {
+(async function () {
+  const form = document.querySelector('.booking-form');
+  if (!form) return;
+
+  // Default texts (fallback if data.json fails to load)
+  let config = {
+    emailSubject: 'Nueva reserva — ViciosTorpes',
+    confirmation: { title: 'Mensaje enviado', message: 'Te contactaré pronto' },
+    errorMessage: 'Error al enviar. Inténtalo de nuevo.',
+  };
+
+  try {
+    const data = await fetch('data.json').then(r => r.json());
+    if (data.booking) config = { ...config, ...data.booking };
+  } catch (err) {
+    console.warn('booking.js: Failed to load data.json, using defaults', err);
+  }
+
+  // Apply email subject to the hidden Formsubmit field
+  const subjectInput = form.querySelector('input[name="_subject"]');
+  if (subjectInput) subjectInput.value = config.emailSubject;
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -22,8 +43,8 @@ if (form) {
       // Replace form with confirmation
       form.innerHTML = `
         <div class="form-confirmation">
-          <p>Mensaje enviado</p>
-          <span>Te contactaré pronto</span>
+          <p>${config.confirmation.title}</p>
+          <span>${config.confirmation.message}</span>
         </div>
       `;
     } catch (err) {
@@ -33,9 +54,9 @@ if (form) {
       if (existing) existing.remove();
       const msg = document.createElement('div');
       msg.className = 'form-error';
-      msg.textContent = 'Error al enviar. Inténtalo de nuevo.';
+      msg.textContent = config.errorMessage;
       submitBtn.after(msg);
       setTimeout(() => msg.remove(), 5000);
     }
   });
-}
+})();

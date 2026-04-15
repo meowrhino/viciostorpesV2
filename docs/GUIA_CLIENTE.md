@@ -1,0 +1,228 @@
+# Guía para mantener la web
+
+Esta web es estática: solo HTML, CSS, JS e imágenes. No hay servidor ni base de datos.
+Para actualizar contenido se editan archivos y se suben al hosting (por FTP, GitHub, Netlify, etc.).
+
+---
+
+## ⚠️ LÉEME PRIMERO — cosas importantes
+
+### Al recibir la web — activar el formulario
+La **primera vez** que alguien envíe el formulario te llegará un email de **Formsubmit**
+con el asunto *"Confirm your email"*. Abre ese email y clica el botón **"Activate Form"**.
+Si no lo haces, el formulario NO envía nada.
+Solo hay que hacerlo UNA vez. Después todo funciona automático.
+
+### Qué tocar y qué NO tocar
+- ✅ **Sí puedes tocar:** `data.json`, los archivos en `data/` (imágenes), el email en `booking.html`
+- ❌ **Mejor no toques:** archivos `.html`, `.css`, `.js` (si no sabes qué estás haciendo, se puede romper algo)
+- Si tocas algo por error, **no guardes**, cierra sin guardar y vuelve a abrir
+
+### Formato de imágenes
+- **Siempre WebP** — es el formato que usa la web. Si tienes JPG o PNG, conviértelos primero.
+- Conversores gratuitos online: [squoosh.app](https://squoosh.app), [cloudconvert.com](https://cloudconvert.com)
+- **Tamaño recomendado:** entre 1000–2000px de ancho. Más grande = web más lenta.
+- **Peso recomendado:** menos de 300 KB por imagen
+
+### Caché del navegador
+Si cambias una imagen y al abrir la web sigues viendo la vieja: es la caché del navegador.
+Solución: refrescar con **Ctrl+F5** (Windows) o **Cmd+Shift+R** (Mac).
+
+### Antes de subir cambios
+Abre los archivos en tu ordenador y comprueba que la web se ve bien en local antes de
+subirla al hosting. Cualquier error tipográfico en `data.json` rompe las galerías.
+
+---
+
+## 1. Cambiar el email que recibe el formulario
+
+Abrir `booking.html` y buscar esta línea (cerca del principio del `<form>`):
+
+```html
+<form class="booking-form" action="https://formsubmit.co/tu@email.com" ...
+```
+
+Cambiar el email por el que quieras recibir los avisos.
+
+**IMPORTANTE — solo la primera vez:**
+Cuando alguien envíe el formulario por primera vez con el nuevo email, Formsubmit
+manda un email de activación a esa dirección. Hay que abrirlo y clicar **"Activate Form"**.
+Solo una vez. Después llegan todos los envíos directamente.
+
+Más detalle técnico en [`SETUP_FORMSUBMIT.txt`](SETUP_FORMSUBMIT.txt).
+
+---
+
+## 2. Cambiar / añadir imágenes de las galerías
+
+Las galerías son **flashbook** y **tattoo**. Cada una tiene su carpeta:
+
+- `data/images/flashbook/` — imágenes del flashbook
+- `data/images/tattoo/` — tatuajes realizados
+
+### Reglas
+
+1. **Formato:** todas las imágenes deben ser `.webp` (convierte con cualquier herramienta online o Photoshop)
+2. **Nombre:** numeradas desde 0 sin saltos: `0.webp`, `1.webp`, `2.webp`, ...
+3. **Actualizar el contador** en `data.json`:
+
+```json
+{
+  "sections": {
+    "flashbook": {
+      "imageCount": 129,  ← poner aquí el número total de imágenes
+      ...
+    },
+    "tattoo": {
+      "imageCount": 72,   ← poner aquí el número total de imágenes
+      ...
+    }
+  }
+}
+```
+
+### Cómo añadir imágenes nuevas
+
+Si tienes 129 y quieres añadir 3 más:
+1. Guárdalas como `129.webp`, `130.webp`, `131.webp` en la carpeta
+2. En `data.json` cambia `"imageCount": 129` por `"imageCount": 132`
+
+### Cómo borrar o reemplazar
+
+Si borras una imagen del medio (por ejemplo `50.webp`), **hay que renumerar** las que van después
+para que no queden huecos. O bien, reemplaza el archivo directamente manteniendo el nombre.
+
+---
+
+## 3. Cambiar los textos del formulario
+
+Se editan desde `data.json`, en el bloque `"booking"`:
+
+```json
+"booking": {
+  "title": "How to Book",
+  "background": "data/backgrounds/howToBook.webp",
+  "emailSubject": "Nueva reserva — ViciosTorpes",
+  "confirmation": {
+    "title": "Mensaje enviado",
+    "message": "Te contactaré pronto"
+  },
+  "errorMessage": "Error al enviar. Inténtalo de nuevo."
+}
+```
+
+- `emailSubject` — asunto del email que te llega cuando alguien rellena el formulario
+- `confirmation.title` y `confirmation.message` — mensaje que ve el usuario tras enviar el formulario
+- `errorMessage` — texto de error si falla el envío
+
+---
+
+## 4. Cambiar los fondos de sección
+
+Los fondos están en `data/backgrounds/`:
+
+- `welcome.webp` — fondo de la página de inicio
+- `flashbook.webp` — fondo detrás del flashbook
+- `tattoo.webp` — fondo detrás de los tatuajes
+- `howToBook.webp` — fondo del formulario
+
+Para cambiarlos: reemplaza el archivo manteniendo el mismo nombre.
+
+---
+
+## 5. Imágenes decorativas del landing (página de inicio)
+
+En `data/welcome/`:
+
+- `welcome.webp` — el texto "Welcome" del centro
+- `0.webp` a `6.webp` — los elementos decorativos (criaturas, caballos, etc.)
+
+Para cambiarlos: reemplaza el archivo manteniendo el nombre.
+El layout (posiciones) está definido en `js/welcome.js` y `css/welcome.css`.
+
+---
+
+## 6. Cambiar el dominio (si migras de dominio)
+
+Si en algún momento cambias `viciostorpes.com` por otro dominio, hay que actualizar las URLs en:
+
+- `index.html` — canonical, Open Graph, Twitter Card, Schema.org (4-5 líneas al principio)
+- `flashbook.html` — canonical, Open Graph, Twitter Card
+- `tattoo.html` — canonical, Open Graph, Twitter Card
+- `booking.html` — canonical, Open Graph, Twitter Card, campo `_next` del form
+- `sitemap.xml` — las 4 URLs
+- `robots.txt` — la URL del sitemap
+
+Buscar y reemplazar `viciostorpes.com` por el nuevo dominio en todos los archivos.
+
+---
+
+## 7. SEO — qué hay configurado
+
+Cada página tiene:
+- `<title>`, meta description, keywords
+- Canonical (URL oficial de la página)
+- Open Graph (cómo se ve al compartir en WhatsApp, Facebook)
+- Twitter Card (cómo se ve al compartir en Twitter/X)
+- Schema.org (solo el index, marca la página como perfil de persona/artista)
+
+Archivos SEO en la raíz:
+- `robots.txt` — permite indexar todo
+- `sitemap.xml` — lista las 4 páginas para Google
+
+Para que Google indexe la web:
+1. Ir a [Google Search Console](https://search.google.com/search-console)
+2. Añadir la propiedad del dominio
+3. Subir el sitemap: `https://tudominio.com/sitemap.xml`
+
+---
+
+## 8. Problemas frecuentes
+
+### "Cambié una imagen y sigue apareciendo la antigua"
+Es la caché del navegador. Refresca con **Ctrl+F5** (Windows) o **Cmd+Shift+R** (Mac).
+
+### "Envié el formulario de prueba y no me ha llegado nada"
+- ¿Activaste el email con Formsubmit la primera vez? (ver sección LÉEME arriba)
+- Revisa la carpeta de **spam / promociones** — a veces caen ahí los primeros
+- ¿Escribiste bien el email en `booking.html`? Un typo y no llega
+
+### "Las galerías aparecen vacías o rotas"
+Casi seguro un error en `data.json`. Causas típicas:
+- Una coma de más o de menos
+- `imageCount` no coincide con el número real de archivos
+- Falta una imagen numerada (ej. tienes 0, 1, 3 pero falta 2.webp)
+
+Abre `data.json` y comprueba que las comas y llaves cuadran.
+
+### "Subo una imagen nueva y no aparece"
+- ¿La convertiste a `.webp`?
+- ¿La nombraste siguiendo el orden (la siguiente al último número)?
+- ¿Actualizaste `imageCount` en `data.json`?
+- ¿Refrescaste con Ctrl+F5?
+
+### "Quiero contactar al desarrollador"
+La web la hizo **manu (@meowrhino)**. Si algo se rompe y no sabes arreglarlo, contacta.
+
+---
+
+## Resumen rápido
+
+| Tarea | Archivo a tocar |
+|-------|-----------------|
+| Cambiar email del formulario | `booking.html` |
+| Cambiar textos del formulario (asunto, confirmación, error) | `data.json` |
+| Añadir imagen flashbook | `data/images/flashbook/` + `data.json` |
+| Añadir imagen tattoo | `data/images/tattoo/` + `data.json` |
+| Cambiar fondo de sección | `data/backgrounds/` |
+| Cambiar favicon | `data/favicon.png` |
+| Cambiar dominio | todos los `.html` + `sitemap.xml` + `robots.txt` |
+
+---
+
+## Checklist de entrega (primer día)
+
+- [ ] Abrir el email de Formsubmit y clicar "Activate Form"
+- [ ] Hacer un envío de prueba del formulario y comprobar que llega
+- [ ] Si usas un dominio propio, registrar la web en [Google Search Console](https://search.google.com/search-console) y subir el sitemap
+- [ ] Compartir la web en WhatsApp/Instagram para comprobar que la previsualización sale bien (Open Graph)

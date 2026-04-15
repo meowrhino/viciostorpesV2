@@ -19,6 +19,12 @@
   },
   "booking": {
     "title": "How to Book",
-    "background": "data/backgrounds/howToBook.webp"
+    "background": "data/backgrounds/howToBook.webp",
+    "emailSubject": "Nueva reserva — ViciosTorpes",
+    "confirmation": {
+      "title": "Mensaje enviado",
+      "message": "Te contactaré pronto"
+    },
+    "errorMessage": "Error al enviar. Inténtalo de nuevo."
   }
 }

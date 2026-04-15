@@ -20,16 +20,17 @@ viciostorpesV2/
 ├── js/
 │   ├── welcome.js      # Generación dinámica de la página de inicio
 │   ├── gallery.js      # Motor de galería dual (compartido flashbook/tattoo)
-│   └── booking.js      # Validación y envío del formulario (EmailJS)
+│   └── booking.js      # Envío AJAX del formulario (Formsubmit)
 ├── docs/
-│   └── EMAILJS_SETUP.md # Guía para configurar el envío de emails
+│   ├── GUIA_CLIENTE.md    # Guía de mantenimiento para el cliente
+│   └── SETUP_FORMSUBMIT.txt # Cómo cambiar el email del formulario
 └── data/
     ├── backgrounds/    # Fondos de sección (.webp)
     ├── images/
     │   ├── flashbook/  # 0.webp — 128.webp (129 imágenes)
     │   └── tattoo/     # 0.webp — 71.webp (72 imágenes)
     ├── welcome/        # Imágenes decorativas del landing (0-6 + welcome.webp)
-    └── navicon/        # Favicon
+    └── favicon.png     # Favicon
 ```
 
 ## Páginas
@@ -59,7 +60,7 @@ Flashbook scrollea hacia la izquierda (CSS `direction: rtl`); tattoo scrollea ha
 
 ### Booking (`booking.html`)
 
-Formulario de contacto con campos: nombre, email, teléfono, localidad y descripción. Validación client-side con regex para email y comprobación de campos requeridos. Envío via [EmailJS](https://www.emailjs.com) (200 emails/mes gratis). Ver [`docs/EMAILJS_SETUP.md`](docs/EMAILJS_SETUP.md) para configurar.
+Formulario de contacto con campos: nombre, email, teléfono, localidad, descripción e imágenes adjuntas. Envío AJAX vía [Formsubmit](https://formsubmit.co) (sin backend, sin cuenta, ilimitado). Ver [`docs/SETUP_FORMSUBMIT.txt`](docs/SETUP_FORMSUBMIT.txt) para cambiar el email destino.
 
 ## Navegación
 
@@ -97,7 +98,7 @@ Para añadir imágenes: subirlas numeradas a la carpeta correspondiente y actual
 - **JavaScript ES6+** — vanilla, async/await, Fetch API
 - **Tipografía**: Sofia Sans Extra Condensed (Google Fonts)
 - **Imágenes**: formato WebP
-- **EmailJS** — envío de formulario sin backend
+- **Formsubmit** — envío de formulario sin backend
 - **Zero build** — sin npm, sin bundler, sin transpilación
 
 ## Paleta

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://viciostorpes.com/sitemap.xml
