@@ -60,7 +60,7 @@ Flashbook scrollea hacia la izquierda (CSS `direction: rtl`); tattoo scrollea ha
 
 ### Booking (`booking.html`)
 
-Formulario de contacto (interfaz en inglés) con campos: name, email, phone, location, description e imágenes adjuntas. Validación client-side de email y teléfono con errores inline. Los adjuntos se pueden añadir en varias tandas con previsualización de miniatura y botón ✕ para quitar (máx. 10 archivos, 8 MB c/u). Envío AJAX vía [Formsubmit](https://formsubmit.co) (sin backend, sin cuenta, ilimitado). Ver [`docs/SETUP_FORMSUBMIT.txt`](docs/SETUP_FORMSUBMIT.txt) para cambiar el email destino.
+Formulario de contacto (interfaz en inglés) con campos: name, email, instagram (opcional), location, description e imágenes adjuntas. Validación client-side de email e instagram con errores inline. Los adjuntos se pueden añadir en varias tandas con previsualización de miniatura y botón ✕ para quitar (máx. 10 archivos, 5 MB c/u, 9 MB total — Formsubmit limita a 10 MB). Envío híbrido: sin adjuntos se manda vía AJAX (confirmación inline); con adjuntos se hace submit nativo + redirect (`_next?sent=1`) porque Formsubmit no adjunta archivos a través del endpoint AJAX. Ver [`docs/SETUP_FORMSUBMIT.txt`](docs/SETUP_FORMSUBMIT.txt) para cambiar el email destino.
 
 ## Navegación
 

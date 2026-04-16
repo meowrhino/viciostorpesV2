@@ -40,7 +40,7 @@
       <!-- Formsubmit config -->
       <input type="hidden" name="_subject" value="New booking — ViciosTorpes">
       <input type="hidden" name="_captcha" value="false">
-      <input type="hidden" name="_next" value="https://viciostorpes.com/booking.html">
+      <input type="hidden" name="_next" value="https://viciostorpes.com/booking.html?sent=1">
       <input type="text" name="_honey" style="display:none">
 
       <!-- Name -->
@@ -72,18 +72,18 @@
         >
       </div>
 
-      <!-- Phone -->
+      <!-- Instagram username (optional) -->
       <div class="form-group">
-        <label for="phone" class="form-label">Phone</label>
+        <label for="instagram" class="form-label">Instagram (optional)</label>
         <input
-          type="tel"
-          id="phone"
-          name="phone"
+          type="text"
+          id="instagram"
+          name="instagram"
           class="form-input"
-          autocomplete="tel"
-          inputmode="tel"
-          pattern="^[0-9+\s\-().]{7,25}$"
-          placeholder="+34 600 000 000"
+          autocomplete="username"
+          inputmode="text"
+          pattern="^@?[A-Za-z0-9._]{1,30}$"
+          placeholder="@yourhandle"
         >
       </div>
 
@@ -124,7 +124,7 @@
           accept="image/*"
           multiple
         >
-        <p class="form-hint">You can add them in multiple batches. Click ✕ to remove one.</p>
+        <p class="form-hint">You can add them in multiple batches. Click ✕ to remove one. Total size up to 9 MB.</p>
         <ul id="attachment-previews" class="attachment-previews" aria-live="polite"></ul>
       </div>
 

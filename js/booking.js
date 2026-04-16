@@ -23,12 +23,29 @@
   const subjectInput = form.querySelector('input[name="_subject"]');
   if (subjectInput) subjectInput.value = config.emailSubject;
 
+  // Si volvemos de Formsubmit tras un envío con adjuntos (_next?sent=1),
+  // mostramos la confirmación sin esperar a que el usuario toque nada.
+  if (new URLSearchParams(location.search).get('sent') === '1') {
+    showConfirmation(config);
+    // Limpia la URL para que no se vuelva a mostrar en recarga
+    history.replaceState({}, '', location.pathname);
+    return;
+  }
+
   // --- Validación ------------------------------------------------------
   // Email: algo@algo.algo (sin espacios, al menos un punto después de @)
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  // Teléfono: dígitos, +, espacios, guiones, paréntesis, punto. 7-25 chars.
-  //           Tras quitar separadores debe tener entre 7 y 15 dígitos (E.164).
-  const PHONE_RE = /^[0-9+\s\-().]{7,25}$/;
+  // Instagram: 1-30 chars (letras, dígitos, punto, guion bajo), @ opcional delante.
+  const IG_RE = /^@?[A-Za-z0-9._]{1,30}$/;
+
+  function showConfirmation(cfg) {
+    form.innerHTML = `
+      <div class="form-confirmation">
+        <p>${cfg.confirmation.title}</p>
+        <span>${cfg.confirmation.message}</span>
+      </div>
+    `;
+  }
 
   function setFieldError(input, message) {
     clearFieldError(input);
@@ -50,7 +67,6 @@
   function validate() {
     let ok = true;
     const email = form.querySelector('#email');
-    const phone = form.querySelector('#phone');
 
     if (email) {
       const v = email.value.trim();
@@ -65,14 +81,14 @@
       }
     }
 
-    if (phone && phone.value.trim()) {
-      const v = phone.value.trim();
-      const digits = v.replace(/[^\d]/g, '');
-      if (!PHONE_RE.test(v) || digits.length < 7 || digits.length > 15) {
-        setFieldError(phone, 'Invalid phone number (digits only, 7-15 digits, optional +).');
+    const instagram = form.querySelector('#instagram');
+    if (instagram && instagram.value.trim()) {
+      const v = instagram.value.trim();
+      if (!IG_RE.test(v)) {
+        setFieldError(instagram, 'Invalid Instagram handle (letters, digits, . or _).');
         ok = false;
       } else {
-        clearFieldError(phone);
+        clearFieldError(instagram);
       }
     }
 
@@ -80,7 +96,7 @@
   }
 
   // Limpia el error al editar el campo
-  ['email', 'phone'].forEach((id) => {
+  ['email', 'instagram'].forEach((id) => {
     const el = form.querySelector('#' + id);
     if (el) el.addEventListener('input', () => clearFieldError(el));
   });
@@ -90,10 +106,16 @@
   const previewList = form.querySelector('#attachment-previews');
   // Fuente de verdad: array de File. El input.files se sincroniza vía DataTransfer.
   const attached = [];
-  // Límites razonables para evitar correos enormes
+  // Límites: Formsubmit caps total attachment size at 10 MB. Dejamos buffer.
   const MAX_FILES = 10;
-  const MAX_FILE_MB = 8;
+  const MAX_FILE_MB = 5;
   const MAX_FILE_BYTES = MAX_FILE_MB * 1024 * 1024;
+  const MAX_TOTAL_MB = 9;
+  const MAX_TOTAL_BYTES = MAX_TOTAL_MB * 1024 * 1024;
+
+  function totalSize() {
+    return attached.reduce((sum, f) => sum + f.size, 0);
+  }
 
   function fileKey(f) {
     // Evita duplicados exactos
@@ -181,6 +203,10 @@
           errors.push(`"${f.name}" exceeds ${MAX_FILE_MB} MB.`);
           continue;
         }
+        if (totalSize() + f.size > MAX_TOTAL_BYTES) {
+          errors.push(`Total size would exceed ${MAX_TOTAL_MB} MB.`);
+          break;
+        }
         const key = fileKey(f);
         if (keys.has(key)) continue; // duplicado
         keys.add(key);
@@ -202,10 +228,44 @@
       return;
     }
 
+    // Total size guard (Formsubmit cap ~10 MB)
+    if (totalSize() > MAX_TOTAL_BYTES) {
+      showAttachmentError(`Total size exceeds ${MAX_TOTAL_MB} MB. Remove some images.`);
+      return;
+    }
+
     const submitBtn = form.querySelector('.form-submit');
     submitBtn.disabled = true;
     submitBtn.textContent = 'Sending...';
 
+    // --- Dos rutas de envío ---
+    // El endpoint AJAX de Formsubmit NO adjunta archivos de forma fiable
+    // (sus docs omiten el caso y avisan de que autoresponse falla en AJAX).
+    // Por eso, si hay adjuntos, hacemos submit nativo: el navegador sube los
+    // archivos como multipart, Formsubmit los adjunta al correo, y `_next`
+    // nos trae de vuelta a booking.html?sent=1 donde mostramos la confirmación.
+    if (attached.length > 0) {
+      // Sustituye el input múltiple por N inputs de archivo con nombres
+      // distintos (attachment1, attachment2, ...) — el formato que los
+      // docs de Formsubmit recomiendan ("use several file input fields").
+      const parent = fileInput.parentElement;
+      fileInput.remove();
+      attached.forEach((f, i) => {
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'file';
+        hiddenInput.name = 'attachment' + (i + 1);
+        hiddenInput.style.display = 'none';
+        const dt = new DataTransfer();
+        dt.items.add(f);
+        hiddenInput.files = dt.files;
+        parent.appendChild(hiddenInput);
+      });
+      // Envío nativo: el navegador navega a Formsubmit y vuelve a ?sent=1.
+      form.submit();
+      return;
+    }
+
+    // Sin adjuntos: AJAX para confirmación inline (sin navegación).
     try {
       const formData = new FormData(form);
       const response = await fetch(form.action, {
@@ -216,13 +276,7 @@
 
       if (!response.ok) throw new Error(response.statusText);
 
-      // Replace form with confirmation
-      form.innerHTML = `
-        <div class="form-confirmation">
-          <p>${config.confirmation.title}</p>
-          <span>${config.confirmation.message}</span>
-        </div>
-      `;
+      showConfirmation(config);
     } catch (err) {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Send';

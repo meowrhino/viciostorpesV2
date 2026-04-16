@@ -13,6 +13,14 @@ con el asunto *"Confirm your email"*. Abre ese email y clica el botón **"Activa
 Si no lo haces, el formulario NO envía nada.
 Solo hay que hacerlo UNA vez. Después todo funciona automático.
 
+### Formsubmit — cupos y límite de adjuntos
+- **Envíos**: ilimitados en el plan gratuito. No hay cupo diario.
+- **Adjuntos**: máximo **10 MB en total por envío** (sumando todas las imágenes).
+  La web ya lo limita a **9 MB** para dejar margen; si alguien intenta adjuntar
+  más, le aparece un aviso y no se envía hasta que quite fotos.
+- Si una persona manda 15 fotos de 2 MB cada una, no llegarán todas. Tiene que
+  bajar el peso o mandar menos.
+
 ### Qué tocar y qué NO tocar
 - ✅ **Sí puedes tocar:** `data.json` (textos), los archivos en `data/` (imágenes), el email en `booking.html`
 - ❌ **Mejor no toques:** archivos `.html`, `.css`, `.js` (si no sabes qué estás haciendo, se puede romper algo)
