@@ -99,7 +99,6 @@ El formulario está en **inglés** por defecto. Los textos que ve el usuario al 
 
 ```json
 "booking": {
-  "title": "How to Book",
   "background": "data/backgrounds/howToBook.webp",
   "emailSubject": "New booking — ViciosTorpes",
   "confirmation": {

@@ -83,13 +83,12 @@ Todo se gestiona desde `data.json`:
 
 ```json
 {
-  "welcome": { "title": "ViciosTorpes", "background": "..." },
+  "welcome": { "background": "..." },
   "sections": {
     "flashbook": { "imagePath": "data/images/flashbook/", "background": "..." },
     "tattoo":    { "imagePath": "data/images/tattoo/",    "background": "..." }
   },
   "booking": {
-    "title": "How to Book",
     "background": "...",
     "emailSubject": "...",
     "confirmation": { "title": "...", "message": "..." },

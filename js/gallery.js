@@ -195,7 +195,7 @@
     const img = document.createElement('img');
     img.className = 'mosaic-image';
     img.src = item.src;
-    img.alt = `${config.title} image`;
+    img.alt = '';
     img.dataset.index = item.index;
 
     return new Promise((resolve) => {

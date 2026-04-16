@@ -1,22 +1,18 @@
 {
   "welcome": {
-    "title": "ViciosTorpes",
     "background": "data/backgrounds/welcome.webp"
   },
   "sections": {
     "flashbook": {
-      "title": "Flashbook",
       "imagePath": "data/images/flashbook/",
       "background": "data/backgrounds/flashbook.webp"
     },
     "tattoo": {
-      "title": "Tattoo",
       "imagePath": "data/images/tattoo/",
       "background": "data/backgrounds/tattoo.webp"
     }
   },
   "booking": {
-    "title": "How to Book",
     "background": "data/backgrounds/howToBook.webp",
     "emailSubject": "New booking — ViciosTorpes",
     "confirmation": {
