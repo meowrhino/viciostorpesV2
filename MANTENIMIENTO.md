@@ -14,9 +14,13 @@ Si no lo haces, el formulario NO envía nada.
 Solo hay que hacerlo UNA vez. Después todo funciona automático.
 
 ### Qué tocar y qué NO tocar
-- ✅ **Sí puedes tocar:** `data.json`, los archivos en `data/` (imágenes), el email en `booking.html`
+- ✅ **Sí puedes tocar:** `data.json` (textos), los archivos en `data/` (imágenes), el email en `booking.html`
 - ❌ **Mejor no toques:** archivos `.html`, `.css`, `.js` (si no sabes qué estás haciendo, se puede romper algo)
 - Si tocas algo por error, **no guardes**, cierra sin guardar y vuelve a abrir
+
+### Añadir imágenes — es automático
+Para añadir/quitar imágenes **solo hay que tocar la carpeta** (`data/images/flashbook/` o
+`data/images/tattoo/`). La web detecta sola cuántas hay. Ver sección 2 para los detalles.
 
 ### Formato de imágenes
 - **Siempre WebP** — es el formato que usa la web. Si tienes JPG o PNG, conviértelos primero.
@@ -63,34 +67,20 @@ Las galerías son **flashbook** y **tattoo**. Cada una tiene su carpeta:
 ### Reglas
 
 1. **Formato:** todas las imágenes deben ser `.webp` (convierte con cualquier herramienta online o Photoshop)
-2. **Nombre:** numeradas desde 0 sin saltos: `0.webp`, `1.webp`, `2.webp`, ...
-3. **Actualizar el contador** en `data.json`:
+2. **Nombre:** numeradas desde 1 sin saltos: `1.webp`, `2.webp`, `3.webp`, ...
 
-```json
-{
-  "sections": {
-    "flashbook": {
-      "imageCount": 129,  ← poner aquí el número total de imágenes
-      ...
-    },
-    "tattoo": {
-      "imageCount": 72,   ← poner aquí el número total de imágenes
-      ...
-    }
-  }
-}
-```
+La web cuenta sola cuántas hay — **no hay que actualizar ningún contador**.
 
 ### Cómo añadir imágenes nuevas
 
-Si tienes 129 y quieres añadir 3 más:
-1. Guárdalas como `129.webp`, `130.webp`, `131.webp` en la carpeta
-2. En `data.json` cambia `"imageCount": 129` por `"imageCount": 132`
+Si tienes 129 y quieres añadir 3 más: guárdalas como `130.webp`, `131.webp`, `132.webp`
+en la carpeta. Ya está.
 
 ### Cómo borrar o reemplazar
 
 Si borras una imagen del medio (por ejemplo `50.webp`), **hay que renumerar** las que van después
-para que no queden huecos. O bien, reemplaza el archivo directamente manteniendo el nombre.
+para que no queden huecos (la web se para al encontrar un hueco). O bien, reemplaza el archivo
+directamente manteniendo el nombre.
 
 ---
 
@@ -188,17 +178,14 @@ Es la caché del navegador. Refresca con **Ctrl+F5** (Windows) o **Cmd+Shift+R**
 - ¿Escribiste bien el email en `booking.html`? Un typo y no llega
 
 ### "Las galerías aparecen vacías o rotas"
-Casi seguro un error en `data.json`. Causas típicas:
-- Una coma de más o de menos
-- `imageCount` no coincide con el número real de archivos
-- Falta una imagen numerada (ej. tienes 0, 1, 3 pero falta 2.webp)
-
-Abre `data.json` y comprueba que las comas y llaves cuadran.
+Causas típicas:
+- Error en `data.json` (coma de más o de menos) — abre `data.json` y comprueba que cuadra
+- Falta una imagen numerada (ej. tienes 1, 2, 4 pero falta 3.webp) — la web se para al encontrar un hueco
+- Ninguna imagen `1.webp` en la carpeta
 
 ### "Subo una imagen nueva y no aparece"
 - ¿La convertiste a `.webp`?
-- ¿La nombraste siguiendo el orden (la siguiente al último número)?
-- ¿Actualizaste `imageCount` en `data.json`?
+- ¿La nombraste siguiendo el orden (la siguiente al último número, sin huecos)?
 - ¿Refrescaste con Ctrl+F5?
 
 ### "Quiero contactar al desarrollador"
@@ -212,8 +199,8 @@ La web la hizo **manu (@meowrhino)**. Si algo se rompe y no sabes arreglarlo, co
 |-------|-----------------|
 | Cambiar email del formulario | `booking.html` |
 | Cambiar textos del formulario (asunto, confirmación, error) | `data.json` |
-| Añadir imagen flashbook | `data/images/flashbook/` + `data.json` |
-| Añadir imagen tattoo | `data/images/tattoo/` + `data.json` |
+| Añadir imagen flashbook | `data/images/flashbook/` (automático) |
+| Añadir imagen tattoo | `data/images/tattoo/` (automático) |
 | Cambiar fondo de sección | `data/backgrounds/` |
 | Cambiar favicon | `data/favicon.png` |
 | Cambiar dominio | todos los `.html` + `sitemap.xml` + `robots.txt` |

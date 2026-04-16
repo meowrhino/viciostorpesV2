@@ -6,13 +6,11 @@
   "sections": {
     "flashbook": {
       "title": "Flashbook",
-      "imageCount": 129,
       "imagePath": "data/images/flashbook/",
       "background": "data/backgrounds/flashbook.webp"
     },
     "tattoo": {
       "title": "Tattoo",
-      "imageCount": 72,
       "imagePath": "data/images/tattoo/",
       "background": "data/backgrounds/tattoo.webp"
     }

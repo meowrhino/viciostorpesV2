@@ -33,6 +33,40 @@
     bgEl.style.backgroundImage = `url('${config.background}')`;
   }
 
+  // Auto-detect how many sequentially-numbered images exist in the folder,
+  // so users don't have to hand-update imageCount in data.json every time
+  // they add/remove photos. Images are numbered starting at 1.webp. Uses
+  // doubling + binary search: ~2·log₂(N) HEAD requests (≈16 for 200 images).
+  async function detectImageCount(imagePath) {
+    const exists = (n) =>
+      fetch(`${imagePath}${n}.webp`, { method: 'HEAD', cache: 'no-cache' })
+        .then(r => r.ok)
+        .catch(() => false);
+
+    if (!(await exists(1))) return 0;
+
+    let lo = 1, hi = 2;
+    while (await exists(hi)) {
+      lo = hi;
+      hi *= 2;
+      if (hi > 10000) break; // sanity cap
+    }
+    while (lo + 1 < hi) {
+      const mid = (lo + hi) >> 1;
+      if (await exists(mid)) lo = mid;
+      else hi = mid;
+    }
+    return lo; // highest existing index == total count (1-indexed)
+  }
+
+  const detected = await detectImageCount(config.imagePath);
+  if (detected > 0) {
+    config.imageCount = detected;
+  } else {
+    console.error(`gallery.js: No images found at ${config.imagePath}`);
+    return;
+  }
+
   // ===========================
   // Grid-based mosaic config
   // ===========================
@@ -93,9 +127,9 @@
     };
   }
 
-  // Build image list & shuffle
+  // Build image list & shuffle — files are numbered 1.webp .. N.webp
   const images = [];
-  for (let i = 0; i < config.imageCount; i++) {
+  for (let i = 1; i <= config.imageCount; i++) {
     images.push({ index: i, src: `${config.imagePath}${i}.webp` });
   }
   // Fisher-Yates shuffle
@@ -128,6 +162,31 @@
   // ===========================
   // Mosaic Mode Functions
   // ===========================
+
+  // Insert a just-loaded image into the DOM and imageElements in the right
+  // spot. In mosaic mode order is cosmetic (position is absolute) so we just
+  // append. In scroll mode order IS the visual layout, so we splice the image
+  // into index-sorted position to keep late-loading images from landing at the
+  // end of the row.
+  function registerImage(img) {
+    const idx = parseInt(img.dataset.index);
+
+    if (currentMode === 'scroll') {
+      const nextSibling = [...mosaic.children].find(c => {
+        const cIdx = parseInt(c.dataset.index);
+        return !isNaN(cIdx) && cIdx > idx;
+      });
+      if (nextSibling) mosaic.insertBefore(img, nextSibling);
+      else mosaic.appendChild(img);
+
+      let insertAt = imageElements.findIndex(e => parseInt(e.dataset.index) > idx);
+      if (insertAt === -1) imageElements.push(img);
+      else imageElements.splice(insertAt, 0, img);
+    } else {
+      mosaic.appendChild(img);
+      imageElements.push(img);
+    }
+  }
 
   async function loadImage(item, gridIndex) {
     // Random size within range
@@ -182,8 +241,7 @@
         img.style.transform = `translate(${translateX}px, ${translateY}px) scale(0.5)`;
         img.style.opacity = '0';
 
-        mosaic.appendChild(img);
-        imageElements.push(img);
+        registerImage(img);
 
         // Click handler
         img.addEventListener('click', () => {
@@ -278,6 +336,9 @@
     mosaicContainer.classList.add('scroll-mode');
     mosaic.classList.add('scroll-mode');
     mosaic.style.height = '100%';
+    // Let the flex row size itself to its children — the mosaic-mode inline
+    // width would otherwise clip the scrollable area to a fraction of the images.
+    mosaic.style.width = 'max-content';
 
     // Reorder DOM elements
     imageElements.forEach(img => {
@@ -330,7 +391,6 @@
     // Reset zoom to 1x
     if (zoomLevel !== 1) {
       zoomLevel = 1;
-      mosaic.style.width = mosaicWidth + 'px';
       for (const img of imageElements) {
         img.style.left = img.dataset.mosaicX + 'px';
         img.style.top = img.dataset.mosaicY + 'px';
@@ -338,6 +398,8 @@
         img.style.height = img.dataset.mosaicH + 'px';
       }
     }
+    // Always restore mosaic-mode width — scroll mode set it to max-content.
+    mosaic.style.width = mosaicWidth + 'px';
 
     // Center on the image we were viewing, instantly
     mosaicContainer.offsetHeight;
@@ -437,6 +499,13 @@
     if (currentMode !== 'scroll') return;
     if (e.target.closest('.mosaic-image')) return;
     switchToMosaicMode();
+  });
+
+  // Exit scroll mode on ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && currentMode === 'scroll') {
+      switchToMosaicMode();
+    }
   });
 
   // ===========================
