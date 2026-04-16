@@ -7,10 +7,10 @@ Portfolio interactivo para Marc, tatuador y diseñador. Web estática construida
 ```
 viciostorpesV2/
 ├── index.html          # Welcome — landing con imágenes decorativas y navegación
-├── flashbook.html      # Galería flashbook (129 imágenes, modo mosaico + scroll)
-├── tattoo.html         # Galería tattoo (72 imágenes, modo mosaico + scroll)
+├── flashbook.html      # Galería flashbook (modo mosaico + scroll)
+├── tattoo.html         # Galería tattoo (modo mosaico + scroll)
 ├── booking.html        # Formulario de contacto/reserva
-├── data.json           # Configuración central (secciones, rutas, conteos)
+├── data.json           # Configuración central (secciones, rutas, textos)
 ├── css/
 │   ├── main.css        # Reset global, variables CSS, utilidades
 │   ├── welcome.css     # Posicionamiento y animaciones del landing
@@ -27,8 +27,8 @@ viciostorpesV2/
 └── data/
     ├── backgrounds/    # Fondos de sección (.webp)
     ├── images/
-    │   ├── flashbook/  # 0.webp — 128.webp (129 imágenes)
-    │   └── tattoo/     # 0.webp — 71.webp (72 imágenes)
+    │   ├── flashbook/  # 1.webp — N.webp (auto-detectado)
+    │   └── tattoo/     # 1.webp — N.webp (auto-detectado)
     ├── welcome/        # Imagen central del landing (welcome.webp)
     └── favicon.png     # Favicon
 ```
@@ -44,17 +44,19 @@ Pantalla de bienvenida a pantalla completa con un logo central (`welcome.webp`) 
 Ambas páginas comparten el mismo `gallery.js` y se diferencian mediante el atributo `data-section` del body. Funcionan en dos modos:
 
 **Modo mosaico** (por defecto):
-- Imágenes colocadas aleatoriamente en un canvas de 2400px con detección de colisiones
-- Tamaños aleatorios (200–400px), carga progresiva en lotes de 8
-- Animación de "emergencia" al aparecer
+- Grid de celdas de 50dvw × 50dvh (cols = `⌈√N⌉`), cada imagen centrada en su celda + jitter
+- Tamaños entre 40vmin y 50vmin, carga progresiva en lotes de 8 (stagger 40 ms)
+- Animación de "emergencia": aparece en el centro del viewport y vuela a su posición final
+- Zoom con `Ctrl/⌘ + wheel` (desktop) o pinch (touch), rango 0.3× – 2×
+- Hover "por viewport": la imagen bajo el centro de la pantalla se eleva al frente
 - Click en imagen → entra al modo scroll
 
 **Modo scroll**:
-- Scroll horizontal con imágenes centradas (60vh × 60vh)
-- Contador de posición en esquina
+- Scroll horizontal con imágenes centradas (60dvh × 60dvh)
+- Contador de posición en esquina (rotado según sección)
 - URLs con hash para compartir (`#scroll-{index}`)
 - Soporte de historial del navegador (atrás/adelante)
-- Click fuera de imagen → vuelve al mosaico
+- Click fuera de imagen o `Esc` → vuelve al mosaico
 
 Flashbook scrollea hacia la izquierda (CSS `direction: rtl`); tattoo scrollea hacia la derecha.
 
@@ -83,14 +85,20 @@ Todo se gestiona desde `data.json`:
 {
   "welcome": { "title": "ViciosTorpes", "background": "..." },
   "sections": {
-    "flashbook": { "imageCount": 129, "imagePath": "data/images/flashbook/", "background": "..." },
-    "tattoo": { "imageCount": 72, "imagePath": "data/images/tattoo/", "background": "..." }
+    "flashbook": { "imagePath": "data/images/flashbook/", "background": "..." },
+    "tattoo":    { "imagePath": "data/images/tattoo/",    "background": "..." }
   },
-  "booking": { "title": "How to Book", "background": "..." }
+  "booking": {
+    "title": "How to Book",
+    "background": "...",
+    "emailSubject": "...",
+    "confirmation": { "title": "...", "message": "..." },
+    "errorMessage": "..."
+  }
 }
 ```
 
-Para añadir imágenes: subirlas numeradas a la carpeta correspondiente y actualizar `imageCount` en `data.json`.
+Para añadir imágenes basta con subirlas numeradas (`1.webp`, `2.webp`, …) a la carpeta correspondiente. El conteo se **auto-detecta** en tiempo de carga mediante HEAD requests (doubling + búsqueda binaria), así que **no hay que tocar `data.json`**.
 
 ## Stack
 

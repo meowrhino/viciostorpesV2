@@ -9,9 +9,9 @@ PASO 1: Cambiar el email destino
 ---------------------------------
 Abrir booking.html y buscar esta linea (esta cerca del principio del <form>):
 
-    <form class="booking-form" action="https://formsubmit.co/manuellatourf@gmail.com" ...
+    <form class="booking-form" action="https://formsubmit.co/vicios.torpes@gmail.com" ...
 
-Cambiar "manuellatourf@gmail.com" por el email del cliente. Por ejemplo:
+Cambiar "vicios.torpes@gmail.com" por el email del cliente. Por ejemplo:
 
     <form class="booking-form" action="https://formsubmit.co/cliente@gmail.com" ...
 

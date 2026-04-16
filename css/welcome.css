@@ -42,7 +42,7 @@ body { overflow: hidden; }
 
 .welcome-text {
   position: absolute;
-  top: 47dvh;
+  top: 66.66dvh;
   left: 50dvw;
   transform: translate(-50%, -50%);
   width: 80dvw;

@@ -114,9 +114,9 @@ El formulario está en **inglés** por defecto. Los textos que ve el usuario al 
 - `confirmation.title` y `confirmation.message` — mensaje que ve el usuario tras enviar el formulario
 - `errorMessage` — texto de error si falla el envío
 
-> Las **etiquetas** del formulario (Name, Email, Phone, Location, Description,
+> Las **etiquetas** del formulario (Name, Email, Instagram, Location, Description,
 > Reference images, Send) están en `booking.html`. Los **mensajes de validación**
-> (email no válido, teléfono inválido, etc.) están en `js/booking.js`. Si los quieres
+> (email no válido, Instagram no válido, etc.) están en `js/booking.js`. Si los quieres
 > cambiar, busca y sustituye el texto manteniendo las comillas.
 
 ---
