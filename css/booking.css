@@ -170,6 +170,105 @@ body { font-family: "Helvetica Neue", Arial, sans-serif; }
   color: #f26f63;
 }
 
+/* Errores de validación por campo */
+.form-input-invalid {
+  border-bottom-color: #f26f63 !important;
+}
+
+.form-field-error {
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  color: #f26f63;
+  letter-spacing: 0.02em;
+}
+
+/* Adjuntos: hint + lista de previsualizaciones */
+.form-hint {
+  margin: 0.4rem 0 0;
+  font-size: 0.75rem;
+  color: rgba(230, 230, 230, 0.55);
+  letter-spacing: 0.02em;
+}
+
+.attachment-previews {
+  list-style: none;
+  margin: 0.65rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.attachment-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.4rem 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(230, 230, 230, 0.12);
+}
+
+.attachment-thumb {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  font-size: 1.1rem;
+}
+
+.attachment-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.attachment-info {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.attachment-name {
+  font-size: 0.85rem;
+  color: rgba(230, 230, 230, 0.9);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attachment-size {
+  font-size: 0.72rem;
+  color: rgba(230, 230, 230, 0.5);
+}
+
+.attachment-remove {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(230, 230, 230, 0.25);
+  color: rgba(230, 230, 230, 0.75);
+  font-size: 0.85rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.attachment-remove:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(200, 30, 30, 0.08);
+}
+
 /* Footer */
 .booking-footer {
   margin-top: 2rem;

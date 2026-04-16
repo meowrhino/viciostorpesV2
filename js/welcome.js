@@ -26,7 +26,10 @@
   bg.style.backgroundImage = `url('${welcomeBackground}')`;
   cell.appendChild(bg);
 
-  // Positioned decorative images
+  // Positioned decorative images — DESACTIVADO (solo queda welcome.webp)
+  // Si se quiere reactivar, descomentar este bloque y la sección
+  // correspondiente en css/welcome.css.
+  /*
   const images = [
     { src: 'data/welcome/0.webp', position: 'hang-left' },       // Creature, top-left hanging
     { src: 'data/welcome/1.webp', position: 'birds-overlay' },   // Birds/butterflies over welcome
@@ -44,6 +47,7 @@
     img.alt = 'Decoration';
     cell.appendChild(img);
   });
+  */
 
   // Central "Welcome" text/image
   const welcomeText = document.createElement('img');

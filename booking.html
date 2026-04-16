@@ -65,6 +65,9 @@
           name="email"
           class="form-input"
           required
+          autocomplete="email"
+          inputmode="email"
+          pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
           placeholder="tu@email.com"
         >
       </div>
@@ -77,6 +80,9 @@
           id="phone"
           name="phone"
           class="form-input"
+          autocomplete="tel"
+          inputmode="tel"
+          pattern="^[0-9+\s\-().]{7,25}$"
           placeholder="+34 600 000 000"
         >
       </div>
@@ -118,6 +124,8 @@
           accept="image/*"
           multiple
         >
+        <p class="form-hint">Puedes añadirlas en varias tandas. Pulsa la ✕ para quitar una.</p>
+        <ul id="attachment-previews" class="attachment-previews" aria-live="polite"></ul>
       </div>
 
       <!-- Botón enviar -->

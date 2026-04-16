@@ -59,11 +59,13 @@ body { overflow: hidden; }
 }
 
 /* ===========================
-   Positioned Decorative Images
-   Using dvw/dvh for responsive positioning
-   Based on REFERENCE.webp layout
+   Positioned Decorative Images — DESACTIVADO
+   Se mantiene el código original comentado por si se quiere recuperar.
+   Para reactivar: descomentar este bloque y el bloque `images.forEach(...)`
+   en js/welcome.js.
    =========================== */
 
+/*
 .welcome-image {
   position: absolute;
   height: auto;
@@ -83,252 +85,83 @@ body { overflow: hidden; }
     transform: scale(1);
   }
 }
+*/
 
 /* Stagger animation delays */
-.welcome-image:nth-child(2) {
-  animation-delay: 0.1s;
-}
-.welcome-image:nth-child(3) {
-  animation-delay: 0.2s;
-}
-.welcome-image:nth-child(4) {
-  animation-delay: 0.3s;
-}
-.welcome-image:nth-child(5) {
-  animation-delay: 0.4s;
-}
-.welcome-image:nth-child(6) {
-  animation-delay: 0.5s;
-}
-.welcome-image:nth-child(7) {
-  animation-delay: 0.6s;
-}
-.welcome-image:nth-child(8) {
-  animation-delay: 0.7s;
-}
+/*
+.welcome-image:nth-child(2) { animation-delay: 0.1s; }
+.welcome-image:nth-child(3) { animation-delay: 0.2s; }
+.welcome-image:nth-child(4) { animation-delay: 0.3s; }
+.welcome-image:nth-child(5) { animation-delay: 0.4s; }
+.welcome-image:nth-child(6) { animation-delay: 0.5s; }
+.welcome-image:nth-child(7) { animation-delay: 0.6s; }
+.welcome-image:nth-child(8) { animation-delay: 0.7s; }
+*/
+
+/* Image positions (precise mapping from REFERENCE.webp) */
+/*
+.pos-hang-left        { bottom: 2dvh;   left: 20dvw;  width: 16dvw; }
+.pos-birds-overlay    { bottom: -60dvh; right: -10dvw; left: auto; top: auto; width: 62dvw; z-index: 11; opacity: 0; animation: fadeInImage 1.2s ease 0.8s forwards; pointer-events: none; }
+.pos-hang-center      { top: -10dvh;  left: 30dvw;  width: 50dvw; }
+.pos-floor-left       { bottom: -4dvh; left: 2dvw;   width: 22dvw; }
+.pos-hang-right       { top: -4dvh;   right: 0dvw;  width: 28dvw; }
+.pos-hang-left-center { top: -10dvh;  left: -12dvw; width: 44dvw; }
+.pos-floor-right      { bottom: -10dvh; right: -4dvw; width: 35dvw; }
+*/
 
 /* ===========================
-   Image Positions (precise mapping from REFERENCE.webp)
-   7 images + welcome text centered
-   =========================== */
-
-/* 0 — Creature/demon, bottom-left next to horse (3), to its right */
-.pos-hang-left {
-  bottom: 2dvh;
-  left: 20dvw;
-  width: 16dvw;
-}
-
-/* 1 — Birds & butterflies, far bottom-right, almost off screen */
-.pos-birds-overlay {
-  bottom: -60dvh;
-  right: -10dvw;
-  left: auto;
-  top: auto;
-  width: 62dvw;
-  z-index: 11;
-  opacity: 0;
-  animation: fadeInImage 1.2s ease 0.8s forwards;
-  pointer-events: none;
-}
-
-/* 2 — Floral ornament, hanging from top-center */
-.pos-hang-center {
-  top: -10dvh;
-  left: 30dvw;
-  width: 50dvw;
-}
-
-/* 3 — Geometric horse + plant, bottom-left corner */
-.pos-floor-left {
-  bottom: -4dvh;
-  left: 2dvw;
-  width: 22dvw;
-}
-
-/* 4 — Two stacked paintings, top-right */
-.pos-hang-right {
-  top: -4dvh;
-  right: 0dvw;
-  width: 28dvw;
-}
-
-/* 5 — Carousel horses, top-left area */
-.pos-hang-left-center {
-  top: -10dvh;
-  left: -12dvw;
-  width: 44dvw;
-}
-
-/* 6 — Galloping horse, bottom-right */
-.pos-floor-right {
-  bottom: -10dvh;
-  right: -4dvw;
-  width: 35dvw;
-}
-
-/* ===========================
-   Responsive Adjustments
+   Responsive Adjustments (decorativas) — DESACTIVADO
    =========================== */
 
 /* Tablet */
+/*
 @media (max-width: 1024px) {
-  .welcome-text {
-    top: 50dvh;
-    left: 50dvw;
-    transform: translate(-50%, -50%);
-    width: 75dvw;
-  }
-
-  .pos-hang-left {
-    bottom: 2dvh;
-    left: 15dvw;
-    width: 30dvw;
-  }
-
-  .pos-hang-center {
-    top: 0dvh;
-    left: 30dvw;
-    width: 46dvw;
-  }
-
-  .pos-hang-left-center {
-    top: -5dvh;
-    left: -10dvw;
-    width: 48dvw;
-  }
-
-  .pos-hang-right {
-    top: -4dvh;
-    right: -2dvw;
-    width: 30dvw;
-  }
-
-  .pos-floor-left {
-    bottom: -20dvh;
-    left: -5dvw;
-    width: 46dvw;
-  }
-
-  .pos-floor-right {
-    bottom: -6dvh;
-    right: 0dvw;
-    width: 36dvw;
-  }
-
-  .pos-birds-overlay {
-    bottom: -8dvh;
-    right: -20dvw;
-    left: auto;
-    top: auto;
-    width: 46dvw;
-  }
+  .welcome-text { top: 50dvh; left: 50dvw; transform: translate(-50%, -50%); width: 75dvw; }
+  .pos-hang-left        { bottom: 2dvh;  left: 15dvw; width: 30dvw; }
+  .pos-hang-center      { top: 0dvh;    left: 30dvw; width: 46dvw; }
+  .pos-hang-left-center { top: -5dvh;   left: -10dvw; width: 48dvw; }
+  .pos-hang-right       { top: -4dvh;   right: -2dvw; width: 30dvw; }
+  .pos-floor-left       { bottom: -20dvh; left: -5dvw; width: 46dvw; }
+  .pos-floor-right      { bottom: -6dvh; right: 0dvw; width: 36dvw; }
+  .pos-birds-overlay    { bottom: -8dvh; right: -20dvw; left: auto; top: auto; width: 46dvw; }
 }
+*/
 
 /* Mobile — portrait, much taller than wide */
+/*
 @media (max-width: 768px) {
-  .welcome-text {
-    top: 50dvh;
-    left: 50dvw;
-    transform: translate(-50%, -50%);
-    width: 80dvw;
-  }
-
-  .pos-hang-left {
-    bottom: 8dvh;
-    left: 20dvw;
-    width: 40dvw;
-  }
-
-  .pos-hang-center {
-    top: 4dvh;
-    left: 30dvw;
-    width: 40dvw;
-  }
-
-  .pos-hang-left-center {
-    top: 0dvh;
-    left: -10dvw;
-    width: 55dvw;
-  }
-
-  .pos-hang-right {
-    top: -10dvh;
-    right: -10dvw;
-    width: 40dvw;
-  }
-
-  .pos-birds-overlay {
-    bottom: -10dvh;
-    right: -4dvw;
-    left: auto;
-    top: auto;
-    width: 55dvw;
-  }
-
-  .pos-floor-left {
-    bottom: -10dvh;
-    left: -10dvw;
-    width: 50dvw;
-  }
-
-  .pos-floor-right {
-    bottom: 0dvh;
-    right: 0dvw;
-    width: 40dvw;
-  }
+  .welcome-text { top: 50dvh; left: 50dvw; transform: translate(-50%, -50%); width: 80dvw; }
+  .pos-hang-left        { bottom: 8dvh;  left: 20dvw;  width: 40dvw; }
+  .pos-hang-center      { top: 4dvh;    left: 30dvw;  width: 40dvw; }
+  .pos-hang-left-center { top: 0dvh;    left: -10dvw; width: 55dvw; }
+  .pos-hang-right       { top: -10dvh;  right: -10dvw; width: 40dvw; }
+  .pos-birds-overlay    { bottom: -10dvh; right: -4dvw; left: auto; top: auto; width: 55dvw; }
+  .pos-floor-left       { bottom: -10dvh; left: -10dvw; width: 50dvw; }
+  .pos-floor-right      { bottom: 0dvh;  right: 0dvw; width: 40dvw; }
 }
+*/
 
 /* Very small screens */
+/*
 @media (max-width: 480px) {
+  .welcome-text { top: 50dvh; left: 50dvw; transform: translate(-50%, -50%); width: 85dvw; }
+  .pos-hang-left        { bottom: 8dvh;  left: 20dvw;  width: 36dvw; }
+  .pos-hang-center      { top: 25dvh;   left: 8dvw;   width: 65dvw; }
+  .pos-hang-left-center { top: -5dvh;   left: -14dvw; width: 80dvw; }
+  .pos-hang-right       { top: -5dvh;   right: -10dvw; width: 52dvw; }
+  .pos-floor-left       { bottom: -10dvh; left: -10dvw; width: 66dvw; }
+  .pos-floor-right      { bottom: -12dvh; right: -12dvw; width: 85dvw; }
+  .pos-birds-overlay    { bottom: -15dvh; right: -10dvw; left: auto; top: auto; width: 100dvw; }
+}
+*/
+
+/* ===========================
+   Welcome text en móvil: más abajo (3/4 de altura) y un poco más grande.
+   Se aplica SOLO en móvil (<= 768px). En desktop/tablet se mantiene el centro.
+   =========================== */
+@media (max-width: 768px) {
   .welcome-text {
-    top: 50dvh;
-    left: 50dvw;
-    transform: translate(-50%, -50%);
-    width: 85dvw;
-  }
-
-  .pos-hang-left {
-    bottom: 8dvh;
-    left: 20dvw;
-    width: 36dvw;
-  }
-
-  .pos-hang-center {
-    top: 25dvh;
-    left: 8dvw;
-    width: 65dvw;
-  }
-
-  .pos-hang-left-center {
-    top: -5dvh;
-    left: -14dvw;
-    width: 80dvw;
-  }
-
-  .pos-hang-right {
-    top: -5dvh;
-    right: -10dvw;
-    width: 52dvw;
-  }
-
-  .pos-floor-left {
-    bottom: -10dvh;
-    left: -10dvw;
-    width: 66dvw;
-  }
-
-  .pos-floor-right {
-    bottom: -12dvh;
-    right: -12dvw;
-    width: 85dvw;
-  }
-
-  .pos-birds-overlay {
-    bottom: -15dvh;
-    right: -10dvw;
-    left: auto;
-    top: auto;
-    width: 100dvw;
+    top: 75dvh;
+    width: 95dvw;
   }
 }
