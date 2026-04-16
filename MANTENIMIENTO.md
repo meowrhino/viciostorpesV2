@@ -49,7 +49,7 @@ Cuando alguien envíe el formulario por primera vez con el nuevo email, Formsubm
 manda un email de activación a esa dirección. Hay que abrirlo y clicar **"Activate Form"**.
 Solo una vez. Después llegan todos los envíos directamente.
 
-Más detalle técnico en [`SETUP_FORMSUBMIT.txt`](SETUP_FORMSUBMIT.txt).
+Más detalle técnico en [`docs/SETUP_FORMSUBMIT.txt`](docs/SETUP_FORMSUBMIT.txt).
 
 ---
 

@@ -21,9 +21,9 @@ viciostorpesV2/
 │   ├── welcome.js      # Generación dinámica de la página de inicio
 │   ├── gallery.js      # Motor de galería dual (compartido flashbook/tattoo)
 │   └── booking.js      # Envío AJAX del formulario (Formsubmit)
+├── MANTENIMIENTO.md       # Guía de mantenimiento para el cliente
 ├── docs/
-│   ├── GUIA_CLIENTE.md    # Guía de mantenimiento para el cliente
-│   └── SETUP_FORMSUBMIT.txt # Cómo cambiar el email del formulario
+│   └── SETUP_FORMSUBMIT.txt # Detalle técnico: cómo cambiar el email del formulario
 └── data/
     ├── backgrounds/    # Fondos de sección (.webp)
     ├── images/
