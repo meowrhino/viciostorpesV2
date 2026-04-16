@@ -29,7 +29,7 @@ viciostorpesV2/
     ├── images/
     │   ├── flashbook/  # 0.webp — 128.webp (129 imágenes)
     │   └── tattoo/     # 0.webp — 71.webp (72 imágenes)
-    ├── welcome/        # Imágenes decorativas del landing (0-6 + welcome.webp)
+    ├── welcome/        # Imagen central del landing (welcome.webp)
     └── favicon.png     # Favicon
 ```
 
@@ -37,7 +37,7 @@ viciostorpesV2/
 
 ### Welcome (`index.html`)
 
-Pantalla de bienvenida a pantalla completa con 7 imágenes decorativas posicionadas con unidades `dvw`/`dvh` y un logo central. Tres botones de navegación dirigen a las secciones principales. Las imágenes aparecen con animaciones escalonadas (`fadeInImage`).
+Pantalla de bienvenida a pantalla completa con un logo central (`welcome.webp`) y tres botones de navegación a las secciones principales. El logo se centra en desktop/tablet y se desplaza a 3/4 de la altura (un poco más grande) en móvil (`<=768px`). Fade-in suave al cargar.
 
 ### Galerías (`flashbook.html`, `tattoo.html`)
 
@@ -60,7 +60,7 @@ Flashbook scrollea hacia la izquierda (CSS `direction: rtl`); tattoo scrollea ha
 
 ### Booking (`booking.html`)
 
-Formulario de contacto con campos: nombre, email, teléfono, localidad, descripción e imágenes adjuntas. Envío AJAX vía [Formsubmit](https://formsubmit.co) (sin backend, sin cuenta, ilimitado). Ver [`docs/SETUP_FORMSUBMIT.txt`](docs/SETUP_FORMSUBMIT.txt) para cambiar el email destino.
+Formulario de contacto (interfaz en inglés) con campos: name, email, phone, location, description e imágenes adjuntas. Validación client-side de email y teléfono con errores inline. Los adjuntos se pueden añadir en varias tandas con previsualización de miniatura y botón ✕ para quitar (máx. 10 archivos, 8 MB c/u). Envío AJAX vía [Formsubmit](https://formsubmit.co) (sin backend, sin cuenta, ilimitado). Ver [`docs/SETUP_FORMSUBMIT.txt`](docs/SETUP_FORMSUBMIT.txt) para cambiar el email destino.
 
 ## Navegación
 

@@ -38,21 +38,21 @@
   <main class="booking-container">
     <form class="booking-form" action="https://formsubmit.co/vicios.torpes@gmail.com" method="POST" enctype="multipart/form-data">
       <!-- Formsubmit config -->
-      <input type="hidden" name="_subject" value="Nueva reserva — ViciosTorpes">
+      <input type="hidden" name="_subject" value="New booking — ViciosTorpes">
       <input type="hidden" name="_captcha" value="false">
       <input type="hidden" name="_next" value="https://viciostorpes.com/booking.html">
       <input type="text" name="_honey" style="display:none">
 
-      <!-- Nombre -->
+      <!-- Name -->
       <div class="form-group">
-        <label for="name" class="form-label">Nombre *</label>
+        <label for="name" class="form-label">Name *</label>
         <input
           type="text"
           id="name"
           name="name"
           class="form-input"
           required
-          placeholder="Tu nombre"
+          placeholder="Your name"
         >
       </div>
 
@@ -68,13 +68,13 @@
           autocomplete="email"
           inputmode="email"
           pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
-          placeholder="tu@email.com"
+          placeholder="you@email.com"
         >
       </div>
 
-      <!-- Teléfono -->
+      <!-- Phone -->
       <div class="form-group">
-        <label for="phone" class="form-label">Teléfono</label>
+        <label for="phone" class="form-label">Phone</label>
         <input
           type="tel"
           id="phone"
@@ -87,9 +87,9 @@
         >
       </div>
 
-      <!-- Localidad -->
+      <!-- Location -->
       <div class="form-group">
-        <label for="location" class="form-label">Localidad *</label>
+        <label for="location" class="form-label">Location *</label>
         <input
           type="text"
           id="location"
@@ -100,22 +100,22 @@
         >
       </div>
 
-      <!-- Descripción -->
+      <!-- Description -->
       <div class="form-group">
-        <label for="description" class="form-label">Descripción *</label>
+        <label for="description" class="form-label">Description *</label>
         <textarea
           id="description"
           name="description"
           class="form-textarea"
           rows="6"
           required
-          placeholder="Cuéntame qué tienes en mente..."
+          placeholder="Tell me what you have in mind..."
         ></textarea>
       </div>
 
-      <!-- Imágenes de referencia -->
+      <!-- Reference images -->
       <div class="form-group">
-        <label for="attachment" class="form-label">Imágenes de referencia</label>
+        <label for="attachment" class="form-label">Reference images</label>
         <input
           type="file"
           id="attachment"
@@ -124,13 +124,13 @@
           accept="image/*"
           multiple
         >
-        <p class="form-hint">Puedes añadirlas en varias tandas. Pulsa la ✕ para quitar una.</p>
+        <p class="form-hint">You can add them in multiple batches. Click ✕ to remove one.</p>
         <ul id="attachment-previews" class="attachment-previews" aria-live="polite"></ul>
       </div>
 
-      <!-- Botón enviar -->
+      <!-- Submit -->
       <button type="submit" class="form-submit">
-        Enviar
+        Send
       </button>
     </form>
 

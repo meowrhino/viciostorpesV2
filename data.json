@@ -18,11 +18,11 @@
   "booking": {
     "title": "How to Book",
     "background": "data/backgrounds/howToBook.webp",
-    "emailSubject": "Nueva reserva — ViciosTorpes",
+    "emailSubject": "New booking — ViciosTorpes",
     "confirmation": {
-      "title": "Mensaje enviado",
-      "message": "Te contactaré pronto"
+      "title": "Message sent",
+      "message": "I'll contact you soon"
     },
-    "errorMessage": "Error al enviar. Inténtalo de nuevo."
+    "errorMessage": "Failed to send. Please try again."
   }
 }

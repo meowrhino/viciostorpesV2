@@ -7,9 +7,9 @@
 
   // Default texts (fallback if data.json fails to load)
   let config = {
-    emailSubject: 'Nueva reserva — ViciosTorpes',
-    confirmation: { title: 'Mensaje enviado', message: 'Te contactaré pronto' },
-    errorMessage: 'Error al enviar. Inténtalo de nuevo.',
+    emailSubject: 'New booking — ViciosTorpes',
+    confirmation: { title: 'Message sent', message: "I'll contact you soon" },
+    errorMessage: 'Failed to send. Please try again.',
   };
 
   try {
@@ -55,10 +55,10 @@
     if (email) {
       const v = email.value.trim();
       if (!v) {
-        setFieldError(email, 'El email es obligatorio.');
+        setFieldError(email, 'Email is required.');
         ok = false;
       } else if (!EMAIL_RE.test(v)) {
-        setFieldError(email, 'Escribe un email válido (ej. tu@dominio.com).');
+        setFieldError(email, 'Please enter a valid email (e.g. you@domain.com).');
         ok = false;
       } else {
         clearFieldError(email);
@@ -69,7 +69,7 @@
       const v = phone.value.trim();
       const digits = v.replace(/[^\d]/g, '');
       if (!PHONE_RE.test(v) || digits.length < 7 || digits.length > 15) {
-        setFieldError(phone, 'Teléfono no válido (solo números, 7-15 dígitos, opcional +).');
+        setFieldError(phone, 'Invalid phone number (digits only, 7-15 digits, optional +).');
         ok = false;
       } else {
         clearFieldError(phone);
@@ -139,7 +139,7 @@
       const remove = document.createElement('button');
       remove.type = 'button';
       remove.className = 'attachment-remove';
-      remove.setAttribute('aria-label', 'Quitar ' + file.name);
+      remove.setAttribute('aria-label', 'Remove ' + file.name);
       remove.textContent = '✕';
       remove.addEventListener('click', () => {
         attached.splice(idx, 1);
@@ -174,11 +174,11 @@
 
       for (const f of incoming) {
         if (attached.length >= MAX_FILES) {
-          errors.push(`Máximo ${MAX_FILES} imágenes.`);
+          errors.push(`Maximum ${MAX_FILES} images.`);
           break;
         }
         if (f.size > MAX_FILE_BYTES) {
-          errors.push(`"${f.name}" supera ${MAX_FILE_MB} MB.`);
+          errors.push(`"${f.name}" exceeds ${MAX_FILE_MB} MB.`);
           continue;
         }
         const key = fileKey(f);
@@ -204,7 +204,7 @@
 
     const submitBtn = form.querySelector('.form-submit');
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Enviando...';
+    submitBtn.textContent = 'Sending...';
 
     try {
       const formData = new FormData(form);
@@ -225,7 +225,7 @@
       `;
     } catch (err) {
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Enviar';
+      submitBtn.textContent = 'Send';
       const existing = form.querySelector('.form-error');
       if (existing) existing.remove();
       const msg = document.createElement('div');

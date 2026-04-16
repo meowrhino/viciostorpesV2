@@ -86,24 +86,30 @@ directamente manteniendo el nombre.
 
 ## 3. Cambiar los textos del formulario
 
-Se editan desde `data.json`, en el bloque `"booking"`:
+El formulario está en **inglés** por defecto. Los textos que ve el usuario al enviar
+(y el asunto del email que te llega) se editan desde `data.json`, bloque `"booking"`:
 
 ```json
 "booking": {
   "title": "How to Book",
   "background": "data/backgrounds/howToBook.webp",
-  "emailSubject": "Nueva reserva — ViciosTorpes",
+  "emailSubject": "New booking — ViciosTorpes",
   "confirmation": {
-    "title": "Mensaje enviado",
-    "message": "Te contactaré pronto"
+    "title": "Message sent",
+    "message": "I'll contact you soon"
   },
-  "errorMessage": "Error al enviar. Inténtalo de nuevo."
+  "errorMessage": "Failed to send. Please try again."
 }
 ```
 
 - `emailSubject` — asunto del email que te llega cuando alguien rellena el formulario
 - `confirmation.title` y `confirmation.message` — mensaje que ve el usuario tras enviar el formulario
 - `errorMessage` — texto de error si falla el envío
+
+> Las **etiquetas** del formulario (Name, Email, Phone, Location, Description,
+> Reference images, Send) están en `booking.html`. Los **mensajes de validación**
+> (email no válido, teléfono inválido, etc.) están en `js/booking.js`. Si los quieres
+> cambiar, busca y sustituye el texto manteniendo las comillas.
 
 ---
 
@@ -120,15 +126,21 @@ Para cambiarlos: reemplaza el archivo manteniendo el mismo nombre.
 
 ---
 
-## 5. Imágenes decorativas del landing (página de inicio)
+## 5. Imagen central del landing (página de inicio)
 
 En `data/welcome/`:
 
-- `welcome.webp` — el texto "Welcome" del centro
-- `0.webp` a `6.webp` — los elementos decorativos (criaturas, caballos, etc.)
+- `welcome.webp` — la imagen central del landing (texto "Welcome" con sus decorados).
 
-Para cambiarlos: reemplaza el archivo manteniendo el nombre.
-El layout (posiciones) está definido en `js/welcome.js` y `css/welcome.css`.
+Para cambiarla: reemplaza el archivo manteniendo el nombre. Recomendación: imagen
+horizontal o cuadrada con transparencia; el alto se calcula solo (`height: auto`).
+
+> En móvil la imagen se coloca a 3/4 de la altura (regulable desde `css/welcome.css`,
+> bloque `@media (max-width: 768px) { .welcome-text { top: 75dvh; width: 95dvw; } }`).
+>
+> Había 7 imágenes decorativas adicionales (`0.webp` a `6.webp`) que fueron retiradas
+> para simplificar el landing. El código que las generaba sigue en los `.js`/`.css`
+> comentado por si se quisiera recuperar.
 
 ---
 
