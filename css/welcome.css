@@ -45,7 +45,7 @@ body { overflow: hidden; }
   top: 66.66dvh;
   left: 50dvw;
   transform: translate(-50%, -50%);
-  width: 35dvw;
+  width: clamp(220px, 40dvw, 460px);
   height: auto;
   z-index: 10;
   opacity: 0;
@@ -156,12 +156,12 @@ body { overflow: hidden; }
 */
 
 /* ===========================
-   Welcome text en móvil: más abajo (3/4 de altura) y un poco más grande.
-   Se aplica SOLO en móvil (<= 768px). En desktop/tablet se mantiene el centro.
+   En portrait (móvil vertical) baja la pegatina al 3/4 de la altura
+   para dejar más aire arriba con el fondo.
+   El tamaño usa clamp() arriba, no hace falta tocarlo aquí.
    =========================== */
-@media (max-width: 768px) {
+@media (orientation: portrait) {
   .welcome-text {
     top: 75dvh;
-    width: 60dvw;
   }
 }
