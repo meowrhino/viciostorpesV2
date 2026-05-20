@@ -49,12 +49,14 @@
   });
   */
 
-  // Central "Welcome" text/image
+  // Central "Welcome" text/image — DESACTIVADO (prueba: sticker como fondo)
+  /*
   const welcomeText = document.createElement('img');
   welcomeText.classList.add('welcome-text');
   welcomeText.src = 'data/welcome/welcome.webp';
   welcomeText.alt = 'Welcome';
   cell.appendChild(welcomeText);
+  */
 
   // Navigation buttons using unified system
   const navItems = [
