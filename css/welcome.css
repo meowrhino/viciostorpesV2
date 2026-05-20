@@ -45,7 +45,7 @@ body { overflow: hidden; }
   top: 66.66dvh;
   left: 50dvw;
   transform: translate(-50%, -50%);
-  width: 80dvw;
+  width: 35dvw;
   height: auto;
   z-index: 10;
   opacity: 0;
@@ -162,6 +162,6 @@ body { overflow: hidden; }
 @media (max-width: 768px) {
   .welcome-text {
     top: 75dvh;
-    width: 95dvw;
+    width: 60dvw;
   }
 }
