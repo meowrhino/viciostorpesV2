@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /docs/
+Disallow: /README.md
+Disallow: /MANTENIMIENTO.md
 
 Sitemap: https://viciostorpes.com/sitemap.xml

@@ -186,7 +186,47 @@ Para que Google indexe la web:
 
 ---
 
-## 8. Problemas frecuentes
+## 8. Comprobar cómo se ve al compartir (WhatsApp, Instagram, etc.)
+
+Cuando alguien pega el link de la web en WhatsApp, Instagram, Twitter, etc., se genera
+una **previsualización** con imagen + título + descripción. Esos datos vienen de las
+etiquetas `og:image`, `og:title`, etc. que están en cada `.html`.
+
+### Cómo verificarlo SIN tener que mandarte mensajes a ti mismo
+
+Hay herramientas gratuitas donde pegas la URL y te muestran cómo se verá el preview
+en cada red social:
+
+- [opengraph.xyz](https://www.opengraph.xyz/) — el más completo, muestra Facebook, Twitter, LinkedIn, Discord
+- [metatags.io](https://metatags.io/) — preview rápido + sugerencias
+- [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/) — el oficial de Meta (vale también para WhatsApp porque comparten infraestructura)
+- [Twitter Card Validator](https://cards-dev.twitter.com/validator) — el oficial de Twitter/X
+
+**Cómo usarlos:** abre uno (clica el link arriba), pega `https://viciostorpes.com/`
+(o cualquiera de las otras páginas: `/tattoo.html`, `/flashbook.html`, `/booking.html`)
+y pulsa el botón de comprobar.
+
+### ⚠️ Aviso: WhatsApp y el formato WebP
+
+Las imágenes de preview (`og:image`) de esta web están en formato **`.webp`**.
+Facebook, Twitter, Instagram, Discord las renderizan sin problema. Pero **WhatsApp,
+LinkedIn y Slack a veces NO muestran previews con webp** — sale el link sin imagen,
+o solo el título.
+
+**Cómo comprobar si te afecta:**
+1. Manda el link de la web a un contacto en WhatsApp (o a ti mismo en "Notas" / mensajes guardados)
+2. Si aparece la imagen del tatuaje/landing → todo bien
+3. Si sale solo el link sin foto → es el problema del webp
+
+**Si pasa (solución):** convertir los 4 fondos a JPG y apuntar las etiquetas `og:image`
+y `twitter:image` a la versión JPG. Los archivos a convertir están en `data/backgrounds/`
+(`welcome.webp`, `tattoo.webp`, `flashbook.webp`, `howToBook.webp`). Tamaño ideal
+para preview social: **1200×630 px**. Conversor rápido: [squoosh.app](https://squoosh.app)
+(elegir formato JPG, calidad 80-85, redimensionar a 1200 de ancho).
+
+---
+
+## 9. Problemas frecuentes
 
 ### "Cambié una imagen y sigue apareciendo la antigua"
 Es la caché del navegador. Refresca con **Ctrl+F5** (Windows) o **Cmd+Shift+R** (Mac).
@@ -231,4 +271,4 @@ La web la hizo **manu (@meowrhino)**. Si algo se rompe y no sabes arreglarlo, co
 - [ ] Abrir el email de Formsubmit y clicar "Activate Form"
 - [ ] Hacer un envío de prueba del formulario y comprobar que llega
 - [ ] Si usas un dominio propio, registrar la web en [Google Search Console](https://search.google.com/search-console) y subir el sitemap
-- [ ] Compartir la web en WhatsApp/Instagram para comprobar que la previsualización sale bien (Open Graph)
+- [ ] Comprobar cómo se ve el preview al compartir el link (ver sección 8 — ojo con WhatsApp y el formato WebP)
