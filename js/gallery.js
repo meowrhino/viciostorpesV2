@@ -8,9 +8,46 @@
   // Configuration & Setup
   // ===========================
 
+  // Resolve loader element early so we can dismiss it from any error path.
+  // The HTML renders the loader with text "loading" before JS runs; if we
+  // return early without touching it, the user gets a permanent "loading"
+  // screen.
+  const loaderEl = document.getElementById('gallery-loader');
+  const loaderCountEl = loaderEl?.querySelector('.loader-count');
+  let loaderRemoveTimer = null;
+
+  function onLoaderTransitionEnd(e) {
+    // Filter: only react to OUR opacity transition, not bubbled descendants.
+    if (e.target !== loaderEl || e.propertyName !== 'opacity') return;
+    loaderEl.removeEventListener('transitionend', onLoaderTransitionEnd);
+    clearTimeout(loaderRemoveTimer);
+    if (loaderEl.parentNode) loaderEl.remove();
+  }
+
+  function dismissLoader(errorMsg) {
+    if (!loaderEl) return;
+    if (errorMsg && loaderCountEl) {
+      loaderCountEl.textContent = errorMsg;
+      // has-count freezes the pulse so the error message reads as final,
+      // not as "still trying".
+      loaderEl.classList.add('has-count');
+      // Hold the error message visible briefly before fading.
+      setTimeout(() => loaderEl.classList.add('hidden'), 1800);
+    } else {
+      loaderEl.classList.add('hidden');
+    }
+    loaderEl.addEventListener('transitionend', onLoaderTransitionEnd);
+    // Fallback: if transitions are disabled/interrupted, remove anyway.
+    clearTimeout(loaderRemoveTimer);
+    loaderRemoveTimer = setTimeout(() => {
+      if (loaderEl.parentNode) loaderEl.remove();
+    }, errorMsg ? 2500 : 700);
+  }
+
   const section = document.body.dataset.section;
   if (!section) {
     console.error('gallery.js: No data-section attribute on <body>');
+    dismissLoader('error');
     return;
   }
 
@@ -19,11 +56,13 @@
     data = await fetch('data.json').then(r => r.json());
   } catch (err) {
     console.error('gallery.js: Failed to load data.json', err);
+    dismissLoader('error');
     return;
   }
   const config = data.sections[section];
   if (!config) {
     console.error(`gallery.js: Section "${section}" not found in data.json`);
+    dismissLoader('error');
     return;
   }
 
@@ -47,9 +86,9 @@
         .then(r => r.ok)
         .catch(() => false);
 
-    // Parallel doubling probes: 1, 2, 4, ..., 8192
+    // Parallel doubling probes: 1, 2, 4, ..., 32768
     const probes = [];
-    for (let p = 1; p <= 8192; p *= 2) probes.push(p);
+    for (let p = 1; p <= 32768; p *= 2) probes.push(p);
     const results = await Promise.all(probes.map(exists));
 
     if (!results[0]) return 0; // 1.webp doesn't exist → no images
@@ -57,13 +96,18 @@
     // Walk results to find first false (the boundary).
     let lo = probes[0];
     let hi = probes[probes.length - 1] + 1; // assume top probe still exists
+    let capHit = true; // flipped to false when we find a false probe
     for (let i = 1; i < results.length; i++) {
       if (results[i]) {
         lo = probes[i];
       } else {
         hi = probes[i];
+        capHit = false;
         break;
       }
+    }
+    if (capHit) {
+      console.warn(`gallery.js: image count >= ${lo}; probe cap hit, count may be truncated.`);
     }
 
     // Serial binary search inside [lo, hi)
@@ -80,15 +124,14 @@
     config.imageCount = detected;
   } else {
     console.error(`gallery.js: No images found at ${config.imagePath}`);
+    dismissLoader('no images');
     return;
   }
 
   // ===========================
-  // Loader (X / Y counter)
+  // Loader counter wiring
   // ===========================
 
-  const loaderEl = document.getElementById('gallery-loader');
-  const loaderCountEl = loaderEl?.querySelector('.loader-count');
   let imagesSettled = 0;
   const imagesTotal = config.imageCount;
 
@@ -100,15 +143,25 @@
   function bumpLoader() {
     imagesSettled++;
     if (loaderCountEl) {
-      loaderCountEl.textContent = `${imagesSettled} / ${imagesTotal}`;
+      // Clamp display to avoid "168 / 167" if an event ever double-fires.
+      const shown = Math.min(imagesSettled, imagesTotal);
+      loaderCountEl.textContent = `${shown} / ${imagesTotal}`;
     }
     if (imagesSettled >= imagesTotal && loaderEl && !loaderEl.classList.contains('hidden')) {
-      loaderEl.classList.add('hidden');
-      loaderEl.addEventListener('transitionend', () => {
-        loaderEl.remove();
-      }, { once: true });
+      dismissLoader();
     }
   }
+
+  // Safety watchdog: if for any reason imagesSettled never reaches total
+  // (browser tab throttled, request stalled without onerror, etc.), force
+  // the loader to dismiss after a generous timeout so it doesn't pin the
+  // viewport forever. 30s covers slow networks and still feels like a
+  // hard-stop rather than instant.
+  setTimeout(() => {
+    if (loaderEl && loaderEl.parentNode && !loaderEl.classList.contains('hidden')) {
+      dismissLoader();
+    }
+  }, 30000);
 
   // ===========================
   // Grid-based mosaic config
