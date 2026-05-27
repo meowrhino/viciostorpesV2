@@ -35,22 +35,38 @@
 
   // Auto-detect how many sequentially-numbered images exist in the folder,
   // so users don't have to hand-update imageCount in data.json every time
-  // they add/remove photos. Images are numbered starting at 1.webp. Uses
-  // doubling + binary search: ~2·log₂(N) HEAD requests (≈16 for 200 images).
+  // they add/remove photos. Images are numbered starting at 1.webp.
+  //
+  // Strategy: probe all powers of 2 up to 8192 IN PARALLEL (one network
+  // round-trip total), find the [lo, hi) range where the boundary lives,
+  // then do a serial binary search inside that range (~log₂ steps).
+  // Total: ~1 RTT + 4-8 sequential RTTs instead of ~14-16 sequential.
   async function detectImageCount(imagePath) {
     const exists = (n) =>
       fetch(`${imagePath}${n}.webp`, { method: 'HEAD', cache: 'no-cache' })
         .then(r => r.ok)
         .catch(() => false);
 
-    if (!(await exists(1))) return 0;
+    // Parallel doubling probes: 1, 2, 4, ..., 8192
+    const probes = [];
+    for (let p = 1; p <= 8192; p *= 2) probes.push(p);
+    const results = await Promise.all(probes.map(exists));
 
-    let lo = 1, hi = 2;
-    while (await exists(hi)) {
-      lo = hi;
-      hi *= 2;
-      if (hi > 10000) break; // sanity cap
+    if (!results[0]) return 0; // 1.webp doesn't exist → no images
+
+    // Walk results to find first false (the boundary).
+    let lo = probes[0];
+    let hi = probes[probes.length - 1] + 1; // assume top probe still exists
+    for (let i = 1; i < results.length; i++) {
+      if (results[i]) {
+        lo = probes[i];
+      } else {
+        hi = probes[i];
+        break;
+      }
     }
+
+    // Serial binary search inside [lo, hi)
     while (lo + 1 < hi) {
       const mid = (lo + hi) >> 1;
       if (await exists(mid)) lo = mid;
@@ -65,6 +81,33 @@
   } else {
     console.error(`gallery.js: No images found at ${config.imagePath}`);
     return;
+  }
+
+  // ===========================
+  // Loader (X / Y counter)
+  // ===========================
+
+  const loaderEl = document.getElementById('gallery-loader');
+  const loaderCountEl = loaderEl?.querySelector('.loader-count');
+  let imagesSettled = 0;
+  const imagesTotal = config.imageCount;
+
+  if (loaderEl && loaderCountEl) {
+    loaderCountEl.textContent = `0 / ${imagesTotal}`;
+    loaderEl.classList.add('has-count');
+  }
+
+  function bumpLoader() {
+    imagesSettled++;
+    if (loaderCountEl) {
+      loaderCountEl.textContent = `${imagesSettled} / ${imagesTotal}`;
+    }
+    if (imagesSettled >= imagesTotal && loaderEl && !loaderEl.classList.contains('hidden')) {
+      loaderEl.classList.add('hidden');
+      loaderEl.addEventListener('transitionend', () => {
+        loaderEl.remove();
+      }, { once: true });
+    }
   }
 
   // ===========================
@@ -265,11 +308,13 @@
           });
         });
 
+        bumpLoader();
         resolve();
       };
 
       img.onerror = () => {
         console.warn('Failed to load:', item.src);
+        bumpLoader();
         resolve();
       };
     });

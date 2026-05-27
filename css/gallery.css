@@ -166,3 +166,53 @@ body[data-section="flashbook"] .mosaic.scroll-mode {
     padding: 0 calc(50vw - 25dvh);
   }
 }
+
+/* ===========================
+   Loader (X / Y counter)
+   Shown while gallery boots; removed once all images settle.
+   Matches nav-btn typography (Helvetica Neue, accent red, lowercase).
+   =========================== */
+
+.gallery-loader {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 100;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(1.1rem, 2.2dvw, 1.8rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  color: var(--accent);
+  transition: opacity 0.5s ease;
+  font-variant-numeric: tabular-nums;
+}
+
+.gallery-loader .loader-count {
+  animation: loader-pulse 1.4s ease-in-out infinite;
+}
+
+/* Once we have the real X/Y count, stop the pulse — the number itself
+   updates visibly enough. */
+.gallery-loader.has-count .loader-count {
+  animation: none;
+  opacity: 1;
+}
+
+.gallery-loader.hidden {
+  opacity: 0;
+}
+
+@keyframes loader-pulse {
+  0%, 100% { opacity: 0.45; }
+  50%      { opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .gallery-loader {
+    font-size: clamp(0.9rem, 4dvw, 1.3rem);
+  }
+}
