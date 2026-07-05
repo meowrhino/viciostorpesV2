@@ -13,7 +13,7 @@
   };
 
   try {
-    const data = await fetch('data.json').then(r => r.json());
+    const data = await window.loadSiteData();
     if (data.booking) config = { ...config, ...data.booking };
   } catch (err) {
     console.warn('booking.js: Failed to load data.json, using defaults', err);
@@ -54,12 +54,16 @@
     const err = document.createElement('div');
     err.className = 'form-field-error';
     err.textContent = message;
+    const errorId = (input.id || input.name) + '-error';
+    err.id = errorId;
+    input.setAttribute('aria-describedby', errorId);
     input.parentElement.appendChild(err);
   }
 
   function clearFieldError(input) {
     input.classList.remove('form-input-invalid');
     input.removeAttribute('aria-invalid');
+    input.removeAttribute('aria-describedby');
     const err = input.parentElement.querySelector('.form-field-error');
     if (err) err.remove();
   }
@@ -106,6 +110,7 @@
   const previewList = form.querySelector('#attachment-previews');
   // Fuente de verdad: array de File. El input.files se sincroniza vía DataTransfer.
   const attached = [];
+  let attachmentErrorTimeout = null;
   // Límites: Formsubmit caps total attachment size at 10 MB. Dejamos buffer.
   const MAX_FILES = 10;
   const MAX_FILE_MB = 5;
@@ -184,8 +189,8 @@
       fileInput.parentElement.insertBefore(err, previewList);
     }
     err.textContent = message;
-    clearTimeout(showAttachmentError._t);
-    showAttachmentError._t = setTimeout(() => err.remove(), 5000);
+    clearTimeout(attachmentErrorTimeout);
+    attachmentErrorTimeout = setTimeout(() => err.remove(), 5000);
   }
 
   if (fileInput && previewList) {

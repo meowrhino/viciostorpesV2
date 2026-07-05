@@ -8,6 +8,11 @@
   // Configuration & Setup
   // ===========================
 
+  const JITTER_RATIO = 0.8;
+  const BATCH_STAGGER_MS = 40;
+  const BATCH_GAP_MS = 80;
+  const HOVER_COOLDOWN_MS = 300;
+
   // Resolve loader element early so we can dismiss it from any error path.
   // The HTML renders the loader with text "loading" before JS runs; if we
   // return early without touching it, the user gets a permanent "loading"
@@ -53,7 +58,7 @@
 
   let data;
   try {
-    data = await fetch('data.json').then(r => r.json());
+    data = await window.loadSiteData();
   } catch (err) {
     console.error('gallery.js: Failed to load data.json', err);
     dismissLoader('error');
@@ -254,6 +259,47 @@
   let mouseTimeout = null;
   let currentViewportHover = null;
   let hoverCooldown = false;
+  let mouseMoveRAF = null;
+
+  // ===========================
+  // Zoom system (mosaic mode only)
+  // Ctrl+scroll on desktop, pinch on mobile
+  // Resizes mosaic + repositions all images so scrollable area matches
+  // ===========================
+
+  let zoomLevel = 1;
+  const ZOOM_MIN = 0.3;
+  const ZOOM_MAX = 2;
+  const ZOOM_STEP = 0.1;
+
+  function applyZoom(newZoom, originX, originY) {
+    const oldZoom = zoomLevel;
+    zoomLevel = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, newZoom));
+    if (zoomLevel === oldZoom) return;
+
+    // Resize mosaic container to match zoom
+    mosaic.style.width = (mosaicWidth * zoomLevel) + 'px';
+    mosaic.style.height = (mosaicHeight * zoomLevel) + 'px';
+
+    // Reposition and resize all images
+    for (const img of imageElements) {
+      const ox = parseFloat(img.dataset.mosaicX);
+      const oy = parseFloat(img.dataset.mosaicY);
+      const ow = parseFloat(img.dataset.mosaicW);
+      const oh = parseFloat(img.dataset.mosaicH);
+
+      img.style.left = (ox * zoomLevel) + 'px';
+      img.style.top = (oy * zoomLevel) + 'px';
+      img.style.width = (ow * zoomLevel) + 'px';
+      img.style.height = (oh * zoomLevel) + 'px';
+    }
+
+    // Adjust scroll to keep the zoom centered on the pointer
+    const ratio = zoomLevel / oldZoom;
+    const scrollLeft = (mosaicContainer.scrollLeft + originX) * ratio - originX;
+    const scrollTop = (mosaicContainer.scrollTop + originY) * ratio - originY;
+    mosaicContainer.scrollTo({ left: scrollLeft, top: scrollTop, behavior: 'instant' });
+  }
 
   // ===========================
   // Mosaic Mode Functions
@@ -291,7 +337,9 @@
     const img = document.createElement('img');
     img.className = 'mosaic-image';
     img.src = item.src;
-    img.alt = '';
+    img.alt = section === 'flashbook' ? `Flash design ${item.index}` : `Tattoo ${item.index}`;
+    img.tabIndex = 0;
+    img.setAttribute('role', 'button');
     img.dataset.index = item.index;
 
     return new Promise((resolve) => {
@@ -306,8 +354,8 @@
         // Center in cell + heavy jitter (can overflow into neighboring cells)
         const centerX = cell.x + (cellW - w) / 2;
         const centerY = cell.y + (cellH - h) / 2;
-        const jitterX = (Math.random() - 0.5) * cellW * 0.8;
-        const jitterY = (Math.random() - 0.5) * cellH * 0.8;
+        const jitterX = (Math.random() - 0.5) * cellW * JITTER_RATIO;
+        const jitterY = (Math.random() - 0.5) * cellH * JITTER_RATIO;
 
         // Clamp so images don't go outside the mosaic bounds
         const finalX = Math.max(0, Math.min(centerX + jitterX, mosaicWidth - w));
@@ -340,12 +388,21 @@
         registerImage(img);
 
         // Click handler
-        img.addEventListener('click', () => {
+        function activateImage() {
           const clickedIndex = parseInt(img.dataset.index);
           if (currentMode === 'mosaic') {
             switchToScrollMode(clickedIndex);
           } else {
             scrollToImage(clickedIndex);
+          }
+        }
+        img.addEventListener('click', activateImage);
+        img.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            activateImage();
+          } else if (e.key === ' ') {
+            e.preventDefault();
+            activateImage();
           }
         });
 
@@ -378,7 +435,7 @@
       return new Promise(resolve => {
         setTimeout(() => {
           loadImage(item, startIndex + i).then(resolve);
-        }, i * 40);
+        }, i * BATCH_STAGGER_MS);
       });
     });
     await Promise.all(promises);
@@ -400,7 +457,7 @@
     for (let i = 0; i < shuffled.length; i += MOSAIC.batchSize) {
       const batch = shuffled.slice(i, i + MOSAIC.batchSize);
       await loadBatch(batch, i);
-      await new Promise(resolve => setTimeout(resolve, 80));
+      await new Promise(resolve => setTimeout(resolve, BATCH_GAP_MS));
     }
   }
 
@@ -644,7 +701,7 @@
         hit.classList.add('viewport-hover');
         hit.style.zIndex = ++topZ;
         hoverCooldown = true;
-        setTimeout(() => { hoverCooldown = false; }, 300);
+        setTimeout(() => { hoverCooldown = false; }, HOVER_COOLDOWN_MS);
       }
       currentViewportHover = hit;
     }
@@ -665,7 +722,13 @@
       mouseActive = false;
       updateViewportHover();
     }, 200);
-    updateViewportHover();
+
+    if (mouseMoveRAF === null) {
+      mouseMoveRAF = requestAnimationFrame(() => {
+        mouseMoveRAF = null;
+        updateViewportHover();
+      });
+    }
   });
 
   // Update on scroll (viewport center changes)
@@ -686,46 +749,6 @@
   window.addEventListener('hashchange', handleHashChange);
 
   // (scroll listener for updateCurrentImageIndicator is added inside switchToScrollMode)
-
-  // ===========================
-  // Zoom system (mosaic mode only)
-  // Ctrl+scroll on desktop, pinch on mobile
-  // Resizes mosaic + repositions all images so scrollable area matches
-  // ===========================
-
-  let zoomLevel = 1;
-  const ZOOM_MIN = 0.3;
-  const ZOOM_MAX = 2;
-  const ZOOM_STEP = 0.1;
-
-  function applyZoom(newZoom, originX, originY) {
-    const oldZoom = zoomLevel;
-    zoomLevel = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, newZoom));
-    if (zoomLevel === oldZoom) return;
-
-    // Resize mosaic container to match zoom
-    mosaic.style.width = (mosaicWidth * zoomLevel) + 'px';
-    mosaic.style.height = (mosaicHeight * zoomLevel) + 'px';
-
-    // Reposition and resize all images
-    for (const img of imageElements) {
-      const ox = parseFloat(img.dataset.mosaicX);
-      const oy = parseFloat(img.dataset.mosaicY);
-      const ow = parseFloat(img.dataset.mosaicW);
-      const oh = parseFloat(img.dataset.mosaicH);
-
-      img.style.left = (ox * zoomLevel) + 'px';
-      img.style.top = (oy * zoomLevel) + 'px';
-      img.style.width = (ow * zoomLevel) + 'px';
-      img.style.height = (oh * zoomLevel) + 'px';
-    }
-
-    // Adjust scroll to keep the zoom centered on the pointer
-    const ratio = zoomLevel / oldZoom;
-    const scrollLeft = (mosaicContainer.scrollLeft + originX) * ratio - originX;
-    const scrollTop = (mosaicContainer.scrollTop + originY) * ratio - originY;
-    mosaicContainer.scrollTo({ left: scrollLeft, top: scrollTop, behavior: 'instant' });
-  }
 
   // Ctrl + scroll wheel
   mosaicContainer.addEventListener('wheel', (e) => {

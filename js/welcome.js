@@ -3,7 +3,7 @@
 (async function () {
   let data;
   try {
-    data = await fetch('data.json').then(r => r.json());
+    data = await window.loadSiteData();
   } catch (err) {
     console.error('welcome.js: Failed to load data.json', err);
     return;

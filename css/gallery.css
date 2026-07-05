@@ -55,6 +55,11 @@ body { overflow: hidden; }
   transform: scale(1.05) translate(0, 0);
 }
 
+.mosaic-image:focus-visible {
+  outline: 2px solid var(--text-color);
+  outline-offset: 2px;
+}
+
 /* ===========================
    Scroll Mode
    =========================== */
@@ -96,7 +101,7 @@ body { overflow: hidden; }
   top: auto !important;
   opacity: 1;
   transform: scale(1) translateY(0);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease, opacity var(--transition-speed) ease;
 }
 
 .scroll-mode .mosaic-image:hover,
@@ -111,7 +116,7 @@ body.scroll-mode::before {
   bottom: 3dvh;
   left: 50%;
   transform: translateX(-50%);
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-ui);
   font-size: clamp(1rem, 2.2vw, 1.8rem);
   font-weight: 600;
   letter-spacing: 0.04em;

@@ -27,6 +27,9 @@ body { overflow: hidden; }
 }
 
 /* Cell background — full screen, no overlay */
+/* Note: this same background image is also painted directly on body from
+   js/welcome.js (inline style) as an early paint to avoid a dark flash
+   before this cell renders. Do not remove that as "duplicate" styling. */
 .cell-bg {
   position: absolute;
   inset: 0;

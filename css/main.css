@@ -15,7 +15,7 @@ html, body {
 }
 
 body {
-  font-family: "Sofia Sans Extra Condensed", sans-serif;
+  font-family: var(--font-display);
   background: #0f0f12;
   color: #E6E6E6;
   overflow-x: hidden;
@@ -30,11 +30,13 @@ body {
 /* Variables CSS globales */
 :root {
   --text-color: #E6E6E6;
-  --text-hover: #FFFFFF;
   --bg-dark: #0f0f12;
   --accent: #c81e1e;
   --accent-hover: #ff3c3c;
   --transition-speed: 0.3s;
+  --color-error: #f26f63;
+  --font-display: "Sofia Sans Extra Condensed", sans-serif;
+  --font-ui: "Helvetica Neue", Arial, sans-serif;
 }
 
 /* Text shadow para legibilidad */

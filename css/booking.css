@@ -2,7 +2,7 @@
    booking.css — Formulario minimal
    =========================== */
 
-body { font-family: "Helvetica Neue", Arial, sans-serif; }
+body { font-family: var(--font-ui); }
 
 /* Fondo fijo */
 .booking-bg {
@@ -167,18 +167,18 @@ body { font-family: "Helvetica Neue", Arial, sans-serif; }
   text-align: center;
   margin-top: 0.5rem;
   font-size: 0.9rem;
-  color: #f26f63;
+  color: var(--color-error);
 }
 
 /* Errores de validación por campo */
 .form-input-invalid {
-  border-bottom-color: #f26f63 !important;
+  border-bottom-color: var(--color-error) !important;
 }
 
 .form-field-error {
   margin-top: 0.35rem;
   font-size: 0.8rem;
-  color: #f26f63;
+  color: var(--color-error);
   letter-spacing: 0.02em;
 }
 

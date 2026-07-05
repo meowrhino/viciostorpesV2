@@ -24,7 +24,17 @@ document.addEventListener('click', (e) => {
 
   document.body.classList.add('navigating', `slide-${direction}`);
 
-  setTimeout(() => {
+  let navigated = false;
+  function goToHref() {
+    if (navigated) return;
+    navigated = true;
     window.location.href = href;
-  }, 450);
+  }
+
+  // animationend bubbles: ignore child animations (welcome fade-ins) and
+  // body's own page-fade-in — only the slide-out animation ends navigation
+  document.body.addEventListener('animationend', (ev) => {
+    if (ev.target === document.body && ev.animationName.startsWith('slide-out')) goToHref();
+  });
+  setTimeout(goToHref, 600);
 });
