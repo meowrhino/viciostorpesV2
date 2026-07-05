@@ -135,6 +135,15 @@ Para cambiarlos: reemplaza el archivo manteniendo el mismo nombre.
 
 ## 5. Imagen central del landing (página de inicio)
 
+> **Ojo**: hay DOS imágenes distintas llamadas igual (`welcome.webp`) pero en carpetas
+> diferentes, y no son lo mismo:
+> - `data/backgrounds/welcome.webp` — el fondo a pantalla completa del landing, referenciado
+>   desde `data.json` (ver sección 4).
+> - `data/welcome/welcome.webp` — la "pegatina"/logo central (texto "Welcome" con sus
+>   decorados), con ruta fija en `js/welcome.js`.
+>
+> Para un cambio completo del landing hay que reemplazar **ambas**, no solo una.
+
 En `data/welcome/`:
 
 - `welcome.webp` — la imagen central del landing (texto "Welcome" con sus decorados).

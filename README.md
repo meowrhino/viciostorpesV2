@@ -129,11 +129,10 @@ Despliegue directo en GitHub Pages, Netlify, Vercel o cualquier hosting estátic
 
 ## Responsive
 
-Breakpoints en todas las páginas:
-- **Desktop**: > 1024px
-- **Tablet**: 768px – 1024px
-- **Mobile**: < 768px
-- **Small**: < 480px
+Breakpoints activos en el CSS:
+- **Desktop / Tablet**: > 768px
+- **Mobile**: ≤ 768px (regla `@media (max-width: 768px)`, en `navigation.css` y `booking.css`)
+- **Portrait**: `@media (orientation: portrait)` en `css/welcome.css`, para bajar el logo central en móviles verticales
 
 Usa unidades dinámicas de viewport (`dvw`/`dvh`) y `clamp()` para tipografía fluida.
 
