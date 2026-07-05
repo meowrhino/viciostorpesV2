@@ -176,20 +176,22 @@
   const CELL_DVW = 50;
   const CELL_DVH = 50;
 
-  // Convert to pixels for positioning
-  const vw = window.innerWidth / 100;
-  const vh = window.innerHeight / 100;
-  const vmin = Math.min(vw, vh);
-  const cellW = CELL_DVW * vw;
-  const cellH = CELL_DVH * vh;
+  // Convert to pixels for positioning.
+  // Mutable (let) because the resize handler recomputes them on viewport
+  // changes / orientation flips — see the Responsive section below.
+  let vw = window.innerWidth / 100;
+  let vh = window.innerHeight / 100;
+  let vmin = Math.min(vw, vh);
+  let cellW = CELL_DVW * vw;
+  let cellH = CELL_DVH * vh;
 
   // Grid dimensions from image count
   const cols = Math.ceil(Math.sqrt(config.imageCount));
   const rows = Math.ceil(config.imageCount / cols);
 
-  // Total mosaic dimensions in px
-  const mosaicWidth = cols * cellW;
-  const mosaicHeight = rows * cellH;
+  // Total mosaic dimensions in px (let: rescaled by the resize handler)
+  let mosaicWidth = cols * cellW;
+  let mosaicHeight = rows * cellH;
 
   const MOSAIC = {
     cols,
@@ -246,7 +248,7 @@
   // Set mosaic dimensions upfront
   mosaic.style.width = mosaicWidth + 'px';
   mosaic.style.height = mosaicHeight + 'px';
-  const mosaicModeHeight = mosaicHeight + 'px';
+  let mosaicModeHeight = mosaicHeight + 'px';
 
   // State
   let currentMode = 'mosaic';
@@ -543,15 +545,17 @@
     mosaic.classList.remove('scroll-mode');
     mosaic.style.height = mosaicModeHeight;
 
-    // Reset zoom to 1x
-    if (zoomLevel !== 1) {
-      zoomLevel = 1;
-      for (const img of imageElements) {
-        img.style.left = img.dataset.mosaicX + 'px';
-        img.style.top = img.dataset.mosaicY + 'px';
-        img.style.width = img.dataset.mosaicW + 'px';
-        img.style.height = img.dataset.mosaicH + 'px';
-      }
+    // Reset zoom to 1x and restore every image to its stored mosaic geometry.
+    // Always restore (not only when zoomed): a resize while in scroll mode
+    // updates the datasets but not the inline styles (scroll-mode CSS overrides
+    // them), so on return to mosaic the inline left/top/width/height can be
+    // stale. The datasets are the source of truth at zoom 1.
+    zoomLevel = 1;
+    for (const img of imageElements) {
+      img.style.left = img.dataset.mosaicX + 'px';
+      img.style.top = img.dataset.mosaicY + 'px';
+      img.style.width = img.dataset.mosaicW + 'px';
+      img.style.height = img.dataset.mosaicH + 'px';
     }
     // Always restore mosaic-mode width — scroll mode set it to max-content.
     mosaic.style.width = mosaicWidth + 'px';
@@ -796,5 +800,76 @@
 
   mosaicContainer.addEventListener('touchend', () => {
     pinching = false;
+  });
+
+  // ===========================
+  // Responsive: recompute mosaic geometry on viewport resize / orientation
+  // change. Image positions & sizes are scaled proportionally from their
+  // stored (zoom=1) dataset values, so the arrangement is preserved instead
+  // of re-randomized. Current zoom level and scroll mode are honored.
+  // ===========================
+
+  let resizeTimer = null;
+  let lastResizeW = window.innerWidth;
+  let lastResizeH = window.innerHeight;
+
+  function handleResize() {
+    const newW = window.innerWidth;
+    const newH = window.innerHeight;
+
+    // Ignore small changes: on mobile, the URL bar showing/hiding toggles
+    // innerHeight by ~50-100px without any real layout change. Compare against
+    // the last *applied* size (not updated when skipped) so small drags still
+    // accumulate into a real resize.
+    if (Math.abs(newW - lastResizeW) < 50 && Math.abs(newH - lastResizeH) < 50) return;
+    lastResizeW = newW;
+    lastResizeH = newH;
+
+    const newVw = newW / 100;
+    const newVh = newH / 100;
+    const newVmin = Math.min(newVw, newVh);
+
+    const ratioX = newVw / vw;
+    const ratioY = newVh / vh;
+    const ratioSize = newVmin / vmin;
+
+    // Update viewport-derived geometry (grid stays cols×rows of 50dvw×50dvh)
+    vw = newVw;
+    vh = newVh;
+    vmin = newVmin;
+    cellW = CELL_DVW * vw;
+    cellH = CELL_DVH * vh;
+    mosaicWidth *= ratioX;
+    mosaicHeight *= ratioY;
+    mosaicModeHeight = mosaicHeight + 'px';
+
+    // Rescale each image's stored (zoom=1) geometry proportionally
+    for (const img of imageElements) {
+      img.dataset.mosaicX = parseFloat(img.dataset.mosaicX) * ratioX;
+      img.dataset.mosaicY = parseFloat(img.dataset.mosaicY) * ratioY;
+      img.dataset.mosaicW = parseFloat(img.dataset.mosaicW) * ratioSize;
+      img.dataset.mosaicH = parseFloat(img.dataset.mosaicH) * ratioSize;
+    }
+
+    // In scroll mode, sizing comes from CSS (60dvh) and the datasets above are
+    // re-applied when returning to mosaic mode — nothing to reposition live.
+    if (currentMode !== 'mosaic') return;
+
+    // Mosaic mode: resize the container and re-apply positions at current zoom.
+    // .mosaic-image only transitions transform/opacity, so left/top/width/height
+    // update instantly with no animation (matching applyZoom's behavior).
+    mosaic.style.width = (mosaicWidth * zoomLevel) + 'px';
+    mosaic.style.height = (mosaicHeight * zoomLevel) + 'px';
+    for (const img of imageElements) {
+      img.style.left = (parseFloat(img.dataset.mosaicX) * zoomLevel) + 'px';
+      img.style.top = (parseFloat(img.dataset.mosaicY) * zoomLevel) + 'px';
+      img.style.width = (parseFloat(img.dataset.mosaicW) * zoomLevel) + 'px';
+      img.style.height = (parseFloat(img.dataset.mosaicH) * zoomLevel) + 'px';
+    }
+  }
+
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(handleResize, 200);
   });
 })();
