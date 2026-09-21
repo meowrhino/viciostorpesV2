@@ -22,7 +22,7 @@ Solo hay que hacerlo UNA vez. Después todo funciona automático.
   bajar el peso o mandar menos.
 
 ### Qué tocar y qué NO tocar
-- ✅ **Sí puedes tocar:** `data.json` (textos), los archivos en `data/` (imágenes), el email en `booking.html`
+- ✅ **Sí puedes tocar:** `data.json` (textos), los archivos en `data/` (imágenes), el endpoint del formulario en `booking.html`
 - ❌ **Mejor no toques:** archivos `.html`, `.css`, `.js` (si no sabes qué estás haciendo, se puede romper algo)
 - Si tocas algo por error, **no guardes**, cierra sin guardar y vuelve a abrir
 
@@ -40,6 +40,13 @@ Para añadir/quitar imágenes **solo hay que tocar la carpeta** (`data/images/fl
 Si cambias una imagen y al abrir la web sigues viendo la vieja: es la caché del navegador.
 Solución: refrescar con **Ctrl+F5** (Windows) o **Cmd+Shift+R** (Mac).
 
+### Esta guía NO se publica en la web
+`README.md`, `MANTENIMIENTO.md` y la carpeta `docs/` viven en el repositorio pero
+**no se suben al sitio público**: el despliegue los excluye a propósito
+(`.github/workflows/pages.yml`). Así nadie puede leerlos entrando en
+`viciostorpes.com/MANTENIMIENTO.md`. Si algún día cambias de sistema de despliegue,
+acuérdate de excluirlos también allí.
+
 ### Antes de subir cambios
 Abre los archivos en tu ordenador y comprueba que la web se ve bien en local antes de
 subirla al hosting. Cualquier error tipográfico en `data.json` rompe las galerías.
@@ -48,18 +55,28 @@ subirla al hosting. Cualquier error tipográfico en `data.json` rompe las galer�
 
 ## 1. Cambiar el email que recibe el formulario
 
-Abrir `booking.html` y buscar esta línea (cerca del principio del `<form>`):
+Abrir `booking.html` y buscar el bloque marcado **`ENDPOINT DEL FORMULARIO`**
+(cerca del principio del `<form>`):
 
 ```html
-<form class="booking-form" action="https://formsubmit.co/tu@email.com" ...
+<form class="booking-form" action="https://formsubmit.co/a1b2c3d4e5f6..." ...
 ```
 
-Cambiar el email por el que quieras recibir los avisos.
+Ese texto raro **no es un error**: es el identificador que FormSubmit da para que
+tu email no quede escrito en el código de la web (si estuviera en claro, los bots
+de spam lo recogerían). Ver *"Invisible emails"* en la documentación de FormSubmit.
 
-**IMPORTANTE — solo la primera vez:**
-Cuando alguien envíe el formulario por primera vez con el nuevo email, Formsubmit
-manda un email de activación a esa dirección. Hay que abrirlo y clicar **"Activate Form"**.
-Solo una vez. Después llegan todos los envíos directamente.
+**Para cambiarlo a otra dirección:**
+
+1. Poner el email nuevo en claro, temporalmente: `action="https://formsubmit.co/nuevo@email.com"`
+2. Enviar el formulario una vez → llega un correo de FormSubmit
+3. En ese correo: clicar **"Activate Form"** y **copiar el string aleatorio** que viene dentro
+4. Sustituir el email por ese string en `booking.html`
+5. Volver a enviar el formulario de prueba, con una imagen adjunta, y comprobar que llega
+
+> ⚠️ El string solo se manda **una vez**, en ese correo de activación. Guárdalo.
+> Si lo pierdes, búscalo en la bandeja de entrada por "formsubmit" (mira también
+> Spam y Promociones).
 
 Más detalle técnico en [`docs/SETUP_FORMSUBMIT.txt`](docs/SETUP_FORMSUBMIT.txt).
 
@@ -265,7 +282,7 @@ La web la hizo **manu (@meowrhino)**. Si algo se rompe y no sabes arreglarlo, co
 
 | Tarea | Archivo a tocar |
 |-------|-----------------|
-| Cambiar email del formulario | `booking.html` |
+| Cambiar destino del formulario | `booking.html` (bloque `ENDPOINT DEL FORMULARIO`) |
 | Cambiar textos del formulario (asunto, confirmación, error) | `data.json` |
 | Añadir imagen flashbook | `data/images/flashbook/` (automático) |
 | Añadir imagen tattoo | `data/images/tattoo/` (automático) |

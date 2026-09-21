@@ -37,6 +37,11 @@
 
   <!-- Formulario de contacto -->
   <main class="booking-container">
+    <!-- ENDPOINT DEL FORMULARIO — ver docs/SETUP_FORMSUBMIT.txt
+         Debe ser el string aleatorio de FormSubmit, NO el email en claro:
+         un email aquí lo scrapean los bots. El string llega en el correo de
+         activación de FormSubmit ("Activate Form"). Es lo único que hay que
+         cambiar para redirigir el formulario a otra dirección. -->
     <form class="booking-form" action="https://formsubmit.co/vicios.torpes@gmail.com" method="POST" enctype="multipart/form-data">
       <!-- Formsubmit config -->
       <input type="hidden" name="_subject" value="New booking — ViciosTorpes">

@@ -22,9 +22,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # Copia el sitio a _site dejando fuera lo que NO debe ser público:
+      # documentación interna, config de editor y metadatos de git/CI.
+      # Sin esto, https://viciostorpes.com/MANTENIMIENTO.md devuelve 200.
+      - name: Build publishable site
+        run: |
+          rsync -a ./ ./_site \
+            --exclude '_site' \
+            --exclude '.git' \
+            --exclude '.github' \
+            --exclude '.vscode' \
+            --exclude '.claude' \
+            --exclude 'docs' \
+            --exclude 'README.md' \
+            --exclude 'MANTENIMIENTO.md' \
+            --exclude '.DS_Store' \
+            --exclude '.gitignore'
+          echo "--- Publicado:"
+          find ./_site -maxdepth 1
+
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: ./_site
       - id: deployment
         uses: actions/deploy-pages@v4
