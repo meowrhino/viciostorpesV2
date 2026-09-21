@@ -38,11 +38,12 @@
   <!-- Formulario de contacto -->
   <main class="booking-container">
     <!-- ENDPOINT DEL FORMULARIO
-         ESTADO TEMPORAL: esta linea debe llevar el string aleatorio de
-         FormSubmit, no una direccion. Mientras lleve una direccion, los bots
-         la scrapean. Sustituirla en cuanto llegue el correo de activacion.
+         Este string NO es un error: es el identificador "invisible" de
+         FormSubmit, que evita dejar la direccion escrita en el HTML donde la
+         scrapean los bots. Es lo unico que hay que cambiar para redirigir el
+         formulario a otra direccion.
          Procedimiento completo en docs/SETUP_FORMSUBMIT.txt (no se publica). -->
-    <form class="booking-form" action="https://formsubmit.co/viciostorpes@gmail.com" method="POST" enctype="multipart/form-data">
+    <form class="booking-form" action="https://formsubmit.co/60a073cb78d559a1c3da299a1427d70b" method="POST" enctype="multipart/form-data">
       <!-- Formsubmit config -->
       <input type="hidden" name="_subject" value="New booking — ViciosTorpes">
       <input type="hidden" name="_captcha" value="false">
