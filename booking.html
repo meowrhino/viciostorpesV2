@@ -37,15 +37,11 @@
 
   <!-- Formulario de contacto -->
   <main class="booking-container">
-    <!-- ENDPOINT DEL FORMULARIO — ver docs/SETUP_FORMSUBMIT.txt
-         ⚠️ ESTADO TEMPORAL: email en claro para forzar una reactivación.
-         El correo de activación original (con el string "invisible") se perdió,
-         así que apuntamos a viciostorpes@gmail.com — la misma bandeja que
-         vicios.torpes@gmail.com, porque Gmail ignora los puntos, pero una
-         dirección distinta para FormSubmit, así que dispara un alta nueva.
-         EN CUANTO LLEGUE EL CORREO DE ACTIVACIÓN: clicar "Activate Form",
-         copiar el string aleatorio y sustituir este email por él. Dejarlo así
-         es exactamente lo que queríamos evitar (bots scrapeando el email). -->
+    <!-- ENDPOINT DEL FORMULARIO
+         ESTADO TEMPORAL: esta linea debe llevar el string aleatorio de
+         FormSubmit, no una direccion. Mientras lleve una direccion, los bots
+         la scrapean. Sustituirla en cuanto llegue el correo de activacion.
+         Procedimiento completo en docs/SETUP_FORMSUBMIT.txt (no se publica). -->
     <form class="booking-form" action="https://formsubmit.co/viciostorpes@gmail.com" method="POST" enctype="multipart/form-data">
       <!-- Formsubmit config -->
       <input type="hidden" name="_subject" value="New booking — ViciosTorpes">
