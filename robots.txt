@@ -1,4 +1,3 @@
+# Copia archivada — la web viva es https://viciostorpes.com
 User-agent: *
-Allow: /
-
-Sitemap: https://viciostorpes.com/sitemap.xml
+Disallow: /

@@ -4,6 +4,9 @@
   <!-- SYNC: head compartido — cambios aquí deben replicarse en index/tattoo/flashbook/booking.html -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- COPIA ARCHIVADA: la web viva es viciostorpes.com. noindex evita que
+       esta copia compita en Google con el sitio real. -->
+  <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#0f0f12">
   <meta name="description" content="ViciosTorpes — Book your tattoo appointment with Marc.">
   <meta name="author" content="ViciosTorpes">
@@ -37,18 +40,23 @@
 
   <!-- Formulario de contacto -->
   <main class="booking-container">
-    <!-- ENDPOINT DEL FORMULARIO
-         Este string NO es un error: es el identificador "invisible" de
-         FormSubmit, que evita dejar la direccion escrita en el HTML donde la
-         scrapean los bots. Es lo unico que hay que cambiar para redirigir el
-         formulario a otra direccion.
-         Procedimiento completo en docs/SETUP_FORMSUBMIT.txt (no se publica). -->
-    <form class="booking-form" action="https://formsubmit.co/60a073cb78d559a1c3da299a1427d70b" method="POST" enctype="multipart/form-data">
-      <!-- Formsubmit config -->
-      <input type="hidden" name="_subject" value="New booking — ViciosTorpes">
-      <input type="hidden" name="_captcha" value="false">
-      <input type="hidden" name="_next" value="https://viciostorpes.com/booking.html?sent=1">
-      <input type="text" name="_honey" style="display:none">
+    <!-- COPIA ARCHIVADA — formulario desactivado a proposito.
+         Sin action, sin method y con los campos dentro de un <fieldset disabled>:
+         no hay forma de enviar nada desde aqui, ni con JS ni sin el. El endpoint
+         real vive solo en el repo activo (viciostorpes/web). -->
+    <form class="booking-form" onsubmit="return false;">
+      <div class="archive-notice" role="status">
+        <p class="archive-notice-title">This form is no longer active</p>
+        <p class="archive-notice-body">
+          You are looking at an archived copy of the site. Messages sent from
+          here would not reach anyone.
+        </p>
+        <a class="archive-notice-cta" href="https://viciostorpes.com/booking.html">
+          Go to viciostorpes.com to book
+        </a>
+      </div>
+
+      <fieldset class="archive-fieldset" disabled>
 
       <!-- Name -->
       <div class="form-group">
@@ -135,10 +143,7 @@
         <ul id="attachment-previews" class="attachment-previews" aria-live="polite"></ul>
       </div>
 
-      <!-- Submit -->
-      <button type="submit" class="form-submit">
-        Send
-      </button>
+      </fieldset>
     </form>
 
     <!-- Firma -->
@@ -154,7 +159,6 @@
   </div>
 
   <script src="js/data-loader.js"></script>
-  <script src="js/booking.js"></script>
   <script src="js/transitions.js"></script>
 </body>
 </html>

@@ -1,3 +1,14 @@
+> ## 📦 REPOSITORIO ARCHIVADO
+>
+> El desarrollo activo se ha movido a **[viciostorpes/web](https://github.com/viciostorpes/web)**,
+> que es el que publica **https://viciostorpes.com**.
+>
+> Esta copia se conserva solo como histórico. Diferencias a propósito respecto al repo vivo:
+> el formulario de booking está **desactivado** (sin endpoint, campos bloqueados y aviso visible),
+> y las páginas llevan `noindex` para no competir en Google con el sitio real.
+>
+> **No hagas cambios aquí.** Van a `viciostorpes/web`.
+
 # ViciosTorpes V2
 
 Portfolio interactivo para Marc, tatuador y diseñador. Web estática construida con HTML, CSS y JavaScript vanilla — sin frameworks, sin build, sin dependencias.
